@@ -12,7 +12,7 @@ enum class GameState
 
 Link* player = nullptr;
 
- const char room1[11][15]=
+const char room1[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
@@ -40,8 +40,8 @@ const char room2[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-
 };
+
 const char room3[11][15]=
 {
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
@@ -56,6 +56,7 @@ const char room3[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
 };
+
 const char room4[11][15]=
 {
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
@@ -70,6 +71,7 @@ const char room4[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
 };
+
 const char room5[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -84,6 +86,7 @@ const char room5[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
+
 const char room6[11][15]=
 {
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
@@ -98,6 +101,7 @@ const char room6[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
 };
+
 const char room7[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -112,6 +116,7 @@ const char room7[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
 };
+
 const char room8[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -126,6 +131,7 @@ const char room8[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
+
 const char room9[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -141,8 +147,6 @@ const char room9[11][15]=
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
-
-
 const char (*worldMap[5][5])[15]=
 {
     {room9,room8,room7,nullptr,nullptr},
@@ -154,15 +158,13 @@ const char (*worldMap[5][5])[15]=
 
 void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY)
 {
-    player =nullptr;
-
+    player = nullptr;
 
     for(auto& object : wordlObjects)
     {
         delete object;
     }
     wordlObjects.clear();
-
 
     const char (*selectedRoom)[15] = worldMap[wy][wx];
 
@@ -173,81 +175,67 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
 
     float rozmiar_kafelka = 48.0f;
 
-
-    for(int row = 0;row<11;++row)
+    for(int row = 0; row < 11; ++row)
     {
-        for(int col=0;col<15;++col)
+        for(int col = 0; col < 15; ++col)
         {
             float posX = col * rozmiar_kafelka;
             float posY = row * rozmiar_kafelka;
 
-
             if(selectedRoom[row][col] == '#')
             {   
-                wordlObjects.push_back(new Background("drzewa.png",posX, posY, true));
+                wordlObjects.push_back(new Background("drzewa.png", posX, posY, true));
             }
             else if(selectedRoom[row][col] == 'F')
             {
-                wordlObjects.push_back(new Background("floor1.png", posX,posY, false));
+                wordlObjects.push_back(new Background("floor1.png", posX, posY, false));
             }
         }
     }
     player = new Link(startX, startY);
-     wordlObjects.push_back(player);
-
+    wordlObjects.push_back(player);
 }
 
 int main()
 {
-
-    sf::RenderWindow window(sf::VideoMode(720,528), "The legend of Zelda");
+    sf::RenderWindow window(sf::VideoMode(720, 528), "The legend of Zelda");
     window.setFramerateLimit(60);
 
     GameState currentState = GameState::MainMenu;
     int worldX = 1;
     int worldY = 4;
 
-
     sf::Font font;
     if(!font.loadFromFile("Triforce-y07d.ttf"))
     {
-        std::cout<<"!!! Blad w ladowaniu trzcionki !!!"<<std::endl;
+        std::cout << "!!! Blad w ladowaniu trzcionki !!!" << std::endl;
     }
 
-    sf:: Text TitleText("The legends of", font, 30);
+    sf::Text TitleText("The legends of", font, 30);
     TitleText.setFillColor(sf::Color::White);
 
-    sf:: Text TitleText2("Zelda", font, 150);
+    sf::Text TitleText2("Zelda", font, 150);
     TitleText2.setFillColor(sf::Color::White);
     
-    sf:: Text menuText("NACISNIJ ENTER", font, 18);
+    sf::Text menuText("NACISNIJ ENTER", font, 18);
     menuText.setFillColor(sf::Color::White);
 
-    
     float width1 = TitleText.getLocalBounds().width;
-    TitleText.setPosition((720.0f-width1)/2.0f, 50.0f);
+    TitleText.setPosition((720.0f - width1) / 2.0f, 50.0f);
 
     float width2 = TitleText2.getLocalBounds().width;
-    TitleText2.setPosition((720.0f-width2)/2.0f, 80.0f);
+    TitleText2.setPosition((720.0f - width2) / 2.0f, 80.0f);
 
     float width3 = menuText.getLocalBounds().width;
-    menuText.setPosition((720.0f-width3)/2.0f, 400.0f);
+    menuText.setPosition((720.0f - width3) / 2.0f, 400.0f);
 
     std::vector<Game*> worldObjects;
-
     sf::Clock clock;
 
     while(window.isOpen())
     {
         float deltaTime = clock.restart().asSeconds();
         sf::Event event;
-
-        sf::Vector2f oldPlayerPos(0.0f,0.0f);
-
-        if(player != nullptr)
-        {
-            oldPlayerPos = player -> getPosition();
-        }
 
         while(window.pollEvent(event))
         {
@@ -260,11 +248,11 @@ int main()
             {
                 if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
                 {
-                    std::cout<<"Gracz wcisnal Enter. Ladowanie gry ...\n";
+                    std::cout << "Gracz wcisnal Enter. Ladowanie gry ...\n";
                     worldX = 1;
                     worldY = 4;
 
-                    Rooms(worldX,worldY, worldObjects, 340.0f, 240.0f);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -275,15 +263,20 @@ int main()
             }
         }
 
-            
-        for (auto& object : worldObjects)
+        sf::Vector2f oldPlayerPos(0.0f, 0.0f);
+        if(player != nullptr)
         {
-            object -> update();
+            oldPlayerPos = player->getPosition(); 
         }
 
-        if(currentState == GameState::Gameplay && player !=nullptr)
+        for (auto& object : worldObjects)
         {
-            sf::Vector2f playerPos = player -> getPosition();
+            object->update();
+        }
+
+        if(currentState == GameState::Gameplay && player != nullptr)
+        {
+            sf::Vector2f playerPos = player->getPosition();
 
             if(playerPos.x > 720.0f)
             {
@@ -294,19 +287,19 @@ int main()
                 }
                 else
                 {
-                    player -> setPosition(710.0f, playerPos.y);
+                    player->setPosition(710.0f, playerPos.y);
                 }
             }
             else if(playerPos.x < 0.0f)
             {
-                if(worldX - 1 >= 0 && worldMap[worldY][worldX-1] != nullptr)
+                if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
                     Rooms(worldX, worldY, worldObjects, 700.0f, playerPos.y);
                 }
                 else
                 {
-                    player -> setPosition(10.0f, playerPos.y);
+                    player->setPosition(10.0f, playerPos.y);
                 }
             }
             else if(playerPos.y > 528.0f)
@@ -314,11 +307,11 @@ int main()
                 if(worldY + 1 < 5 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX,worldY, worldObjects, playerPos.x,20.0f);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f);
                 }
                 else
                 {
-                    player -> setPosition(playerPos.x, 510.0f);
+                    player->setPosition(playerPos.x, 510.0f);
                 }
             }
             else if(playerPos.y < 0.0f)
@@ -326,19 +319,18 @@ int main()
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX,worldY,worldObjects,playerPos.x,500.0f);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f);
                 }
                 else 
                 {
-                    player -> setPosition(playerPos.x,10.0f);
+                    player->setPosition(playerPos.x, 10.0f);
                 }
             }
         }
 
-
-        if(currentState == GameState:: Gameplay && player != nullptr)
+        if(currentState == GameState::Gameplay && player != nullptr)
         {
-            sf::FloatRect playerBounds = player -> getBounds();
+            sf::FloatRect playerBounds = player->getBounds();
 
             for(auto& object : worldObjects)
             {
@@ -346,40 +338,66 @@ int main()
                 {
                     continue;
                 }
-                if(object -> isSolid())
+                if(object->isSolid())
                 {
-                    sf::FloatRect wallBounds = object -> getBounds();
+                    sf::FloatRect wallBounds = object->getBounds();
                     sf::FloatRect overlap;
 
-                    if(playerBounds.intersects(wallBounds,overlap))
+                    if(playerBounds.intersects(wallBounds, overlap)) 
                     {
-                        if(overlap.width < overlap.height)
+                        // 1. Logika historyczna wyliczana od razu po wykryciu przecięcia
+                        bool wasLeft   = (oldPlayerPos.x + playerBounds.width <= wallBounds.left);
+                        bool wasRight  = (oldPlayerPos.x >= wallBounds.left + wallBounds.width);
+                        bool wasTop    = (oldPlayerPos.y + playerBounds.height <= wallBounds.top);
+                        bool wasBottom = (oldPlayerPos.y >= wallBounds.top + wallBounds.height);
+
+                        if(wasLeft && !wasTop && !wasBottom)
                         {
-                            if(playerBounds.left < wallBounds.left)
-                            {
-                                player -> setPosition(playerBounds.left - overlap.width, playerBounds.top);
-                            }
-                            else
-                            {
-                                player -> setPosition(playerBounds.left + overlap.width, playerBounds.top);
-                            }
+                            player->setPosition(wallBounds.left - playerBounds.width, playerBounds.top);
+                        }
+                        else if (wasRight && !wasBottom && !wasTop)
+                        {
+                            player->setPosition(wallBounds.left + wallBounds.width, playerBounds.top);
+                        }
+                        else if (wasTop && !wasLeft && !wasRight)
+                        {
+                            player->setPosition(playerBounds.left, wallBounds.top - playerBounds.height);
+                        }
+                        else if (wasBottom && !wasLeft && !wasRight)
+                        {
+                            player->setPosition(playerBounds.left, wallBounds.top + wallBounds.height);
                         }
                         else
                         {
-                            if(playerBounds.top < wallBounds.top)
+                            // 2. Koło ratunkowe (fallback), kiedy Link wejdzie idealnie w róg kafelka pod skosem
+                            if(overlap.width < overlap.height)
                             {
-                                player -> setPosition(playerBounds.left, playerBounds.top - overlap.height);
+                                if(playerBounds.left + (playerBounds.width / 2.0f) < wallBounds.left + (wallBounds.width / 2.0f))
+                                {
+                                    player->setPosition(wallBounds.left - playerBounds.width, playerBounds.top);
+                                }
+                                else
+                                {
+                                    player->setPosition(wallBounds.left + wallBounds.width, playerBounds.top);
+                                }
                             }
                             else
                             {
-                                player -> setPosition(playerBounds.left, playerBounds.top + overlap.height);
+                                if(playerBounds.top + (playerBounds.height / 2.0f) < wallBounds.top + (wallBounds.height / 2.0f))
+                                {
+                                    player->setPosition(playerBounds.left, wallBounds.top - playerBounds.height);
+                                }
+                                else
+                                {
+                                    player->setPosition(playerBounds.left, wallBounds.top + wallBounds.height);
+                                }
                             }
                         }
+                        playerBounds = player->getBounds();
                     }
                 }
             }
         }
-        
         
         window.clear(sf::Color::Black);
 
@@ -391,10 +409,9 @@ int main()
         }
         else if(currentState == GameState::Gameplay)
         {
-            
             for(auto& object : worldObjects)
             {
-                object -> draw(window);
+                object->draw(window);
             }
         }
         window.display();

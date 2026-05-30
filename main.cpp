@@ -18,13 +18,13 @@ Link* player = nullptr;
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
 const char room2[11][15]=
@@ -33,17 +33,126 @@ const char room2[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','#','#','#','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 
 };
+const char room3[11][15]=
+{
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+};
+const char room4[11][15]=
+{
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+};
+const char room5[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room6[11][15]=
+{
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+};
+const char room7[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+};
+const char room8[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room9[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
 
-void Rooms(int roomNumber, std::vector<Game*>& wordlObjects)
+
+
+const char (*worldMap[5][5])[15]=
+{
+    {room9,room8,room7,nullptr,nullptr},
+    {nullptr,nullptr,room6,room5,nullptr},
+    {nullptr,nullptr,room4,nullptr,nullptr},
+    {nullptr,nullptr,room3,nullptr,nullptr},
+    {nullptr,room1,room2,nullptr,nullptr},
+};
+
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY)
 {
     player =nullptr;
 
@@ -55,31 +164,27 @@ void Rooms(int roomNumber, std::vector<Game*>& wordlObjects)
     wordlObjects.clear();
 
 
-    const char (*selectedRoom)[15];
-    if(roomNumber == 1)
-    {
-        selectedRoom = room1;
-    }
-    else if(roomNumber == 2)
-    {
-        selectedRoom = room2;
-    }
-    else
+    const char (*selectedRoom)[15] = worldMap[wy][wx];
+
+    if(selectedRoom == nullptr)
     {
         return;
     }
+
+    float rozmiar_kafelka = 48.0f;
+
 
     for(int row = 0;row<11;++row)
     {
         for(int col=0;col<15;++col)
         {
-            float posX = col * 48.0f;
-            float posY = row * 48.0f;
+            float posX = col * rozmiar_kafelka;
+            float posY = row * rozmiar_kafelka;
 
 
             if(selectedRoom[row][col] == '#')
-            {
-                wordlObjects.push_back(new Background("/Users/oskar/SFML/ZELDA/drzewa.png",posX, posY, true));
+            {   
+                wordlObjects.push_back(new Background("drzewa.png",posX, posY, true));
             }
             else if(selectedRoom[row][col] == 'F')
             {
@@ -87,7 +192,7 @@ void Rooms(int roomNumber, std::vector<Game*>& wordlObjects)
             }
         }
     }
-    player = new Link(340.0f, 240.0f);
+    player = new Link(startX, startY);
      wordlObjects.push_back(player);
 
 }
@@ -99,7 +204,9 @@ int main()
     window.setFramerateLimit(60);
 
     GameState currentState = GameState::MainMenu;
-    int currentRoom = 1;
+    int worldX = 1;
+    int worldY = 4;
+
 
     sf::Font font;
     if(!font.loadFromFile("Triforce-y07d.ttf"))
@@ -126,7 +233,7 @@ int main()
     float width3 = menuText.getLocalBounds().width;
     menuText.setPosition((720.0f-width3)/2.0f, 400.0f);
 
-    std::vector<Game*> wordlObjects;
+    std::vector<Game*> worldObjects;
 
     sf::Clock clock;
 
@@ -134,6 +241,13 @@ int main()
     {
         float deltaTime = clock.restart().asSeconds();
         sf::Event event;
+
+        sf::Vector2f oldPlayerPos(0.0f,0.0f);
+
+        if(player != nullptr)
+        {
+            oldPlayerPos = player -> getPosition();
+        }
 
         while(window.pollEvent(event))
         {
@@ -147,13 +261,14 @@ int main()
                 if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
                 {
                     std::cout<<"Gracz wcisnal Enter. Ladowanie gry ...\n";
-                    currentRoom = 1;
-                    Rooms(currentRoom,wordlObjects);
+                    worldX = 1;
+                    worldY = 4;
+
+                    Rooms(worldX,worldY, worldObjects, 340.0f, 240.0f);
                     currentState = GameState::Gameplay;
                 }
             }
 
-            
             if(currentState == GameState::Gameplay && player != nullptr)
             {
                 player->handleEvents(event); 
@@ -161,7 +276,7 @@ int main()
         }
 
             
-        for (auto& object : wordlObjects)
+        for (auto& object : worldObjects)
         {
             object -> update();
         }
@@ -170,19 +285,98 @@ int main()
         {
             sf::Vector2f playerPos = player -> getPosition();
 
-            if(currentRoom == 1 && playerPos.y > 528.0f)
+            if(playerPos.x > 720.0f)
             {
-                currentRoom = 2;
-                Rooms(currentRoom,wordlObjects);
-
-                player -> setPosition(playerPos.x,10.0f);
+                if(worldX + 1 < 5 && worldMap[worldY][worldX + 1] != nullptr)
+                {
+                    worldX++;
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y);
+                }
+                else
+                {
+                    player -> setPosition(710.0f, playerPos.y);
+                }
             }
-            else if(currentRoom == 2&& playerPos.y<0.0f)
+            else if(playerPos.x < 0.0f)
             {
-                currentRoom = 1;
-                Rooms(currentRoom, wordlObjects);
+                if(worldX - 1 >= 0 && worldMap[worldY][worldX-1] != nullptr)
+                {
+                    worldX--;
+                    Rooms(worldX, worldY, worldObjects, 700.0f, playerPos.y);
+                }
+                else
+                {
+                    player -> setPosition(10.0f, playerPos.y);
+                }
+            }
+            else if(playerPos.y > 528.0f)
+            {
+                if(worldY + 1 < 5 && worldMap[worldY + 1][worldX] != nullptr)
+                {
+                    worldY++;
+                    Rooms(worldX,worldY, worldObjects, playerPos.x,20.0f);
+                }
+                else
+                {
+                    player -> setPosition(playerPos.x, 510.0f);
+                }
+            }
+            else if(playerPos.y < 0.0f)
+            {
+                if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
+                {
+                    worldY--;
+                    Rooms(worldX,worldY,worldObjects,playerPos.x,500.0f);
+                }
+                else 
+                {
+                    player -> setPosition(playerPos.x,10.0f);
+                }
+            }
+        }
 
-                player -> setPosition(playerPos.x,528.0f-48.0f);
+
+        if(currentState == GameState:: Gameplay && player != nullptr)
+        {
+            sf::FloatRect playerBounds = player -> getBounds();
+
+            for(auto& object : worldObjects)
+            {
+                if(object == player)
+                {
+                    continue;
+                }
+                if(object -> isSolid())
+                {
+                    sf::FloatRect wallBounds = object -> getBounds();
+                    sf::FloatRect overlap;
+
+                    if(playerBounds.intersects(wallBounds,overlap))
+                    {
+                        if(overlap.width < overlap.height)
+                        {
+                            if(playerBounds.left < wallBounds.left)
+                            {
+                                player -> setPosition(playerBounds.left - overlap.width, playerBounds.top);
+                            }
+                            else
+                            {
+                                player -> setPosition(playerBounds.left + overlap.width, playerBounds.top);
+                            }
+                        }
+                        else
+                        {
+                            if(playerBounds.top < wallBounds.top)
+                            {
+                                player -> setPosition(playerBounds.left, playerBounds.top - overlap.height);
+                            }
+                            else
+                            {
+                                player -> setPosition(playerBounds.left, playerBounds.top + overlap.height);
+                            }
+                        }
+                    }
+                }
             }
         }
         
@@ -198,7 +392,7 @@ int main()
         else if(currentState == GameState::Gameplay)
         {
             
-            for(auto& object : wordlObjects)
+            for(auto& object : worldObjects)
             {
                 object -> draw(window);
             }
@@ -206,11 +400,11 @@ int main()
         window.display();
     }
 
-    for(auto& object : wordlObjects)
+    for(auto& object : worldObjects)
     {
         delete object;
     }
-    wordlObjects.clear();
+    worldObjects.clear();
 
     return 0;
 }

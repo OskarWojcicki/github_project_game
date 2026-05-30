@@ -7,6 +7,10 @@ class Game
     virtual void update()=0;
     virtual void draw(sf::RenderWindow &window)=0;
     virtual sf::FloatRect getBounds() =0;
+    virtual bool isSolid() const 
+    {
+        return false;
+    }
 
     virtual ~Game() {}
 };

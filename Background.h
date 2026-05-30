@@ -53,4 +53,8 @@ class Background : public Game
     {
         return isWall;
     }
+    bool isSolid() const override
+    {
+        return isWall;
+    }
 };

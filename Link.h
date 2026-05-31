@@ -38,7 +38,7 @@ class Link : public Character
         }
     }
 
-    void update() override
+    void update(float deltaTime) override
     {
         sf::Vector2f movement(0.0f, 0.0f);
 
@@ -62,7 +62,7 @@ class Link : public Character
             movement.x += speed;
         }
 
-        shape.move(movement * (1.0f / 60.0f));
+        shape.move(movement * deltaTime);
     }
 
     sf::Vector2f getPosition() const

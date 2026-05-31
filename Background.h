@@ -37,7 +37,7 @@ class Background : public Game
         }
     }
 
-    void update() override {}
+    void update(float deltaTime) override {}
 
     void draw(sf::RenderWindow &window) override
     {

@@ -16,7 +16,7 @@ class Character :public Game
         shape.setPosition(x,y);
     }
 
-    void update() override = 0;
+    void update(float deltaTime) override = 0;
     
     void draw(sf::RenderWindow &window) override
     {

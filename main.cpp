@@ -271,7 +271,7 @@ int main()
 
         for (auto& object : worldObjects)
         {
-            object->update();
+            object->update(deltaTime);
         }
 
         if(currentState == GameState::Gameplay && player != nullptr)

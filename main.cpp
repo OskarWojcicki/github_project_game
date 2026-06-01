@@ -345,7 +345,6 @@ int main()
 
                     if(playerBounds.intersects(wallBounds, overlap)) 
                     {
-                        // 1. Logika historyczna wyliczana od razu po wykryciu przecięcia
                         bool wasLeft   = (oldPlayerPos.x + playerBounds.width <= wallBounds.left);
                         bool wasRight  = (oldPlayerPos.x >= wallBounds.left + wallBounds.width);
                         bool wasTop    = (oldPlayerPos.y + playerBounds.height <= wallBounds.top);
@@ -369,7 +368,6 @@ int main()
                         }
                         else
                         {
-                            // 2. Koło ratunkowe (fallback), kiedy Link wejdzie idealnie w róg kafelka pod skosem
                             if(overlap.width < overlap.height)
                             {
                                 if(playerBounds.left + (playerBounds.width / 2.0f) < wallBounds.left + (wallBounds.width / 2.0f))

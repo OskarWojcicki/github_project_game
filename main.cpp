@@ -126,7 +126,7 @@ const char room8[11][15]=
     {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
     {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
     {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},  
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
@@ -290,6 +290,7 @@ int main()
                     player->setPosition(710.0f, playerPos.y);
                 }
             }
+            
             else if(playerPos.x < 0.0f)
             {
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
@@ -368,6 +369,7 @@ int main()
                         }
                         else
                         {
+                            
                             if(overlap.width < overlap.height)
                             {
                                 if(playerBounds.left + (playerBounds.width / 2.0f) < wallBounds.left + (wallBounds.width / 2.0f))

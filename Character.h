@@ -40,4 +40,13 @@ class Character :public Game
     {
         return shape.getGlobalBounds();
     }  
+    sf::Vector2f getPosition()
+    {
+        return shape.getPosition();
+    }
+
+    void setPosition(float x, float y)
+    {
+        shape.setPosition(x, y);
+    }
 };

@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Background.h"
 #include "Link.h"
+#include "Enemies.h"
 
 enum class GameState
 {
@@ -194,6 +195,13 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
     player = new Link(startX, startY);
     wordlObjects.push_back(player);
+
+
+    wordlObjects.push_back(new Moblin(100.0f, 100.0f));
+    wordlObjects.push_back(new Slime(600.0f, 400.0f));
+    wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
+
+
 }
 
 int main()
@@ -269,13 +277,24 @@ int main()
             oldPlayerPos = player->getPosition(); 
         }
 
-        for (auto& object : worldObjects)
-        {
-            object->update(deltaTime);
-        }
+
+// --- NOWY, POPRAWIONY KOD AKTUALIZACJI W MAIN.CPP ---
+for (size_t i = 0; i < worldObjects.size(); ++i)
+{
+    Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
+    if (enemy != nullptr)
+    {
+        enemy->updateEnemyAI(worldObjects, deltaTime);
+    }
+    else
+    {
+        worldObjects[i]->update(deltaTime);
+    }
+}
 
         if(currentState == GameState::Gameplay && player != nullptr)
         {
+
             sf::Vector2f playerPos = player->getPosition();
 
             if(playerPos.x > 720.0f)
@@ -346,6 +365,7 @@ int main()
 
                     if(playerBounds.intersects(wallBounds, overlap)) 
                     {
+
                         bool wasLeft   = (oldPlayerPos.x + playerBounds.width <= wallBounds.left);
                         bool wasRight  = (oldPlayerPos.x >= wallBounds.left + wallBounds.width);
                         bool wasTop    = (oldPlayerPos.y + playerBounds.height <= wallBounds.top);
@@ -369,7 +389,7 @@ int main()
                         }
                         else
                         {
-                            
+
                             if(overlap.width < overlap.height)
                             {
                                 if(playerBounds.left + (playerBounds.width / 2.0f) < wallBounds.left + (wallBounds.width / 2.0f))
@@ -391,9 +411,70 @@ int main()
                                 {
                                     player->setPosition(playerBounds.left, wallBounds.top + wallBounds.height);
                                 }
+
                             }
                         }
                         playerBounds = player->getBounds();
+                    }
+                }
+            }
+        }
+// 2. POPRAWIONE KOLIZJE DLA WROGÓW W MAIN.CPP
+        if(currentState == GameState::Gameplay)
+        {
+            for (auto& obj : worldObjects)
+            {
+                // ZABEZPIECZENIE GRACZA: Jeśli ten obiekt to gracz, ignorujemy go!
+                if (obj == player) continue;
+
+                Enemy* enemy = dynamic_cast<Enemy*>(obj);
+                if (enemy != nullptr)
+                {
+                    sf::FloatRect enemyBounds = enemy->getBounds();
+
+                    for (auto& object : worldObjects)
+                    {
+                        if (object == enemy) continue;
+
+                        if (object->isSolid()) 
+                        {
+                            sf::FloatRect wallBounds = object->getBounds();
+                            sf::FloatRect overlap;
+
+                            if (enemyBounds.intersects(wallBounds, overlap))
+                            {
+                                if (overlap.width < overlap.height)
+                                {
+                                    // KOLIZJA BOCZNA (Oś X)
+                                    if (enemyBounds.left < wallBounds.left)
+                                    {
+                                        // Odepchnięcie w lewo + margines 1.5f przeciw przyklejaniu
+                                        enemy->setPosition(wallBounds.left - enemyBounds.width - 1.5f, enemy->getPosition().y);
+                                    }
+                                    else
+                                    {
+                                        // Odepchnięcie w prawo + margines 1.5f przeciw przyklejaniu
+                                        enemy->setPosition(wallBounds.left + wallBounds.width + 1.5f, enemy->getPosition().y);
+                                    }
+                                }
+                                else
+                                {
+                                    // KOLIZJA PIONOWA (Oś Y)
+                                    if (enemyBounds.top < wallBounds.top)
+                                    {
+                                        // Odepchnięcie w górę
+                                        enemy->setPosition(enemy->getPosition().x, wallBounds.top - enemyBounds.height - 1.5f);
+                                    }
+                                    else
+                                    {
+                                        // Odepchnięcie w dół
+                                        enemy->setPosition(enemy->getPosition().x, wallBounds.top + wallBounds.height + 1.5f);
+                                    }
+                                }
+                                // Aktualizujemy granice do kolejnych sprawdzeń
+                                enemyBounds = enemy->getBounds();
+                            }
+                        }
                     }
                 }
             }

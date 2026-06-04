@@ -11,12 +11,30 @@ class Link : public Character
     bool move_down=false;
     bool move_left=false;
     bool move_right=false;
+    bool patrzy_wLewo=false;
+    
+
+    sf::Texture texture_down;
+    sf::Texture texture_up;
+    sf::Texture texture_sides;
 
     public:
-    Link(float x, float y): Character(x, y, 3, 400.0f)
+    Link(float x, float y): Character(x, y, 3, 100.0f)
     {
-        shape.setSize(sf::Vector2f(40.0f,40.0f));
+        shape.setSize(sf::Vector2f(48.0f,48.0f));
         shape.setFillColor(sf::Color::Green);
+
+        if(!texture_down.loadFromFile("chodzenie_down.png") || !texture_up.loadFromFile("chodzenie_up.png") || !texture_sides.loadFromFile("chodzenie_sides.png"))
+        {
+            std::cout<<"Blad w czytywaniu postaci"<<std::endl;
+        }
+        sprite.setTexture(texture_down);
+
+        klatkaStruktura = sf::IntRect(0,0,szerokosc_klatki,wysokosc_klatki);
+        sprite.setTextureRect(klatkaStruktura);
+        sprite.setOrigin(szerokosc_klatki/2.0f, wysokosc_klatki/2.0f);
+
+        sprite.setScale(2.0f,2.0f);
     }
 
     void handleEvents(sf::Event& event)
@@ -38,31 +56,71 @@ class Link : public Character
         }
     }
 
-    void update() override
+    void update(float deltaTime) override
     {
         sf::Vector2f movement(0.0f, 0.0f);
-
+        bool czy_w_ruchu = false;
+        
         if(move_up)
         {
             movement.y -= speed;
+            sprite.setTexture(texture_up);
+            czy_w_ruchu=true;
         }
 
         if(move_down)
         {
             movement.y += speed;
+            sprite.setTexture(texture_down);
+            czy_w_ruchu=true;
         }    
 
         if(move_left)
         {
             movement.x -= speed;
+            sprite.setTexture(texture_sides);
+            patrzy_wLewo=true;
+            czy_w_ruchu=true;
         }
 
         if(move_right)
         {
             movement.x += speed;
+            sprite.setTexture(texture_sides);
+            patrzy_wLewo=false;
+            czy_w_ruchu=true;
         }
 
-        shape.move(movement * (1.0f / 60.0f));
+        shape.move(movement * deltaTime);
+
+        if(czy_w_ruchu)
+        {
+            licznikCzasu+=deltaTime*1.45f;
+            if(licznikCzasu>=czasKlatki)
+            {
+                licznikCzasu = 0.0f;
+                aktualnaKlatka = (static_cast<int>(aktualnaKlatka)+1)%10;
+            }
+        }
+        else
+        {
+            aktualnaKlatka = 0.0f;
+        }
+
+        klatkaStruktura.top =  0;
+        
+        if(patrzy_wLewo && sprite.getTexture()==&texture_sides)
+        {
+            klatkaStruktura.left = (static_cast<int>(aktualnaKlatka)*szerokosc_klatki*0.98f) + szerokosc_klatki;
+            klatkaStruktura.width = -szerokosc_klatki;
+        }
+        else
+        {
+            klatkaStruktura.left = static_cast<int>(aktualnaKlatka) * szerokosc_klatki*0.98f;
+            klatkaStruktura.width = szerokosc_klatki;
+        }
+        sprite.setTextureRect(klatkaStruktura);
+        sprite.setPosition(shape.getPosition().x + (shape.getSize().x / 2.0f), shape.getPosition().y + (shape.getSize().y / 2.0f));
     }
 
     sf::Vector2f getPosition() const
@@ -73,5 +131,6 @@ class Link : public Character
     void setPosition(float x, float y)
     {
         shape.setPosition(x, y);
+        sprite.setPosition(x + (shape.getSize().x / 2.0f), y + (shape.getSize().y / 2.0f));    
     }   
 };

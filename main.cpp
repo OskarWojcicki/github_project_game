@@ -127,7 +127,7 @@ const char room8[11][15]=
     {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
     {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
     {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},  
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
@@ -196,9 +196,12 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     player = new Link(startX, startY);
     wordlObjects.push_back(player);
 
+
     wordlObjects.push_back(new Moblin(100.0f, 100.0f));
     wordlObjects.push_back(new Slime(600.0f, 400.0f));
     wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
+
+
 }
 
 int main()
@@ -274,25 +277,24 @@ int main()
             oldPlayerPos = player->getPosition(); 
         }
 
-// NOWY KOD W MAIN.CPP:
+
+// --- NOWY, POPRAWIONY KOD AKTUALIZACJI W MAIN.CPP ---
 for (size_t i = 0; i < worldObjects.size(); ++i)
 {
-    // Próbujemy rzutować obiekt na klasę Enemy
     Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
     if (enemy != nullptr)
     {
-        // Jeśli to wróg, wywołujemy nową wersję z parametrem
-        enemy->update(worldObjects);
+        enemy->updateEnemyAI(worldObjects, deltaTime);
     }
     else
     {
-        // Dla Linka i kafelków tła odpalamy standardowe update
-        worldObjects[i]->update();
+        worldObjects[i]->update(deltaTime);
     }
 }
 
         if(currentState == GameState::Gameplay && player != nullptr)
         {
+
             sf::Vector2f playerPos = player->getPosition();
 
             if(playerPos.x > 720.0f)
@@ -307,6 +309,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                     player->setPosition(710.0f, playerPos.y);
                 }
             }
+            
             else if(playerPos.x < 0.0f)
             {
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
@@ -362,7 +365,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
 
                     if(playerBounds.intersects(wallBounds, overlap)) 
                     {
-                        // 1. Logika historyczna wyliczana od razu po wykryciu przecięcia
+
                         bool wasLeft   = (oldPlayerPos.x + playerBounds.width <= wallBounds.left);
                         bool wasRight  = (oldPlayerPos.x >= wallBounds.left + wallBounds.width);
                         bool wasTop    = (oldPlayerPos.y + playerBounds.height <= wallBounds.top);
@@ -386,7 +389,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                         }
                         else
                         {
-                            // 2. Koło ratunkowe (fallback), kiedy Link wejdzie idealnie w róg kafelka pod skosem
+
                             if(overlap.width < overlap.height)
                             {
                                 if(playerBounds.left + (playerBounds.width / 2.0f) < wallBounds.left + (wallBounds.width / 2.0f))
@@ -408,6 +411,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                                 {
                                     player->setPosition(playerBounds.left, wallBounds.top + wallBounds.height);
                                 }
+
                             }
                         }
                         playerBounds = player->getBounds();
@@ -415,12 +419,12 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-if(currentState == GameState::Gameplay)
+// 2. POPRAWIONE KOLIZJE DLA WROGÓW W MAIN.CPP
+        if(currentState == GameState::Gameplay)
         {
             for (auto& obj : worldObjects)
             {
-                // KLUCZOWE ZABEZPIECZENIE: Gracz nie jest wrogiem. 
-                // Pomijamy go, żeby ta pętla nie psuła kolizji gracza!
+                // ZABEZPIECZENIE GRACZA: Jeśli ten obiekt to gracz, ignorujemy go!
                 if (obj == player) continue;
 
                 Enemy* enemy = dynamic_cast<Enemy*>(obj);
@@ -441,15 +445,15 @@ if(currentState == GameState::Gameplay)
                             {
                                 if (overlap.width < overlap.height)
                                 {
-                                    // KOLIZJA BOCZNA (Oś X) - Porównujemy sztywne krawędzie klocków
+                                    // KOLIZJA BOCZNA (Oś X)
                                     if (enemyBounds.left < wallBounds.left)
                                     {
-                                        // Wróg jest po lewej stronie ściany -> cofnij w lewo i dodaj margines 1.5f przeciw przyklejaniu
+                                        // Odepchnięcie w lewo + margines 1.5f przeciw przyklejaniu
                                         enemy->setPosition(wallBounds.left - enemyBounds.width - 1.5f, enemy->getPosition().y);
                                     }
                                     else
                                     {
-                                        // Wróg jest po prawej stronie ściany -> cofnij w prawo i dodaj margines 1.5f przeciw przyklejaniu
+                                        // Odepchnięcie w prawo + margines 1.5f przeciw przyklejaniu
                                         enemy->setPosition(wallBounds.left + wallBounds.width + 1.5f, enemy->getPosition().y);
                                     }
                                 }
@@ -458,16 +462,16 @@ if(currentState == GameState::Gameplay)
                                     // KOLIZJA PIONOWA (Oś Y)
                                     if (enemyBounds.top < wallBounds.top)
                                     {
-                                        // Wróg jest nad ścianą -> cofnij w górę
+                                        // Odepchnięcie w górę
                                         enemy->setPosition(enemy->getPosition().x, wallBounds.top - enemyBounds.height - 1.5f);
                                     }
                                     else
                                     {
-                                        // Wróg jest pod ścianą -> cofnij w dół
+                                        // Odepchnięcie w dół
                                         enemy->setPosition(enemy->getPosition().x, wallBounds.top + wallBounds.height + 1.5f);
                                     }
                                 }
-                                // Natychmiast odświeżamy granice wroga, by kolejne kafelki nie przetwarzały nieaktualnej pozycji
+                                // Aktualizujemy granice do kolejnych sprawdzeń
                                 enemyBounds = enemy->getBounds();
                             }
                         }

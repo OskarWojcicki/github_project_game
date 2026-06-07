@@ -41,7 +41,7 @@ class Background : public Game
 
     void draw(sf::RenderWindow &window) override
     {
-        window.draw(shape);
+        window.draw(sprite);
     }
     
     sf::FloatRect getBounds() override 

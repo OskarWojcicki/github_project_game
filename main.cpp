@@ -3,6 +3,7 @@
 #include "Background.h"
 #include "Link.h"
 #include "Enemies.h"
+#include "Chest.h"
 
 enum class GameState
 {
@@ -76,15 +77,15 @@ const char room4[11][15]=
 const char room5[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','C','C','C','C','C','C','C','C','C','C','C','C','C','#'},
+    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'S','S','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'S','S','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'S','S','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
+    {'#','C','C','C','C','C','C','C','C','C','C','C','C','C','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
@@ -191,18 +192,51 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
             {
                 wordlObjects.push_back(new Background("floor1.png", posX, posY, false));
             }
+            else if(selectedRoom[row][col] == 'S')
+            {
+                wordlObjects.push_back(new Background("floor2.png", posX,posY,false));
+            }
+            else if(selectedRoom[row][col] == 'C')
+            {
+                wordlObjects.push_back(new Background("cien.png", posX,posY,false));
+            }
         }
     }
     player = new Link(startX, startY);
     wordlObjects.push_back(player);
 
-
-    wordlObjects.push_back(new Moblin(100.0f, 100.0f));
+    if(selectedRoom==room2)
+    {
     wordlObjects.push_back(new Slime(600.0f, 400.0f));
+    wordlObjects.push_back(new Slime(600.0f, 200.0f));
+    }
+    if(selectedRoom==room5)
+    {
+    wordlObjects.push_back(new Chest(336.0f, 240.0f, "SWORD"));
+    }
+    if(selectedRoom==room3)
+    {
+    wordlObjects.push_back(new Slime(600.0f, 400.0f));
+    wordlObjects.push_back(new Slime(600.0f, 200.0f));
+    wordlObjects.push_back(new Slime(300.0f, 200.0f));
+    }
+    if(selectedRoom==room7)
+    {
+    wordlObjects.push_back(new Moblin(100.0f, 100.0f));
     wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
+    }
+    if(selectedRoom==room8)
+    {
+    wordlObjects.push_back(new Moblin(100.0f, 400.0f));
+    wordlObjects.push_back(new Moblin(100.0f, 300.0f));
+    wordlObjects.push_back(new Moblin(100.0f, 200.0f));
+
+    }
+    
 
 
 }
+
 
 int main()
 {
@@ -269,6 +303,37 @@ int main()
             {
                 player->handleEvents(event); 
             }
+
+
+            if(currentState==GameState::Gameplay && player != nullptr)
+            {
+            if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E)
+            {
+                sf::FloatRect playerBounds = player -> getBounds();
+
+                for(auto& obj : worldObjects)
+                {
+                    Chest* chest = dynamic_cast<Chest*>(obj);
+                    if(chest !=nullptr)
+                    {
+                        sf::FloatRect chestBounds = chest->getBounds();
+
+                        float dist = 10.0f;
+                        sf::FloatRect interactionZone(chestBounds.left - dist,chestBounds.top - dist, chestBounds.width + (dist*2), chestBounds.height + (dist*2));
+                        
+
+                        if(playerBounds.intersects(interactionZone))
+                        {
+                            chest -> interact(player);
+                            break;
+                        }
+                    }
+                }
+            }
+            }
+
+            
+            
         }
 
         sf::Vector2f oldPlayerPos(0.0f, 0.0f);
@@ -479,7 +544,8 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-        
+
+
         window.clear(sf::Color::Black);
 
         if(currentState == GameState::MainMenu)

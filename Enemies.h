@@ -105,7 +105,7 @@ protected:
 class Moblin : public Enemy
 {
 public:
-    Moblin(float x, float y) : Enemy(x, y, 80.0f)
+    Moblin(float x, float y) : Enemy(x, y, 70.0f)
     {
         this->shape.setFillColor(sf::Color(139, 69, 19));
     }
@@ -122,7 +122,7 @@ public:
 class Slime : public Enemy
 {
 public:
-    Slime(float x, float y) : Enemy(x, y, 80.0f)
+    Slime(float x, float y) : Enemy(x, y, 50.0f)
     {
         this->shape.setFillColor(sf::Color(128, 0, 128));
     }
@@ -201,4 +201,7 @@ public:
             shootClock.restart();
         }
     }
+
+    
 };
+

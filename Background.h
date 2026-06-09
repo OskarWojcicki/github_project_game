@@ -1,23 +1,24 @@
 #include <iostream>
+#include <SFML/Graphics.hpp>
 #include "Game.h"
+
 
 class Background : public Game
 {
     private:
     sf::Sprite sprite;
-    sf::Texture texture;
     sf::RectangleShape shape;
     bool isWall;
 
     public:
     
-    Background(std::string texturePath, float x, float y, bool wall) : isWall(wall)
+    Background(const sf::Texture& tex, float x, float y, bool wall) : isWall(wall)
     {
-        if(!texture.loadFromFile(texturePath))
-        {
-            std::cout<<"Blad w ladowaniu grafiki!!!"<<std::endl;
-        }
-        sprite.setTexture(texture);
+        // if(!texture.loadFromFile(texturePath))
+        // {
+        //     std::cout<<"Blad w ladowaniu grafiki!!!"<<std::endl;
+        // }
+        sprite.setTexture(tex);
         sprite.setPosition(x,y);
 
         shape.setSize(sf::Vector2f(48.0f, 48.0f));

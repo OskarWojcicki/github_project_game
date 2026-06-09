@@ -25,7 +25,7 @@ class Link : public Character
         shape.setSize(sf::Vector2f(48.0f,48.0f));
         shape.setFillColor(sf::Color::Green);
 
-        if(!texture_down.loadFromFile("chodzenie_down.png") || !texture_up.loadFromFile("chodzenie_up.png") || !texture_sides.loadFromFile("chodzenie_sides.png"))
+        if(!texture_down.loadFromFile("grafiki/chodzenie_down.png") || !texture_up.loadFromFile("grafiki/chodzenie_up.png") || !texture_sides.loadFromFile("grafiki/chodzenie_sides.png"))
         {
             std::cout<<"Blad w czytywaniu postaci"<<std::endl;
         }

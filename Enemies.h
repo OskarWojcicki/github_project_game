@@ -78,7 +78,7 @@ public:
 
     void draw(sf::RenderWindow& window) override
     {
-        window.draw(this->shape);
+        window.draw(this->sprite);
     }
 
 protected:
@@ -121,16 +121,59 @@ public:
 // 2. Klasa Slime (Fioletowy kwadracik)
 class Slime : public Enemy
 {
+private:
+    float czasAnimacji = 0.0f;
+    int aktualna_klatka = 0;
+    const int iloscKlatek = 9;
+    const float czas_na_klatke = 0.15f;
+
 public:
-    Slime(float x, float y) : Enemy(x, y, 50.0f)
+    Slime(const sf::Texture& tex, float x, float y) : Enemy(x, y, 50.0f)
     {
         this->shape.setFillColor(sf::Color(128, 0, 128));
+        this->sprite.setTexture(tex);
+
+        int szerokosc_slima=32;
+        int wysokosc_slima=32;
+        
+        this->klatkaStruktura = sf::IntRect(0,0,szerokosc_slima,wysokosc_slima);
+        this->sprite.setTextureRect(this->klatkaStruktura);
+
+        this->sprite.setOrigin(szerokosc_slima/2.0f,wysokosc_slima/2.0f);
+        this->sprite.setScale(1.0f,1.0f);
+        this->sprite.setPosition(
+            this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
+            this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
+        );
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
         sf::Vector2f dir = getDirectionToPlayer();
         this->shape.move(dir * speed * deltaTime);
+
+
+        this->sprite.setPosition(
+            this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
+            this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
+        );
+
+        czasAnimacji += deltaTime;
+        if(czasAnimacji >= czas_na_klatke)
+        {
+            czasAnimacji = 0.0f;
+            aktualna_klatka++;
+
+            if(aktualna_klatka >= iloscKlatek)
+            {
+                aktualna_klatka=0;
+            }
+
+            int szerokosc_slima=32;
+
+            this->klatkaStruktura.left = aktualna_klatka*szerokosc_slima;
+            this -> sprite.setTextureRect(this -> klatkaStruktura);
+        }
     }
 };
 
@@ -201,4 +244,7 @@ public:
             shootClock.restart();
         }
     }
+
+    
 };
+

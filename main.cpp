@@ -4,16 +4,20 @@
 #include "Link.h"
 #include "Enemies.h"
 #include "Chest.h"
+#include "Ptaszek.h"
 
 enum class GameState
 {
     MainMenu,
     Gameplay,
-    GameOver
+    GameOver,
+    Kurtyna_lvl2,
 };
 
 Link* player = nullptr;
 
+
+//pokoje lvl 1
 const char room1[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -149,16 +153,151 @@ const char room9[11][15]=
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
-const char (*worldMap[5][5])[15]=
+//pokoje lvl 2
+const char room10[11][15]=
 {
-    {room9,room8,room7,nullptr,nullptr},
-    {nullptr,nullptr,room6,room5,nullptr},
-    {nullptr,nullptr,room4,nullptr,nullptr},
-    {nullptr,nullptr,room3,nullptr,nullptr},
-    {nullptr,room1,room2,nullptr,nullptr},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room11[11][15]=
+{
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room12[11][15]=
+{
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+};
+const char room13[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room14[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room15[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room16[11][15]=
+{
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+const char room17[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+};
+const char room18[11][15]=
+{
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
 };
 
-void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY)
+
+const char (*worldMap[10][10])[15]=
+{
+    {room9,   room8,   room7,   nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, room6,   room5,   nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, room4,   nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, room3,   nullptr, nullptr,  nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, room1,   room2,   nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+
+    {nullptr, nullptr, nullptr, room18, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, room17, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {room15, room14, room13, room16, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, room12, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
+};
+
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien, const sf::Texture& t_slime)
 {
     player = nullptr;
 
@@ -167,6 +306,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         delete object;
     }
     wordlObjects.clear();
+
 
     const char (*selectedRoom)[15] = worldMap[wy][wx];
 
@@ -186,19 +326,19 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
 
             if(selectedRoom[row][col] == '#')
             {   
-                wordlObjects.push_back(new Background("drzewa.png", posX, posY, true));
+                wordlObjects.push_back(new Background(t_drzewa, posX, posY, true));
             }
             else if(selectedRoom[row][col] == 'F')
             {
-                wordlObjects.push_back(new Background("floor1.png", posX, posY, false));
+                wordlObjects.push_back(new Background(t_floor1, posX, posY, false));
             }
             else if(selectedRoom[row][col] == 'S')
             {
-                wordlObjects.push_back(new Background("floor2.png", posX,posY,false));
+                wordlObjects.push_back(new Background(t_floor2, posX,posY,false));
             }
             else if(selectedRoom[row][col] == 'C')
             {
-                wordlObjects.push_back(new Background("cien.png", posX,posY,false));
+                wordlObjects.push_back(new Background(t_cien, posX,posY,false));
             }
         }
     }
@@ -207,18 +347,18 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
 
     if(selectedRoom==room2)
     {
-    wordlObjects.push_back(new Slime(600.0f, 400.0f));
-    wordlObjects.push_back(new Slime(600.0f, 200.0f));
+    wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
+    wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
     }
     if(selectedRoom==room5)
     {
-    wordlObjects.push_back(new Chest(336.0f, 240.0f, "SWORD"));
+    wordlObjects.push_back(new Chest(336.0f, 210.0f, "SWORD"));
     }
     if(selectedRoom==room3)
     {
-    wordlObjects.push_back(new Slime(600.0f, 400.0f));
-    wordlObjects.push_back(new Slime(600.0f, 200.0f));
-    wordlObjects.push_back(new Slime(300.0f, 200.0f));
+    wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
+    wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
+    wordlObjects.push_back(new Slime(t_slime, 300.0f, 200.0f));
     }
     if(selectedRoom==room7)
     {
@@ -230,11 +370,12 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     wordlObjects.push_back(new Moblin(100.0f, 400.0f));
     wordlObjects.push_back(new Moblin(100.0f, 300.0f));
     wordlObjects.push_back(new Moblin(100.0f, 200.0f));
-
     }
-    
-
-
+    if(selectedRoom==room9)
+    {
+        //tu dodać bosa i wywalić moba przykładowego
+        wordlObjects.push_back(new Skieleton(336.0f,240.0f));
+    }
 }
 
 
@@ -243,14 +384,26 @@ int main()
     sf::RenderWindow window(sf::VideoMode(720, 528), "The legend of Zelda");
     window.setFramerateLimit(60);
 
+    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime;
+    if (!tex_drzewa.loadFromFile("grafiki/drzewa.png") ||
+        !tex_floor1.loadFromFile("grafiki/floor1.png") ||
+        !tex_floor2.loadFromFile("grafiki/floor2.png") ||
+        !tex_cien.loadFromFile("grafiki/cien.png") ||
+        !tex_slime.loadFromFile("grafiki/slime.png"))
+    {
+        std::cout << "!!! Blad w ladowaniu tekstur otoczenia !!!" << std::endl;
+    }
+
     GameState currentState = GameState::MainMenu;
     int worldX = 1;
     int worldY = 4;
 
+    sf::Clock transitionClock;
+
     sf::Font font;
     if(!font.loadFromFile("Triforce-y07d.ttf"))
     {
-        std::cout << "!!! Blad w ladowaniu trzcionki !!!" << std::endl;
+        std::cout << "!!! Blad w ladowaniu czcionki !!!" << std::endl;
     }
 
     sf::Text TitleText("The legends of", font, 30);
@@ -294,7 +447,7 @@ int main()
                     worldX = 1;
                     worldY = 4;
 
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -329,11 +482,29 @@ int main()
                         }
                     }
                 }
+                       if(worldX==0 && worldY==0)
+                {
+                    bool wrogowie_zyja=false;
+                    for(auto& obj : worldObjects)
+                    {
+                        if(dynamic_cast<Enemy*>(obj) != nullptr)
+                        {
+                            wrogowie_zyja = true;
+                            break;
+                        }
+                    }
+
+                    if(!wrogowie_zyja)
+                    {
+                        std::cout<<"Ptaszek zabierze Linka na LVL 2"<<std::endl;
+                        currentState = GameState::Kurtyna_lvl2;
+                        transitionClock.restart();
+                    }
+                }
             }
+            
             }
 
-            
-            
         }
 
         sf::Vector2f oldPlayerPos(0.0f, 0.0f);
@@ -341,6 +512,7 @@ int main()
         {
             oldPlayerPos = player->getPosition(); 
         }
+        
 
 
 // --- NOWY, POPRAWIONY KOD AKTUALIZACJI W MAIN.CPP ---
@@ -362,16 +534,16 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
 
             sf::Vector2f playerPos = player->getPosition();
 
-            if(playerPos.x > 720.0f)
+            if(playerPos.x > 690.0f)
             {
-                if(worldX + 1 < 5 && worldMap[worldY][worldX + 1] != nullptr)
+                if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime);
                 }
                 else
                 {
-                    player->setPosition(710.0f, playerPos.y);
+                    player->setPosition(690.0f, playerPos.y);
                 }
             }
             
@@ -380,7 +552,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 700.0f, playerPos.y);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime);
                 }
                 else
                 {
@@ -389,10 +561,10 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
             }
             else if(playerPos.y > 528.0f)
             {
-                if(worldY + 1 < 5 && worldMap[worldY + 1][worldX] != nullptr)
+                if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime);
                 }
                 else
                 {
@@ -404,7 +576,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime);
                 }
                 else 
                 {
@@ -544,6 +716,18 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
+        else if(currentState==GameState::Kurtyna_lvl2)
+        {
+            if(transitionClock.getElapsedTime().asSeconds() >= 1.5f)
+            {
+                worldX = 3;
+                worldY = 9;
+
+                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime);
+
+                currentState = GameState::Gameplay;
+            }
+        }
 
 
         window.clear(sf::Color::Black);
@@ -560,6 +744,10 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
             {
                 object->draw(window);
             }
+        }
+        else if(currentState == GameState::Kurtyna_lvl2)
+        {
+
         }
         window.display();
     }

@@ -18,7 +18,7 @@ private:
 public:
     Chest(float x, float y, std::string reward) : isOpened(false), reward_type(reward)
     {
-        if(!texture.loadFromFile("chest.png"))
+        if(!texture.loadFromFile("grafiki/chest.png"))
         {
             std::cout<<"Blad w ladowaniu skrzynek!!!"<<std::endl;
         }

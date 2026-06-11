@@ -718,6 +718,85 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
+// 3. LOGIKA WALKI: ZASIĘG GRACZA, ATAK POTWORÓW ORAZ POCISKI
+        if (currentState == GameState::Gameplay && player != nullptr)
+        {
+            sf::FloatRect playerBounds = player->getBounds();
+
+            // Hitbox ataku Linka
+            sf::FloatRect attackHitbox = playerBounds;
+            float attackRange = 25.0f; 
+
+            if (player->getIsAttacking())
+            {
+                sf::Vector2f dir = player->getFacingDirection();
+                if (dir.x > 0) attackHitbox.width += attackRange;          
+                else if (dir.x < 0) { attackHitbox.left -= attackRange; attackHitbox.width += attackRange; } 
+                else if (dir.y > 0) attackHitbox.height += attackRange;    
+                else if (dir.y < 0) { attackHitbox.top -= attackRange; attackHitbox.height += attackRange; } 
+            }
+
+            for (size_t i = 0; i < worldObjects.size(); ++i)
+            {
+                if (worldObjects[i] == player) continue;
+
+                // --- ROZPOZNANIE PRZECIWNIKA (Moblin, Slime, Skieleton) ---
+                Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
+                if (enemy != nullptr)
+                {
+                    sf::FloatRect enemyBounds = enemy->getBounds();
+
+                    if (player->getIsAttacking() && attackHitbox.intersects(enemyBounds))
+                    {
+                        sf::Vector2f knockbackDir = player->getFacingDirection();
+                        enemy->applyKnockback(knockbackDir, 600.0f); 
+                        std::cout << "Link slashed an enemy!\n";
+                    }
+                    else if (playerBounds.intersects(enemyBounds))
+                    {
+                        // OBLICZANIE KIERUNKU ODRZUTU DLA LINKA
+                        sf::Vector2f diff = player->getPosition() - enemy->getPosition();
+                        float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+                        if (length != 0.0f)
+                        {
+                            sf::Vector2f pushDir = diff / length;
+                            // PŁYNNY ODRZUT: Zamiast setPosition, dajemy impuls siły (np. 500.0f)
+                            player->applyKnockback(pushDir, 500.0f);
+                        }
+                        std::cout << "Link took contact damage!\n";
+                    }
+                    continue; 
+                }
+
+                // --- ROZPOZNANIE POCISKU SZKIELETA ---
+                Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]);
+                if (bullet != nullptr)
+                {
+                    sf::FloatRect bulletBounds = bullet->getBounds();
+
+                    if (playerBounds.intersects(bulletBounds))
+                    {
+                        sf::Vector2f bulletCenter(bulletBounds.left + bulletBounds.width/2.f, bulletBounds.top + bulletBounds.height/2.f);
+                        sf::Vector2f diff = player->getPosition() - bulletCenter;
+                        float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+                        if (length != 0.0f)
+                        {
+                            sf::Vector2f pushDir = diff / length;
+                            // PŁYNNY ODRZUT OD POCISKU: Zamiast setPosition, wywołujemy applyKnockback
+                            player->applyKnockback(pushDir, 400.0f);
+                        }
+
+                        std::cout << "Link got hit by a projectile!\n";
+
+                        // Bezpieczne czyszczenie pocisku
+                        delete worldObjects[i];
+                        worldObjects.erase(worldObjects.begin() + i);
+                        --i; 
+                    }
+                }
+            }
+        }
+        
         else if(currentState==GameState::Kurtyna_lvl2)
         {
             if(transitionClock.getElapsedTime().asSeconds() >= 1.5f)

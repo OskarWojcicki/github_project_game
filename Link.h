@@ -17,18 +17,20 @@ class Link : public Character
     bool isAttacking = false;
     sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f);
     float friction = 8.0f;
+    
+    bool interactPressed = false;
 
     sf::Texture texture_down;
     sf::Texture texture_up;
     sf::Texture texture_sides;
 
     public:
-    Link(float x, float y): Character(x, y, 3, 100.0f)
+    Link(float x, float y): Character(x, y, 3, 120.0f)
     {
         shape.setSize(sf::Vector2f(48.0f,48.0f));
         shape.setFillColor(sf::Color::Green);
 
-        if(!texture_down.loadFromFile("chodzenie_down.png") || !texture_up.loadFromFile("chodzenie_up.png") || !texture_sides.loadFromFile("chodzenie_sides.png"))
+        if(!texture_down.loadFromFile("grafiki/chodzenie_down.png") || !texture_up.loadFromFile("grafiki/chodzenie_up.png") || !texture_sides.loadFromFile("grafiki/chodzenie_sides.png"))
         {
             std::cout<<"Blad w czytywaniu postaci"<<std::endl;
         }
@@ -39,6 +41,7 @@ class Link : public Character
         sprite.setOrigin(szerokosc_klatki/2.0f, wysokosc_klatki/2.0f);
 
         sprite.setScale(2.0f,2.0f);
+
     }
 
     void handleEvents(sf::Event& event)
@@ -50,6 +53,7 @@ class Link : public Character
             if (event.key.code == sf::Keyboard::A) move_left = true;
             if (event.key.code == sf::Keyboard::D) move_right = true;
             if (event.key.code == sf::Keyboard::Space) isAttacking = true;
+            if (event.key.code == sf::Keyboard::E) interactPressed = true; 
         }
         
         if (event.type == sf::Event::KeyReleased)
@@ -59,6 +63,7 @@ class Link : public Character
             if (event.key.code == sf::Keyboard::A) move_left = false;
             if (event.key.code == sf::Keyboard::D) move_right = false;
             if (event.key.code == sf::Keyboard::Space) isAttacking = false;
+            if (event.key.code == sf::Keyboard::E) interactPressed = false;
         }
     }
 
@@ -165,4 +170,14 @@ class Link : public Character
     void applyKnockback(sf::Vector2f direction, float force) {
     recoilVelocity = direction * force;
 }
+
+    bool isInteractPressed() const
+    {
+        return interactPressed;
+    }
+
+    void resetInteractPressed()
+    {
+        interactPressed = false;
+    }
 };

@@ -81,7 +81,13 @@ public:
         window.draw(this->shape);
     }
 
+    void applyKnockback(sf::Vector2f direction, float force) {
+    recoilVelocity = direction * force;
+    }
+
 protected:
+    sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f); // Aktualna prędkość odrzutu
+    float friction = 8.0f;
     // Zwraca wektor ruchu W STRONĘ gracza
     sf::Vector2f getDirectionToPlayer()
     {
@@ -105,15 +111,34 @@ protected:
 class Moblin : public Enemy
 {
 public:
-    Moblin(float x, float y) : Enemy(x, y, 80.0f)
+    Moblin(float x, float y) : Enemy(x, y, 30.0f)
     {
         this->shape.setFillColor(sf::Color(139, 69, 19));
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
+// A. Jeśli potwór dostał cios i ma prędkość odrzutu – przesuń go siłą odrzutu
+    if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
+    {
+        this->shape.move(recoilVelocity * deltaTime);
+
+        // Wyhamowywanie odrzutu przez tarcie
+        recoilVelocity.x -= recoilVelocity.x * friction * deltaTime;
+        recoilVelocity.y -= recoilVelocity.y * friction * deltaTime;
+
+        // Jeśli odrzut jest już ledwo widoczny, zatrzymaj go całkowicie
+        if (std::sqrt(recoilVelocity.x * recoilVelocity.x + recoilVelocity.y * recoilVelocity.y) < 10.0f)
+        {
+            recoilVelocity = sf::Vector2f(0.0f, 0.0f);
+        }
+    }
+    // B. Jeśli nie ma odrzutu, potwór wykonuje swój normalny ruch w stronę gracza
+    else 
+    {
         sf::Vector2f dir = getDirectionToPlayer();
         this->shape.move(dir * speed * deltaTime);
+    }
     }
 };
 
@@ -122,15 +147,34 @@ public:
 class Slime : public Enemy
 {
 public:
-    Slime(float x, float y) : Enemy(x, y, 80.0f)
+    Slime(float x, float y) : Enemy(x, y, 30.0f)
     {
         this->shape.setFillColor(sf::Color(128, 0, 128));
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
+// A. Jeśli potwór dostał cios i ma prędkość odrzutu – przesuń go siłą odrzutu
+    if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
+    {
+        this->shape.move(recoilVelocity * deltaTime);
+
+        // Wyhamowywanie odrzutu przez tarcie
+        recoilVelocity.x -= recoilVelocity.x * friction * deltaTime;
+        recoilVelocity.y -= recoilVelocity.y * friction * deltaTime;
+
+        // Jeśli odrzut jest już ledwo widoczny, zatrzymaj go całkowicie
+        if (std::sqrt(recoilVelocity.x * recoilVelocity.x + recoilVelocity.y * recoilVelocity.y) < 10.0f)
+        {
+            recoilVelocity = sf::Vector2f(0.0f, 0.0f);
+        }
+    }
+    // B. Jeśli nie ma odrzutu, potwór wykonuje swój normalny ruch w stronę gracza
+    else 
+    {
         sf::Vector2f dir = getDirectionToPlayer();
         this->shape.move(dir * speed * deltaTime);
+    }
     }
 };
 
@@ -140,8 +184,6 @@ class Skieleton : public Enemy
 {
 private:
     sf::Clock shootClock;
-    sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f); // Aktualna prędkość odrzutu
-    float friction = 8.0f;
 
 public:
     Skieleton(float x, float y) : Enemy(x, y, 60.0f) 

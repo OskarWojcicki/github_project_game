@@ -17,8 +17,10 @@ class Link : public Character
     bool isAttacking = false;
     sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f);
     float friction = 8.0f;
-    
     bool interactPressed = false;
+    int hp = 10;
+    float invincibilityTimer = 0.0f;
+    const float invincibilityDuration = 1.0f; // 1 sekunda nieśmiertelności po oberwaniu
 
     sf::Texture texture_down;
     sf::Texture texture_up;
@@ -152,6 +154,9 @@ class Link : public Character
         }
         sprite.setTextureRect(klatkaStruktura);
         sprite.setPosition(shape.getPosition().x + (shape.getSize().x / 2.0f), shape.getPosition().y + (shape.getSize().y / 2.0f));
+
+        if (invincibilityTimer > 0.0f) {
+        invincibilityTimer -= deltaTime;}
     }
 
     sf::Vector2f getPosition() const
@@ -180,8 +185,18 @@ class Link : public Character
     {
         interactPressed = false;
     }
-<<<<<<< HEAD
+
+    int getHP() const { return hp; }
+    bool isInvincible() const { return invincibilityTimer > 0.0f; }
+
+    void takeDamage(int amount) {
+        if (!isInvincible()) {
+            hp -= amount;
+        if (hp < 0) hp = 0; // Życie nie może spaść poniżej zera
+        invincibilityTimer = invincibilityDuration; // Uruchomienie ochrony
+        std::cout << "Link stracil " << amount << " HP! Pozostalo: " << hp << "\n";
+        }
+    }
+
+    void setHP(int newHP) { hp = newHP; }
 };
-=======
-};
->>>>>>> f9a2680154951fee084132c7782f0b8db7ee720f

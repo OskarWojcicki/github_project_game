@@ -180,4 +180,8 @@ class Link : public Character
     {
         interactPressed = false;
     }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> f9a2680154951fee084132c7782f0b8db7ee720f

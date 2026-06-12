@@ -5,7 +5,10 @@
 #include "Enemies.h"
 #include "Chest.h"
 #include "Ptaszek.h"
+<<<<<<< HEAD
 #include "Inventory.h"
+=======
+>>>>>>> f9a2680154951fee084132c7782f0b8db7ee720f
 
 enum class GameState
 {
@@ -846,6 +849,10 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 object->draw(window);
             }
             playerInventory.render(window);
+        }
+        else if(currentState == GameState::Kurtyna_lvl2)
+        {
+
         }
         else if(currentState == GameState::Kurtyna_lvl2)
         {

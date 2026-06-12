@@ -5,6 +5,10 @@
 #include "Enemies.h"
 #include "Chest.h"
 #include "Ptaszek.h"
+<<<<<<< HEAD
+#include "Inventory.h"
+=======
+>>>>>>> f9a2680154951fee084132c7782f0b8db7ee720f
 
 enum class GameState
 {
@@ -428,6 +432,7 @@ int main()
 
     std::vector<Game*> worldObjects;
     sf::Clock clock;
+    Inventory playerInventory;
 
     while(window.isOpen())
     {
@@ -452,6 +457,24 @@ int main()
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
                     currentState = GameState::Gameplay;
                 }
+            }
+
+            // Wewnątrz pętli while (window.pollEvent(event))
+            if (event.type == sf::Event::MouseWheelScrolled)
+            {
+                // Upewniamy się, że gracz kręci rolką w pionie (góra/dół)
+                if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+                {
+                   // delta > 0 oznacza ruch w górę, delta < 0 ruch w dół
+                  if (event.mouseWheelScroll.delta > 0)
+                 {
+                        playerInventory.prevSlot(); // Przewiń slot w lewo
+                 }
+                 else if (event.mouseWheelScroll.delta < 0)
+                 {
+                     playerInventory.nextSlot(); // Przewiń slot w prawo
+                 }
+             }
             }
 
             if(currentState == GameState::Gameplay && player != nullptr)
@@ -825,6 +848,11 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
             {
                 object->draw(window);
             }
+            playerInventory.render(window);
+        }
+        else if(currentState == GameState::Kurtyna_lvl2)
+        {
+
         }
         else if(currentState == GameState::Kurtyna_lvl2)
         {

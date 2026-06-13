@@ -359,7 +359,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     
     wordlObjects.push_back(player);
 
-    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) ---
+    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
     if(selectedRoom==room2)
     {
         wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
@@ -400,7 +400,7 @@ int main()
     sf::Music backgroundMusic;
     sf::Music titleMusic;
 
-    if(!titleMusic.openFromFile("muzyka/title_screen.mp3")) 
+    if(!titleMusic.openFromFile("muzyka/muzyka_title_screen.mp3")) 
     {
         std::cout << "Blad w ladowaniu muzyki menu" << std::endl;
     }
@@ -499,7 +499,7 @@ int main()
                     worldY = 4;
 
                     titleMusic.stop();
-                    if(!backgroundMusic.openFromFile("muzyka/lvl1.mp3"))
+                    if(!backgroundMusic.openFromFile("muzyka/muzyka_lvl1.mp3"))
                     {
                         std::cout << "Blad w ladowaniu muzyki" << std::endl;
                     }
@@ -626,6 +626,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
     if (enemy != nullptr)
     {
         enemy->updateEnemyAI(worldObjects, deltaTime);
+        enemy->updateInvincibility(deltaTime);
     }
     else
     {
@@ -820,7 +821,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-// 3. LOGIKA WALKI: ZASIĘG GRACZA, ATAK POTWORÓW ORAZ POCISKI
+// ==================== NOWA LOGIKA WALKI (ZABIJANIE WROGÓW) ====================
         if (currentState == GameState::Gameplay && player != nullptr)
         {
             sf::FloatRect playerBounds = player->getBounds();
@@ -838,27 +839,42 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 else if (dir.y < 0) { attackHitbox.top -= attackRange; attackHitbox.height += attackRange; } 
             }
 
-            for (size_t i = 0; i < worldObjects.size(); ++i)
+            // ITERACJA OD TYŁU (od size()-1 do 0) – kluczowa do bezpiecznego usuwania obiektów!
+            for (int i = static_cast<int>(worldObjects.size()) - 1; i >= 0; --i)
             {
                 if (worldObjects[i] == player) continue;
 
-                // --- ROZPOZNANIE PRZECIWNIKA (Moblin, Slime, Skieleton) ---
+                // --- ROZPOZNANIE PRZECIWNIKA ---
                 Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
                 if (enemy != nullptr)
                 {
                     sf::FloatRect enemyBounds = enemy->getBounds();
 
+                    // Gracz atakuje i trafia wroga
                     if (player->getIsAttacking() && attackHitbox.intersects(enemyBounds))
                     {
+                        // Dodajemy zadawanie obrażeń potworowi
+                        enemy->takeDamage(1); 
+                        
                         sf::Vector2f knockbackDir = player->getFacingDirection();
                         enemy->applyKnockback(knockbackDir, 600.0f); 
-                        std::cout << "Link slashed an enemy!\n";
+                        std::cout << "Link slashed an enemy! Enemy HP: " << enemy->getHP() << "\n";
+
+                        // Jeśli przeciwnik umarł, usuwamy go z pamięci i z wektora
+                        if (enemy->isDead())
+                        {
+                            std::cout << "Enemy died!\n";
+                            delete worldObjects[i];
+                            worldObjects.erase(worldObjects.begin() + i);
+                            continue; // Przejdź do następnego obiektu
+                        }
                     }
+                    // Wróg dotyka gracza (gracz zbiera obrażenia)
                     else if (playerBounds.intersects(enemyBounds))
                     {
                         if (!player->isInvincible()) 
                         {
-                            player->takeDamage(1); // Traci 1 HP
+                            player->takeDamage(1); 
 
                             sf::Vector2f diff = player->getPosition() - enemy->getPosition();
                             float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
@@ -868,7 +884,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                                 player->applyKnockback(pushDir, 500.0f);
                             }
                         }
-                        std::cout << "Enemy collided with Link!\n";
                     }
                     continue; 
                 }
@@ -883,7 +898,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                     {
                         if (!player->isInvincible())
                         {
-                            player->takeDamage(2); // Pocisk zabiera 2 HP
+                            player->takeDamage(2); 
 
                             sf::Vector2f bulletCenter(bulletBounds.left + bulletBounds.width/2.f, bulletBounds.top + bulletBounds.height/2.f);
                             sf::Vector2f diff = player->getPosition() - bulletCenter;
@@ -895,14 +910,14 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                             }
                         }
 
-                        // Pocisk niszczy się niezależnie od tego, czy zadał obrażenia
+                        // Bezpieczne czyszczenie pocisku
                         delete worldObjects[i];
                         worldObjects.erase(worldObjects.begin() + i);
-                        --i; 
                     }
                 }
             }
         }
+        // ==============================================================================
         
         else if(currentState==GameState::Kurtyna_lvl2)
         {

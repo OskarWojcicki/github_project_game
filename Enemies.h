@@ -85,9 +85,33 @@ public:
     recoilVelocity = direction * force;
     }
 
+    int getHP() const { return hp; }
+    bool isInvincible() const { return invincibilityTimer > 0.0f; }
+
+    void takeDamage(int amount) {
+        if (!isInvincible()) { // Obrażenia wchodzą tylko, gdy wróg NIE JEST odporny
+            hp -= amount;
+            if (hp < 0) hp = 0;
+            invincibilityTimer = invincibilityDuration; // Włączenie ochrony
+        }
+    }
+    
+    bool isDead() const { return hp <= 0; }
+
+    // --- METODA UPDATE DLA ODLICZANIA CZASU ---
+    void updateInvincibility(float deltaTime) {
+        if (invincibilityTimer > 0.0f) {
+            invincibilityTimer -= deltaTime;
+        }
+    }
+    
+
 protected:
     sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f); // Aktualna prędkość odrzutu
     float friction = 8.0f;
+    int hp;
+    float invincibilityTimer = 0.0f;       // Aktualny czas odporności
+    const float invincibilityDuration = 0.4f; // Jak długo wróg jest odporny po ciosie (np. 0.4 sekundy)
     // Zwraca wektor ruchu W STRONĘ gracza
     sf::Vector2f getDirectionToPlayer()
     {
@@ -152,6 +176,7 @@ public:
             x + (this->shape.getSize().x / 2.0f),
             y + (this->shape.getSize().y / 2.0f)
         );
+        this->hp = 7;
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
@@ -229,7 +254,7 @@ public:
 };
 
 
-// 2. Klasa Slime (Fioletowy kwadracik)
+// 2. Klasa Slime
 class Slime : public Enemy
 {
     private:
@@ -264,6 +289,7 @@ class Slime : public Enemy
             x + (this->shape.getSize().x / 2.0f),
             y + (this->shape.getSize().y / 2.0f)
         );
+        this->hp = 3;
         }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
@@ -315,7 +341,7 @@ class Slime : public Enemy
 };
 
 
-// 3. Klasa Skieleton (Szary kwadracik - Ucieka i strzela!)
+// 3. Klasa Skieleton 
 class Skieleton : public Enemy
 {
 private:
@@ -325,6 +351,7 @@ public:
     Skieleton(float x, float y) : Enemy(x, y, 60.0f) 
     {
         this->shape.setFillColor(sf::Color(169, 169, 169));
+        this->hp = 5;
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override

@@ -499,7 +499,7 @@ int main()
                     worldY = 4;
 
                     titleMusic.stop();
-                    if(!backgroundMusic.openFromFile("muzyka/majoras_mask.mp3"))
+                    if(!backgroundMusic.openFromFile("muzyka/lvl1.mp3"))
                     {
                         std::cout << "Blad w ladowaniu muzyki" << std::endl;
                     }

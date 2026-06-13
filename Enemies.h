@@ -78,7 +78,7 @@ public:
 
     void draw(sf::RenderWindow& window) override
     {
-        window.draw(this->shape);
+        window.draw(this->sprite);
     }
 
     void applyKnockback(sf::Vector2f direction, float force) {
@@ -110,14 +110,53 @@ protected:
 // 1. Klasa Moblin (Brązowy kwadracik)
 class Moblin : public Enemy
 {
+    private:
+        float czasAnimacji = 0.0f;
+        int aktualna_klatka = 0;
+        const int ilosc_klatek= 3;
+        const float czas_na_klatke = 0.16;
+
+        const sf::Texture* texture_down;
+        const sf::Texture* texture_up;
+        const sf::Texture* texture_left;
+        const sf::Texture* texture_right;
+
 public:
-    Moblin(float x, float y) : Enemy(x, y, 30.0f)
-    {
-        this->shape.setFillColor(sf::Color(139, 69, 19));
+    Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 30.0f)
+    {   
+        this->texture_down = &tex_down;
+        this->texture_up = &tex_up;
+        this->texture_left = &tex_left;
+        this->texture_right = &tex_right;
+
+        this->shape.setFillColor(sf::Color::Transparent);
+        this->shape.setOutlineColor(sf::Color::Transparent); // Ukrywamy też ramkę debugowania
+
+        this->sprite.setTexture(tex_down);
+
+        int szerokosc_slima = 32;
+        int wysokosc_slima = 32;
+        
+        this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
+        this->sprite.setTextureRect(this->klatkaStruktura);
+
+        // Środek sprajta ustawiamy na jego centrum
+        this->sprite.setOrigin(szerokosc_slima / 2.0f, wysokosc_slima / 2.0f);
+        
+        // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
+        // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
+        this->sprite.setScale(1.75f, 1.75f); 
+
+        // Pozycja startowa sprajta na środku hitboxu shape
+        this->sprite.setPosition(
+            x + (this->shape.getSize().x / 2.0f),
+            y + (this->shape.getSize().y / 2.0f)
+        );
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
+        sf::Vector2f dir(0.0f,0.0f);
 // A. Jeśli potwór dostał cios i ma prędkość odrzutu – przesuń go siłą odrzutu
     if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
     {
@@ -136,9 +175,56 @@ public:
     // B. Jeśli nie ma odrzutu, potwór wykonuje swój normalny ruch w stronę gracza
     else 
     {
-        sf::Vector2f dir = getDirectionToPlayer();
+        dir = getDirectionToPlayer();
         this->shape.move(dir * speed * deltaTime);
     }
+
+    bool czy_w_ruchu = (dir.x !=0.0f || dir.y != 0.0f);
+
+    if(czy_w_ruchu)
+    {
+        if(std::abs(dir.x) > std::abs(dir.y))
+        {
+            if(dir.x >0.0f)
+            {
+                this -> sprite.setTexture(*texture_right);
+            }
+            else
+            {
+                this->sprite.setTexture(*texture_left);
+            }
+        }
+        else
+        {
+            if(dir.y >0.0f)
+            {
+                this->sprite.setTexture(*texture_down);
+            }
+            else
+            {
+                this->sprite.setTexture(*texture_up);
+            }
+        }
+        czasAnimacji += deltaTime;
+        if(czasAnimacji >= czas_na_klatke)
+        {
+            czasAnimacji=0.0f;
+            aktualna_klatka=(aktualna_klatka + 1) % ilosc_klatek;
+        }
+    }
+    else
+    {
+        aktualna_klatka=0;
+    }
+    int wielkosc = 32;
+    this->klatkaStruktura.top = 0;
+    this->klatkaStruktura.left = aktualna_klatka * wielkosc;
+    this -> sprite.setTextureRect(this->klatkaStruktura);
+
+    this->sprite.setPosition(
+        this->shape.getPosition().x+(this->shape.getSize().x/2.0f),
+        this->shape.getPosition().y + (this->shape.getSize().y/2.0f)
+    );
     }
 };
 
@@ -146,11 +232,39 @@ public:
 // 2. Klasa Slime (Fioletowy kwadracik)
 class Slime : public Enemy
 {
-public:
-    Slime(float x, float y) : Enemy(x, y, 30.0f)
-    {
-        this->shape.setFillColor(sf::Color(128, 0, 128));
-    }
+    private:
+        float czasAnimacji = 0.0f;
+        int aktualna_klatka = 0;
+        const int ilosc_klatek= 3;
+        const float czas_na_klatke = 0.16;
+
+    public:
+        Slime(const sf::Texture& tex, float x, float y) : Enemy(x, y, 30.0f)
+        {
+        this->shape.setFillColor(sf::Color::Transparent);
+        this->shape.setOutlineColor(sf::Color::Transparent); // Ukrywamy też ramkę debugowania
+
+        this->sprite.setTexture(tex);
+
+        int szerokosc_slima = 32;
+        int wysokosc_slima = 32;
+        
+        this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
+        this->sprite.setTextureRect(this->klatkaStruktura);
+
+        // Środek sprajta ustawiamy na jego centrum
+        this->sprite.setOrigin(szerokosc_slima / 2.0f, wysokosc_slima / 2.0f);
+        
+        // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
+        // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
+        this->sprite.setScale(1.0f, 1.0f); 
+
+        // Pozycja startowa sprajta na środku hitboxu shape
+        this->sprite.setPosition(
+            x + (this->shape.getSize().x / 2.0f),
+            y + (this->shape.getSize().y / 2.0f)
+        );
+        }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
@@ -174,6 +288,28 @@ public:
     {
         sf::Vector2f dir = getDirectionToPlayer();
         this->shape.move(dir * speed * deltaTime);
+    }
+
+    this->sprite.setPosition(
+        this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
+        this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
+    );
+
+    czasAnimacji+=deltaTime;
+
+    if(czasAnimacji>=czas_na_klatke)
+    {
+        czasAnimacji=0.0f;
+        aktualna_klatka++;
+
+        if(aktualna_klatka >= ilosc_klatek)
+        {
+            aktualna_klatka = 0;
+        }
+        int szerokosc_slima=32;
+        this->klatkaStruktura.left = aktualna_klatka * szerokosc_slima;
+        this->sprite.setTextureRect(this->klatkaStruktura);
+
     }
     }
 };
@@ -246,4 +382,3 @@ public:
 
     
 };
-

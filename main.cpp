@@ -398,14 +398,18 @@ int main()
     sf::RenderWindow window(sf::VideoMode(720, 528), "The legend of Zelda");
 
     sf::Music backgroundMusic;
-    if(!backgroundMusic.openFromFile("muzyka/majoras_mask.mp3"))
-    {
-        std::cout<<"Bład w ladowaniu muzyki"<<std::endl;
-    }
-    backgroundMusic.setLoop(true);
-    backgroundMusic.setVolume(100.0f);
-    backgroundMusic.play();
+    sf::Music titleMusic;
 
+    if(!titleMusic.openFromFile("muzyka/title_screen.mp3")) 
+    {
+        std::cout << "Blad w ladowaniu muzyki menu" << std::endl;
+    }
+    else
+    {
+        titleMusic.setLoop(true);
+        titleMusic.setVolume(50.0f);
+        titleMusic.play(); // Muzyka zaczyna grać natychmiast
+    }
 
     window.setFramerateLimit(60);
 
@@ -494,6 +498,17 @@ int main()
                     worldX = 1;
                     worldY = 4;
 
+                    titleMusic.stop();
+                    if(!backgroundMusic.openFromFile("muzyka/majoras_mask.mp3"))
+                    {
+                        std::cout << "Blad w ladowaniu muzyki" << std::endl;
+                    }
+                    else
+                    {
+                        backgroundMusic.setLoop(true);
+                        backgroundMusic.setVolume(100.0f); // 100% może urwać uszy na słuchawkach ;)
+                        backgroundMusic.play();
+                    }
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
                     currentState = GameState::Gameplay;
                 }

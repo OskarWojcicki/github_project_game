@@ -13,6 +13,7 @@ class Link : public Character
     bool move_left=false;
     bool move_right=false;
     bool patrzy_wLewo=false;
+    
     sf::Vector2f facingDirection = sf::Vector2f(0.0f, 1.0f);
     bool isAttacking = false;
     sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f);

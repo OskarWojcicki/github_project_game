@@ -6,6 +6,7 @@
 #include "Chest.h"
 #include "Ptaszek.h"
 #include "Inventory.h"
+#include <SFML/Audio.hpp>
 
 enum class GameState
 {
@@ -298,7 +299,7 @@ const char (*worldMap[10][10])[15]=
     {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
 };
 
-void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien)
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right)
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
     int currentHP = 10; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
@@ -358,11 +359,11 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     
     wordlObjects.push_back(player);
 
-    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) ---
+    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
     if(selectedRoom==room2)
     {
-        wordlObjects.push_back(new Slime(600.0f, 400.0f));
-        wordlObjects.push_back(new Slime(600.0f, 200.0f));
+        wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
+        wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
     }
     if(selectedRoom==room5)
     {
@@ -370,20 +371,20 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
     if(selectedRoom==room3)
     {
-        wordlObjects.push_back(new Slime(600.0f, 400.0f));
-        wordlObjects.push_back(new Slime(600.0f, 200.0f));
-        wordlObjects.push_back(new Slime(300.0f, 200.0f));
+        wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
+        wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
+        wordlObjects.push_back(new Slime(t_slime,300.0f, 200.0f));
     }
     if(selectedRoom==room7)
     {
-        wordlObjects.push_back(new Moblin(100.0f, 100.0f));
+        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 100.0f));
         wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
     }
     if(selectedRoom==room8)
     {
-        wordlObjects.push_back(new Moblin(100.0f, 400.0f));
-        wordlObjects.push_back(new Moblin(100.0f, 300.0f));
-        wordlObjects.push_back(new Moblin(100.0f, 200.0f));
+        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 400.0f));
+        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 300.0f));
+        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 200.0f));
     }
     if(selectedRoom==room9)
     {
@@ -395,14 +396,34 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(720, 528), "The legend of Zelda");
+
+    sf::Music backgroundMusic;
+    sf::Music titleMusic;
+
+    if(!titleMusic.openFromFile("muzyka/muzyka_title_screen.mp3")) 
+    {
+        std::cout << "Blad w ladowaniu muzyki menu" << std::endl;
+    }
+    else
+    {
+        titleMusic.setLoop(true);
+        titleMusic.setVolume(50.0f);
+        titleMusic.play(); // Muzyka zaczyna grać natychmiast
+    }
+
     window.setFramerateLimit(60);
 
-    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko;
+    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right;
     if (!tex_drzewa.loadFromFile("grafiki/drzewa.png") ||
         !tex_floor1.loadFromFile("grafiki/floor1.png") ||
         !tex_floor2.loadFromFile("grafiki/floor2.png") ||
         !tex_cien.loadFromFile("grafiki/cien.png") ||
-        !tex_serduszko.loadFromFile("grafiki/Serduszko2.png"))
+        !tex_serduszko.loadFromFile("grafiki/Serduszko2.png") ||
+        !tex_slime.loadFromFile("grafiki/slime.png") ||
+        !tex_moblin_up.loadFromFile("grafiki/moblin_up.png")||
+        !tex_moblin_down.loadFromFile("grafiki/moblin_down.png") ||
+        !tex_moblin_left.loadFromFile("grafiki/moblin_left.png") ||
+        !tex_moblin_right.loadFromFile("grafiki/moblin_right.png"))
     {
         std::cout << "!!! Blad w ladowaniu tekstur otoczenia !!!" << std::endl;
     }
@@ -477,7 +498,18 @@ int main()
                     worldX = 1;
                     worldY = 4;
 
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
+                    titleMusic.stop();
+                    if(!backgroundMusic.openFromFile("muzyka/muzyka_lvl1.mp3"))
+                    {
+                        std::cout << "Blad w ladowaniu muzyki" << std::endl;
+                    }
+                    else
+                    {
+                        backgroundMusic.setLoop(true);
+                        backgroundMusic.setVolume(100.0f); // 100% może urwać uszy na słuchawkach ;)
+                        backgroundMusic.play();
+                    }
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -494,7 +526,7 @@ int main()
         
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
@@ -594,6 +626,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
     if (enemy != nullptr)
     {
         enemy->updateEnemyAI(worldObjects, deltaTime);
+        enemy->updateInvincibility(deltaTime);
     }
     else
     {
@@ -611,7 +644,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
                 }
                 else
                 {
@@ -624,7 +657,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
                 }
                 else
                 {
@@ -636,7 +669,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
                 }
                 else
                 {
@@ -648,7 +681,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
                 }
                 else 
                 {
@@ -788,7 +821,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-// 3. LOGIKA WALKI: ZASIĘG GRACZA, ATAK POTWORÓW ORAZ POCISKI
+// ==================== NOWA LOGIKA WALKI (ZABIJANIE WROGÓW) ====================
         if (currentState == GameState::Gameplay && player != nullptr)
         {
             sf::FloatRect playerBounds = player->getBounds();
@@ -806,27 +839,42 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 else if (dir.y < 0) { attackHitbox.top -= attackRange; attackHitbox.height += attackRange; } 
             }
 
-            for (size_t i = 0; i < worldObjects.size(); ++i)
+            // ITERACJA OD TYŁU (od size()-1 do 0) – kluczowa do bezpiecznego usuwania obiektów!
+            for (int i = static_cast<int>(worldObjects.size()) - 1; i >= 0; --i)
             {
                 if (worldObjects[i] == player) continue;
 
-                // --- ROZPOZNANIE PRZECIWNIKA (Moblin, Slime, Skieleton) ---
+                // --- ROZPOZNANIE PRZECIWNIKA ---
                 Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
                 if (enemy != nullptr)
                 {
                     sf::FloatRect enemyBounds = enemy->getBounds();
 
+                    // Gracz atakuje i trafia wroga
                     if (player->getIsAttacking() && attackHitbox.intersects(enemyBounds))
                     {
+                        // Dodajemy zadawanie obrażeń potworowi
+                        enemy->takeDamage(1); 
+                        
                         sf::Vector2f knockbackDir = player->getFacingDirection();
                         enemy->applyKnockback(knockbackDir, 600.0f); 
-                        std::cout << "Link slashed an enemy!\n";
+                        std::cout << "Link slashed an enemy! Enemy HP: " << enemy->getHP() << "\n";
+
+                        // Jeśli przeciwnik umarł, usuwamy go z pamięci i z wektora
+                        if (enemy->isDead())
+                        {
+                            std::cout << "Enemy died!\n";
+                            delete worldObjects[i];
+                            worldObjects.erase(worldObjects.begin() + i);
+                            continue; // Przejdź do następnego obiektu
+                        }
                     }
+                    // Wróg dotyka gracza (gracz zbiera obrażenia)
                     else if (playerBounds.intersects(enemyBounds))
                     {
                         if (!player->isInvincible()) 
                         {
-                            player->takeDamage(1); // Traci 1 HP
+                            player->takeDamage(1); 
 
                             sf::Vector2f diff = player->getPosition() - enemy->getPosition();
                             float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
@@ -836,7 +884,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                                 player->applyKnockback(pushDir, 500.0f);
                             }
                         }
-                        std::cout << "Enemy collided with Link!\n";
                     }
                     continue; 
                 }
@@ -851,7 +898,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                     {
                         if (!player->isInvincible())
                         {
-                            player->takeDamage(2); // Pocisk zabiera 2 HP
+                            player->takeDamage(2); 
 
                             sf::Vector2f bulletCenter(bulletBounds.left + bulletBounds.width/2.f, bulletBounds.top + bulletBounds.height/2.f);
                             sf::Vector2f diff = player->getPosition() - bulletCenter;
@@ -863,14 +910,14 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                             }
                         }
 
-                        // Pocisk niszczy się niezależnie od tego, czy zadał obrażenia
+                        // Bezpieczne czyszczenie pocisku
                         delete worldObjects[i];
                         worldObjects.erase(worldObjects.begin() + i);
-                        --i; 
                     }
                 }
             }
         }
+        // ==============================================================================
         
         else if(currentState==GameState::Kurtyna_lvl2)
         {
@@ -879,7 +926,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 worldX = 3;
                 worldY = 9;
 
-                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien);
+                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
 
                 currentState = GameState::Gameplay;
             }
@@ -944,7 +991,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
         {
             for(auto& object : worldObjects)
             {
-                object->draw(window);
+                object->draw(window); 
             }
             window.draw(gameOverCurtain);
 

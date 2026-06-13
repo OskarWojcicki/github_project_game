@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Game.h"
-#include "Link.h"
+class Link;
 
 class Chest : public Game
 {

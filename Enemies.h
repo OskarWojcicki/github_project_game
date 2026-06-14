@@ -138,7 +138,7 @@ class Moblin : public Enemy
         float czasAnimacji = 0.0f;
         int aktualna_klatka = 0;
         const int ilosc_klatek= 3;
-        const float czas_na_klatke = 0.16;
+        const float czas_na_klatke = 0.2;
 
         const sf::Texture* texture_down;
         const sf::Texture* texture_up;
@@ -146,7 +146,7 @@ class Moblin : public Enemy
         const sf::Texture* texture_right;
 
 public:
-    Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 30.0f)
+    Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 50.0f)
     {   
         this->texture_down = &tex_down;
         this->texture_up = &tex_up;
@@ -158,14 +158,14 @@ public:
 
         this->sprite.setTexture(tex_down);
 
-        int szerokosc_slima = 32;
-        int wysokosc_slima = 32;
+        int szerokosc_moblina = 32;
+        int wysokosc_moblina = 40;
         
-        this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
+        this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_moblina, wysokosc_moblina);
         this->sprite.setTextureRect(this->klatkaStruktura);
 
         // Środek sprajta ustawiamy na jego centrum
-        this->sprite.setOrigin(szerokosc_slima / 2.0f, wysokosc_slima / 2.0f);
+        this->sprite.setOrigin(szerokosc_moblina/ 2.0f, wysokosc_moblina / 2.0f);
         
         // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
         // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
@@ -206,6 +206,9 @@ public:
 
     bool czy_w_ruchu = (dir.x !=0.0f || dir.y != 0.0f);
 
+    int klatka_szerokosc = 32;
+    int klatka_wysokosc = 40;
+
     if(czy_w_ruchu)
     {
         if(std::abs(dir.x) > std::abs(dir.y))
@@ -218,6 +221,8 @@ public:
             {
                 this->sprite.setTexture(*texture_left);
             }
+            klatka_szerokosc = 43; 
+            klatka_wysokosc = 32;
         }
         else
         {
@@ -229,6 +234,8 @@ public:
             {
                 this->sprite.setTexture(*texture_up);
             }
+            klatka_szerokosc = 32; 
+            klatka_wysokosc = 40;
         }
         czasAnimacji += deltaTime;
         if(czasAnimacji >= czas_na_klatke)
@@ -240,15 +247,23 @@ public:
     else
     {
         aktualna_klatka=0;
+        klatka_szerokosc = 32;
+        klatka_wysokosc = 40;
     }
     int wielkosc = 32;
     this->klatkaStruktura.top = 0;
-    this->klatkaStruktura.left = aktualna_klatka * wielkosc;
-    this -> sprite.setTextureRect(this->klatkaStruktura);
+    this->klatkaStruktura.width = klatka_szerokosc;
+    this->klatkaStruktura.height = klatka_wysokosc;
+    this->klatkaStruktura.left = aktualna_klatka * klatka_szerokosc; // Skok mnoży się przez aktualną szerokość!
+    
+    this->sprite.setTextureRect(this->klatkaStruktura);
+
+    // Aktualizacja origin na wypadek, gdyby wymiary się zmieniły
+    this->sprite.setOrigin(klatka_szerokosc / 2.0f, klatka_wysokosc / 2.0f);
 
     this->sprite.setPosition(
-        this->shape.getPosition().x+(this->shape.getSize().x/2.0f),
-        this->shape.getPosition().y + (this->shape.getSize().y/2.0f)
+        this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
+        this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
     );
     }
 };
@@ -272,7 +287,7 @@ class Slime : public Enemy
         this->sprite.setTexture(tex);
 
         int szerokosc_slima = 32;
-        int wysokosc_slima = 32;
+        int wysokosc_slima = 27;
         
         this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
         this->sprite.setTextureRect(this->klatkaStruktura);

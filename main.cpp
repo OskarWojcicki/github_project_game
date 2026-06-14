@@ -390,6 +390,11 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     {
         wordlObjects.push_back(new Skieleton(336.0f,240.0f));
     }
+    if(selectedRoom==room1)
+    {
+        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 200.0f));
+
+    }
 }
 
 
@@ -399,16 +404,27 @@ int main()
 
     sf::Music backgroundMusic;
     sf::Music titleMusic;
+    sf::Music gameOverMusic;
 
-    if(!titleMusic.openFromFile("muzyka/muzyka_title_screen.mp3")) 
+    if(!titleMusic.openFromFile("muzyka/title_screen.mp3")) 
     {
         std::cout << "Blad w ladowaniu muzyki menu" << std::endl;
     }
     else
     {
         titleMusic.setLoop(true);
-        titleMusic.setVolume(50.0f);
-        titleMusic.play(); // Muzyka zaczyna grać natychmiast
+        titleMusic.setVolume(80.0f);
+        titleMusic.play(); 
+    }
+
+    if(!gameOverMusic.openFromFile("muzyka/gameOver.mp3"))
+    {
+        std::cout << "Blad w ladowaniu muzyki Game Over" << std::endl;
+    }
+    else
+    {
+        gameOverMusic.setLoop(false); 
+        gameOverMusic.setVolume(80.0f);
     }
 
     window.setFramerateLimit(60);
@@ -499,14 +515,14 @@ int main()
                     worldY = 4;
 
                     titleMusic.stop();
-                    if(!backgroundMusic.openFromFile("muzyka/muzyka_lvl1.mp3"))
+                    if(!backgroundMusic.openFromFile("muzyka/lvl1.mp3"))
                     {
                         std::cout << "Blad w ladowaniu muzyki" << std::endl;
                     }
                     else
                     {
                         backgroundMusic.setLoop(true);
-                        backgroundMusic.setVolume(100.0f); // 100% może urwać uszy na słuchawkach ;)
+                        backgroundMusic.setVolume(80.0f); // 100% może urwać uszy na słuchawkach ;)
                         backgroundMusic.play();
                     }
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
@@ -520,6 +536,8 @@ int main()
                 {
                     std::cout << "Restart gry... Ladowanie poziomu od nowa.\n";
         
+                    gameOverMusic.stop();  
+                    backgroundMusic.play();
                     // Resetujemy pozycję mapy do punktu startowego (tak jak przy nowej grze)
                     worldX = 1;
                     worldY = 4;
@@ -936,6 +954,12 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
         {
             if (player->getHP() <= 0)
             {
+                currentState = GameState::GameOver;
+                curtainHeight = 0.0f;
+
+                backgroundMusic.stop(); 
+                gameOverMusic.play();   
+                
                 currentState = GameState::GameOver;
                 curtainHeight = 0.0f;
             }

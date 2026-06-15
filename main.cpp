@@ -302,7 +302,7 @@ const char (*worldMap[10][10])[15]=
 void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, std::vector<std::string> (&defeatedEnemies)[10][10])
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
-    int currentHP = 10; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
+    int currentHP = 3; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
     if (player != nullptr)
     {
         currentHP = player->getHP();

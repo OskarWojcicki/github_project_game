@@ -422,7 +422,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
     if(selectedRoom==room8)
     {
-        if(czyZyje(100.0f, 400.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 400.0f));
+        if(czyZyje(100.0f, 214.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 262.0f));
         if(czyZyje(100.0f, 300.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 300.0f));
       
     }

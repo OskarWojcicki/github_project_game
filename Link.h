@@ -41,7 +41,11 @@ class Link : public Character
         {
             std::cout<<"Blad w czytywaniu postaci"<<std::endl;
         }
+<<<<<<< HEAD
+        if (!hurtBuffer.loadFromFile("muzyka/muzyka_taking_dmg.mp3"))
+=======
         if (!hurtBuffer.loadFromFile("muzyka/taking_dmg.mp3"))
+>>>>>>> a4138acdcb6a81fb24641b172b6081ccc505f6d9
         {
             std::cout << "Blad w czytywaniu dzwieku link_hurt.wav!" << std::endl;
         }

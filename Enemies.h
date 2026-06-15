@@ -123,8 +123,8 @@ protected:
     int hp;
     float invincibilityTimer = 0.0f;       // Aktualny czas odporności
     const float invincibilityDuration = 0.4f; // Jak długo wróg jest odporny po ciosie (np. 0.4 sekundy)
-    // Zwraca wektor ruchu W STRONĘ gracza
     sf::Vector2f startPosition;
+    // Zwraca wektor ruchu W STRONĘ gracza
     sf::Vector2f getDirectionToPlayer()
     {
         if (player == nullptr) return sf::Vector2f(0.f, 0.f);
@@ -159,6 +159,7 @@ class Moblin : public Enemy
 
 public:
     Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 150.0f)
+
     {   
         this->texture_down = &tex_down;
         this->texture_up = &tex_up;
@@ -189,7 +190,7 @@ public:
             y + (this->shape.getSize().y / 2.0f)
         );
         this->hp = 7;
-        this->startPosition = sf::Vector2f(x, y); // <-- To musimy zapisać na starcie!
+        this->startPosition = sf::Vector2f(x, y);
     }
 
     
@@ -320,7 +321,7 @@ class Slime : public Enemy
             y + (this->shape.getSize().y / 2.0f)
         );
         this->hp = 3;
-        this->startPosition = sf::Vector2f(x, y); // <-- To musimy zapisać na starcie!
+        this->startPosition = sf::Vector2f(x, y);
         }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
@@ -347,7 +348,7 @@ class Slime : public Enemy
         this->shape.move(dir * speed * deltaTime);
     }
 
-        this->sprite.setPosition(
+    this->sprite.setPosition(
         this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
         this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
     );
@@ -410,7 +411,7 @@ public:
         
         this->sprite.setPosition(x + 20.0f, y + 20.0f);
         this->hp = 5;
-        this->startPosition = sf::Vector2f(x, y); // <-- To musimy zapisać na starcie!
+        this->startPosition = sf::Vector2f(x, y);
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override

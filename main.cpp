@@ -299,7 +299,7 @@ const char (*worldMap[10][10])[15]=
     {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
 };
 
-void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek, std::vector<std::string> (&defeatedEnemies)[10][10])
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,std::vector<std::string> (&defeatedEnemies)[10][10])
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
     int currentHP = 3; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
@@ -362,7 +362,8 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     player->setHP(currentHP); 
     
     wordlObjects.push_back(player);
-     auto czyZyje = [&](float x, float y) -> bool {
+
+    auto czyZyje = [&](float x, float y) -> bool {
         std::string key = std::to_string((int)x) + "_" + std::to_string((int)y);
         for(const auto& deadKey : defeatedEnemies[wy][wx]) {
             if(deadKey == key) {
@@ -371,6 +372,62 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         }
         return true; // Nie ma go na liście martwych, czyli żyje
     };
+    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
+    if(selectedRoom==room2)
+    {
+        if(czyZyje(300.0f, 400.0f))wordlObjects.push_back(new Slime(t_slime, 300.0f, 400.0f));
+        if(czyZyje(400.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime, 400.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_stone, 546.0f, 380.0f, true));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 450.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 498.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 546.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 594.0f, 100.0f, false));
+
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 450.0f, 148.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 498.0f, 196.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 546.0f, 196.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 594.0f, 148.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 498.0f, 148.0f, false));
+        wordlObjects.push_back(new Background(t_stone, 546.0f, 148.0f, true));
+
+
+
+    }
+    if(selectedRoom==room5)
+    {
+        wordlObjects.push_back(new Chest(336.0f, 140.0f, "SWORD"));
+    }
+    if(selectedRoom==room3)
+    {
+        if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
+        if(czyZyje(600.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
+        if(czyZyje(300.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime,300.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 284.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 188.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 92.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 284.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 188.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 92.0f, false));
+
+        
+    }
+    if(selectedRoom==room7)
+    {
+        if(czyZyje(100.0f, 100.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 100.0f));
+        if(czyZyje(300.0f, 100.0f))wordlObjects.push_back(new Skieleton(t_skieleton_down,t_skieleton_up,t_skieleton_sides,t_proj,300.0f, 100.0f));
+        if(czyZyje(100.0f, 200.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_stone, 536.0f, 300.0f, true));
+
+        
+    }
+    if(selectedRoom==room8)
+    {
+        if(czyZyje(100.0f, 400.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 400.0f));
+        if(czyZyje(100.0f, 300.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 300.0f));
+      
+    }
+    if(selectedRoom==room9)
+    {
 
     // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
     if(selectedRoom==room2)
@@ -461,6 +518,26 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
 
 
+    }
+        if(selectedRoom==room4)
+    {
+        if(czyZyje(336.0f, 140.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,336.0f, 140.0f));
+        wordlObjects.push_back(new Background(t_stone, 120.0f, 380.0f, true));
+        wordlObjects.push_back(new Background(t_stone, 120.0f, 100.0f, true));
+        wordlObjects.push_back(new Background(t_stone, 536.0f, 100.0f, true));
+        wordlObjects.push_back(new Background(t_stone, 536.0f, 380.0f, true));
+        
+
+    }
+        if(selectedRoom==room6)
+    {
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 120.0f, 380.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 120.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 380.0f, false));
+
+    }
+
 }
 
 
@@ -483,7 +560,7 @@ int main()
         titleMusic.play(); 
     }
 
-    if(!gameOverMusic.openFromFile("muzyka/gameOver.mp3"))
+    if(!gameOverMusic.openFromFile("muzyka/muzyka_gameOver.mp3"))
     {
         std::cout << "Blad w ladowaniu muzyki Game Over" << std::endl;
     }
@@ -514,6 +591,8 @@ int main()
         !tex_wysoka_trawa.loadFromFile("grafiki/wysoka_trawa.png") ||
         !tex_stone.loadFromFile("grafiki/stone.png") ||
         !tex_kwiatek.loadFromFile("grafiki/kwiatek.png"))
+        !tex_strzala.loadFromFile("grafiki/strzala.png"))
+
     {
         std::cout << "!!! Blad w ladowaniu tekstur otoczenia !!!" << std::endl;
     }
@@ -600,7 +679,8 @@ int main()
                         backgroundMusic.setVolume(50.0f); 
                         backgroundMusic.play();
                     }
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
+
                     currentState = GameState::Gameplay;
                 }
             }
@@ -616,10 +696,19 @@ int main()
                     // Resetujemy pozycję mapy do punktu startowego (tak jak przy nowej grze)
                     worldX = 1;
                     worldY = 4;
-        
+                    
+                    for (int y = 0; y < 10; ++y)
+                    {
+                        for (int x = 0; x < 10; ++x)
+                        {
+                            defeatedEnemies[y][x].clear();
+                        }
+                    }
+                    
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
+
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
@@ -737,7 +826,8 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
+
                 }
                 else
                 {
@@ -750,7 +840,8 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
+
                 }
                 else
                 {
@@ -762,7 +853,8 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
+
                 }
                 else
                 {
@@ -774,7 +866,8 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
+
                 }
                 else 
                 {
@@ -1028,7 +1121,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 worldX = 3;
                 worldY = 9;
 
-                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,defeatedEnemies);
+                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
 
                 currentState = GameState::Gameplay;
             }

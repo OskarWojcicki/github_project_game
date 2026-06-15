@@ -14,36 +14,47 @@ private:
     sf::CircleShape bulletShape;
     sf::Vector2f velocity;
     float speed;
+    sf::Sprite sprite;
 
 public:
-    Projectile(float x, float y, sf::Vector2f direction)
+    Projectile(const sf::Texture& tex, float x, float y, sf::Vector2f direction)
     {
         speed = 200.0f; // Pocisk leci dość szybko
         
-        bulletShape.setRadius(6.0f);
-        bulletShape.setFillColor(sf::Color::White); // Biała kuleczka
-        bulletShape.setOutlineColor(sf::Color::Black);
-        bulletShape.setOutlineThickness(1.0f);
-        bulletShape.setOrigin(6.0f, 6.0f); // Środek kółka
-        bulletShape.setPosition(x, y);
+        // bulletShape.setRadius(6.0f);
+        // bulletShape.setFillColor(sf::Color::White); // Biała kuleczka
+        // bulletShape.setOutlineColor(sf::Color::Black);
+        // bulletShape.setOutlineThickness(1.0f);
+        // bulletShape.setOrigin(6.0f, 6.0f); // Środek kółka
+        // bulletShape.setPosition(x, y);
+
+        this->sprite.setTexture(tex);
+
+        this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 9));
+        this->sprite.setOrigin(15.0f, 4.0f); // Środek strzały
+        this->sprite.setPosition(x, y);
+        this->sprite.setScale(2.0f, 2.0f);
 
         // Normalizujemy wektor kierunku pocisku
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         if (length != 0)
         {
             velocity = (direction / length) * speed;
+            float angle = (std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f) + 180.0f;
+            this->sprite.setRotation(angle);
         }
     }
 
     // Dopasowane do sygnatury z Game.h (przyjmuje deltaTime)
     void update(float deltaTime) override
     {
-        bulletShape.move(velocity * deltaTime);
+        // bulletShape.move(velocity * deltaTime);
+        sprite.move(velocity * deltaTime);
     }
 
     void draw(sf::RenderWindow& window) override
     {
-        window.draw(bulletShape);
+        window.draw(sprite);
     }
 
     // Wymagane przez silnik (pocisk nie jest ścianą)
@@ -52,7 +63,7 @@ public:
     // Dopasowane do sygnatury z Game.h (brak słówka const)
     sf::FloatRect getBounds() override 
     {
-        return bulletShape.getGlobalBounds();
+        return sprite.getGlobalBounds();
     }
 };
 
@@ -139,7 +150,7 @@ class Moblin : public Enemy
         float czasAnimacji = 0.0f;
         int aktualna_klatka = 0;
         const int ilosc_klatek= 3;
-        const float czas_na_klatke = 0.16;
+        const float czas_na_klatke = 0.2;
 
         const sf::Texture* texture_down;
         const sf::Texture* texture_up;
@@ -147,7 +158,7 @@ class Moblin : public Enemy
         const sf::Texture* texture_right;
 
 public:
-    Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 30.0f)
+    Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 50.0f)
     {   
         this->texture_down = &tex_down;
         this->texture_up = &tex_up;
@@ -159,14 +170,14 @@ public:
 
         this->sprite.setTexture(tex_down);
 
-        int szerokosc_slima = 32;
-        int wysokosc_slima = 32;
+        int szerokosc_moblina = 32;
+        int wysokosc_moblina = 40;
         
-        this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
+        this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_moblina, wysokosc_moblina);
         this->sprite.setTextureRect(this->klatkaStruktura);
 
         // Środek sprajta ustawiamy na jego centrum
-        this->sprite.setOrigin(szerokosc_slima / 2.0f, wysokosc_slima / 2.0f);
+        this->sprite.setOrigin(szerokosc_moblina/ 2.0f, wysokosc_moblina / 2.0f);
         
         // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
         // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
@@ -180,6 +191,8 @@ public:
         this->hp = 7;
         this->startPosition = sf::Vector2f(x, y); // <-- To musimy zapisać na starcie!
     }
+
+    
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
@@ -208,6 +221,9 @@ public:
 
     bool czy_w_ruchu = (dir.x !=0.0f || dir.y != 0.0f);
 
+    int klatka_szerokosc = 32;
+    int klatka_wysokosc = 40;
+
     if(czy_w_ruchu)
     {
         if(std::abs(dir.x) > std::abs(dir.y))
@@ -220,6 +236,8 @@ public:
             {
                 this->sprite.setTexture(*texture_left);
             }
+            klatka_szerokosc = 43; 
+            klatka_wysokosc = 32;
         }
         else
         {
@@ -231,6 +249,8 @@ public:
             {
                 this->sprite.setTexture(*texture_up);
             }
+            klatka_szerokosc = 32; 
+            klatka_wysokosc = 40;
         }
         czasAnimacji += deltaTime;
         if(czasAnimacji >= czas_na_klatke)
@@ -242,15 +262,23 @@ public:
     else
     {
         aktualna_klatka=0;
+        klatka_szerokosc = 32;
+        klatka_wysokosc = 40;
     }
     int wielkosc = 32;
     this->klatkaStruktura.top = 0;
-    this->klatkaStruktura.left = aktualna_klatka * wielkosc;
-    this -> sprite.setTextureRect(this->klatkaStruktura);
+    this->klatkaStruktura.width = klatka_szerokosc;
+    this->klatkaStruktura.height = klatka_wysokosc;
+    this->klatkaStruktura.left = aktualna_klatka * klatka_szerokosc; // Skok mnoży się przez aktualną szerokość!
+    
+    this->sprite.setTextureRect(this->klatkaStruktura);
+
+    // Aktualizacja origin na wypadek, gdyby wymiary się zmieniły
+    this->sprite.setOrigin(klatka_szerokosc / 2.0f, klatka_wysokosc / 2.0f);
 
     this->sprite.setPosition(
-        this->shape.getPosition().x+(this->shape.getSize().x/2.0f),
-        this->shape.getPosition().y + (this->shape.getSize().y/2.0f)
+        this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
+        this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
     );
     }
 };
@@ -274,7 +302,7 @@ class Slime : public Enemy
         this->sprite.setTexture(tex);
 
         int szerokosc_slima = 32;
-        int wysokosc_slima = 32;
+        int wysokosc_slima = 27;
         
         this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
         this->sprite.setTextureRect(this->klatkaStruktura);
@@ -284,7 +312,7 @@ class Slime : public Enemy
         
         // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
         // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
-        this->sprite.setScale(1.0f, 1.0f); 
+        this->sprite.setScale(1.2f, 1.2f); 
 
         // Pozycja startowa sprajta na środku hitboxu shape
         this->sprite.setPosition(
@@ -349,11 +377,38 @@ class Skieleton : public Enemy
 {
 private:
     sf::Clock shootClock;
+    const sf::Texture* texture_down;
+    const sf::Texture* texture_up;
+    const sf::Texture* texture_sides; 
+    const sf::Texture* texture_projectile;
+
+    float czasAnimacji = 0.0f;
+    int aktualna_klatka = 0;
+    const float czas_na_klatke = 0.12f;
+    
+    bool patrzy_wLewo = false;
 
 public:
-    Skieleton(float x, float y) : Enemy(x, y, 60.0f) 
+    Skieleton(const sf::Texture& t_down, const sf::Texture& t_up, const sf::Texture& t_sides,const sf::Texture& t_proj, float x, float y) : Enemy(x, y, 60.0f) 
     {
-        this->shape.setFillColor(sf::Color(169, 169, 169));
+        this->texture_down = &t_down;
+        this->texture_up = &t_up;
+        this->texture_sides = &t_sides;
+        this->texture_projectile = &t_proj;
+
+        // Ukrywamy debugowy kwadrat
+        this->shape.setFillColor(sf::Color::Transparent);
+        this->shape.setOutlineColor(sf::Color::Transparent);
+
+        // Ustawiamy domyślną teksturę na start (patrzy w dół)
+        this->sprite.setTexture(*texture_down);
+        
+        this->klatkaStruktura = sf::IntRect(0, 0, 32, 32); 
+        this->sprite.setTextureRect(this->klatkaStruktura);
+        this->sprite.setOrigin(16.0f, 16.0f);
+        this->sprite.setScale(1.75f, 1.75f);
+        
+        this->sprite.setPosition(x + 20.0f, y + 20.0f);
         this->hp = 5;
         this->startPosition = sf::Vector2f(x, y); // <-- To musimy zapisać na starcie!
     }
@@ -364,52 +419,114 @@ public:
         if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
         {
             this->shape.move(recoilVelocity * deltaTime);
-
             recoilVelocity.x -= recoilVelocity.x * friction * deltaTime;
             recoilVelocity.y -= recoilVelocity.y * friction * deltaTime;
 
             if (std::sqrt(recoilVelocity.x * recoilVelocity.x + recoilVelocity.y * recoilVelocity.y) < 10.0f)
-            {
                 recoilVelocity = sf::Vector2f(0.0f, 0.0f);
+        }
+
+        // 2. LOGIKA PORUSZANIA I WYBORU TEKSTURY
+        sf::Vector2f dir = getDirectionToPlayer();
+        float czasOdStrzalu = shootClock.getElapsedTime().asSeconds();
+
+        // Jeśli łucznik nie naciąga łuku (czas < 2.2s) i nie ma odrzutu -> idzie
+        if (czasOdStrzalu < 2.2f && recoilVelocity.x == 0.0f && recoilVelocity.y == 0.0f)
+        {
+            this->shape.move(dir * speed * deltaTime);
+        }
+        int szerokosc_klatki=32;
+        int wysokosc_klatki=32;
+
+        // Dynamicznie podmieniamy tekstury przekazane z maina
+        if (std::abs(dir.x) > std::abs(dir.y))
+        {
+            this->sprite.setTexture(*texture_sides);
+            patrzy_wLewo = (dir.x < 0.0f);
+
+            szerokosc_klatki=46;
+            wysokosc_klatki=37;
+        }
+        else
+        {
+            if (dir.y < 0.0f)
+            {
+                this->sprite.setTexture(*texture_up);
+            }
+            else
+            {
+                this->sprite.setTexture(*texture_down);
+            }
+            patrzy_wLewo = false;
+
+            szerokosc_klatki=32;
+            wysokosc_klatki=35;
+        }
+
+        // 3. SEKCJA ANIMACJI (0-2: chód, 3-5: napinanie łuku)
+        if (czasOdStrzalu >= 2.2f)
+        {
+            czasAnimacji += deltaTime;
+            if (czasAnimacji >= czas_na_klatke)
+            {
+                czasAnimacji = 0.0f;
+                if (aktualna_klatka < 3) aktualna_klatka = 3;
+                else if (aktualna_klatka < 5) aktualna_klatka++;
+            }
+        }
+        else
+        {
+            czasAnimacji += deltaTime;
+            if (czasAnimacji >= 0.2f)
+            {
+                czasAnimacji = 0.0f;
+                aktualna_klatka = (aktualna_klatka + 1) % 3;
             }
         }
 
-        // 2. STRZELANIE I POCHODZENIE ODRZUTU (Co 3 sekundy)
-        if (shootClock.getElapsedTime().asSeconds() >= 3.0f)
+        // 4. USTAWIANIE STRUKTURY KLATKI
+        this->klatkaStruktura.top = 0;
+        this->klatkaStruktura.height = wysokosc_klatki;
+        this->sprite.setScale(1.75f, 1.75f); 
+
+        if (!patrzy_wLewo && this->sprite.getTexture() == texture_sides)
+        {
+            this->klatkaStruktura.left = (aktualna_klatka * szerokosc_klatki) + szerokosc_klatki;
+            this->klatkaStruktura.width = -szerokosc_klatki; // Lustrzane odbicie dla chodzenia w lewo
+        }
+        else
+        {
+            this->klatkaStruktura.left = aktualna_klatka * szerokosc_klatki;
+            this->klatkaStruktura.width = szerokosc_klatki;
+        }
+
+        this->sprite.setTextureRect(this->klatkaStruktura);
+        this->sprite.setPosition(this->shape.getPosition().x + 20.0f, this->shape.getPosition().y + 20.0f);
+
+        // 5. STRZAŁ (Zostawiamy na razie Twoją białą kuleczkę jako pocisk)
+        if (czasOdStrzalu >= 3.0f)
         {
             if (player != nullptr)
             {
-                sf::FloatRect skeletonBounds = this->shape.getGlobalBounds();
-                sf::FloatRect playerBounds = player->getBounds();
-
-                // Obliczamy dokładny ŚRODEK szkieleta i ŚRODEK gracza
-                sf::Vector2f skeletonCenter(
-                    skeletonBounds.left + (skeletonBounds.width / 2.0f),
-                    skeletonBounds.top + (skeletonBounds.height / 2.0f)
-                );
-
-                sf::Vector2f playerCenter(
-                    playerBounds.left + (playerBounds.width / 2.0f),
-                    playerBounds.top + (playerBounds.height / 2.0f)
-                );
-
+                sf::Vector2f skeletonCenter(this->shape.getPosition().x + 20.0f, this->shape.getPosition().y + 20.0f);
+                sf::Vector2f playerCenter(player->getBounds().left + (player->getBounds().width / 2.0f), player->getBounds().top + (player->getBounds().height / 2.0f));
                 sf::Vector2f shootDir = playerCenter - skeletonCenter;
 
-                // Spawnowanie pocisku
-                worldObjects.push_back(new Projectile(skeletonCenter.x, skeletonCenter.y, shootDir));
 
-                // AKTYWACJA ODRZUTU:
                 float length = std::sqrt(shootDir.x * shootDir.x + shootDir.y * shootDir.y);
+                sf::Vector2f spawnPos = skeletonCenter;
+
                 if (length != 0.0f)
                 {
-                    sf::Vector2f normalizedDir = shootDir / length;
-                    float recoilForce = 450.0f; 
-                    recoilVelocity = -normalizedDir * recoilForce;
+                    spawnPos += (shootDir / length) * 38.0f;
+
+                    recoilVelocity = -(shootDir / length) * 300.0f;
                 }
+                 worldObjects.push_back(new Projectile(*texture_projectile, spawnPos.x, spawnPos.y, shootDir));
+
             }
+            aktualna_klatka = 0;
             shootClock.restart();
         }
     }
-
-    
 };

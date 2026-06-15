@@ -299,7 +299,7 @@ const char (*worldMap[10][10])[15]=
     {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
 };
 
-void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right)
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, std::vector<std::string> (&defeatedEnemies)[10][10])
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
     int currentHP = 10; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
@@ -359,36 +359,53 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     
     wordlObjects.push_back(player);
 
-    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
-    if(selectedRoom==room2)
+    // --- FUNKCJA POMOCNICZA DO SPRAWDZANIA CZY WRÓG ŻYJE ---
+    // Lambda sprawdza, czy wróg o danej pozycji X i Y został już zabity w pokoju [wy][wx]
+    auto czyZyje = [&](float x, float y) -> bool {
+        std::string key = std::to_string((int)x) + "_" + std::to_string((int)y);
+        for(const auto& deadKey : defeatedEnemies[wy][wx]) {
+            if(deadKey == key) {
+                return false; // Został zabity, czyli nie żyje
+            }
+        }
+        return true; // Nie ma go na liście martwych, czyli żyje
+    };
+
+    // --- Generowanie zawartości pokoju z uwzględnieniem pamięci śmierci ---
+    if(selectedRoom == room2)
     {
-        wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
-        wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
+        if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
+        if(czyZyje(600.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
     }
-    if(selectedRoom==room5)
+    
+    if(selectedRoom == room5)
     {
         wordlObjects.push_back(new Chest(336.0f, 240.0f, "SWORD"));
     }
-    if(selectedRoom==room3)
+    
+    if(selectedRoom == room3)
     {
-        wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
-        wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
-        wordlObjects.push_back(new Slime(t_slime,300.0f, 200.0f));
+        if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
+        if(czyZyje(600.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
+        if(czyZyje(300.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime, 300.0f, 200.0f));
     }
-    if(selectedRoom==room7)
+    
+    if(selectedRoom == room7)
     {
-        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 100.0f));
-        wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
+        if(czyZyje(100.0f, 100.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 100.0f));
+        if(czyZyje(400.0f, 300.0f)) wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
     }
-    if(selectedRoom==room8)
+    
+    if(selectedRoom == room8)
     {
-        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 400.0f));
-        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 300.0f));
-        wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 200.0f));
+        if(czyZyje(100.0f, 400.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 400.0f));
+        if(czyZyje(100.0f, 300.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 300.0f));
+        if(czyZyje(100.0f, 200.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 200.0f));
     }
-    if(selectedRoom==room9)
+    
+    if(selectedRoom == room9)
     {
-        wordlObjects.push_back(new Skieleton(336.0f,240.0f));
+        if(czyZyje(336.0f, 240.0f)) wordlObjects.push_back(new Skieleton(336.0f, 240.0f));
     }
 }
 
@@ -477,6 +494,7 @@ int main()
     std::vector<Game*> worldObjects;
     sf::Clock clock;
     Inventory playerInventory;
+    std::vector<std::string> defeatedEnemies[10][10];
 
     while(window.isOpen())
     {
@@ -509,7 +527,7 @@ int main()
                         backgroundMusic.setVolume(100.0f); // 100% może urwać uszy na słuchawkach ;)
                         backgroundMusic.play();
                     }
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -523,10 +541,17 @@ int main()
                     // Resetujemy pozycję mapy do punktu startowego (tak jak przy nowej grze)
                     worldX = 1;
                     worldY = 4;
-        
+                    //reset pamięci o pokonanych wrogach
+                    for (int y = 0; y < 10; ++y)
+                    {
+                        for (int x = 0; x < 10; ++x)
+                        {
+                            defeatedEnemies[y][x].clear();
+                        }
+                    }
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
@@ -644,7 +669,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
                 }
                 else
                 {
@@ -657,7 +682,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
                 }
                 else
                 {
@@ -669,7 +694,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
                 }
                 else
                 {
@@ -681,7 +706,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
                 }
                 else 
                 {
@@ -864,9 +889,19 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                         if (enemy->isDead())
                         {
                             std::cout << "Enemy died!\n";
+
+                            // POBIERAMY POZYCJĘ STARTOWĄ, A NIE AKTUALNĄ:
+                            sf::Vector2f sPos = enemy->getStartPosition();
+                            std::string enemyKey = std::to_string((int)sPos.x) + "_" + std::to_string((int)sPos.y);
+                            
+                            defeatedEnemies[worldY][worldX].push_back(enemyKey);
+                            
+                            // TEST W KONSOLI (teraz powinieneś zobaczyć np. równiutkie 600_400):
+                            std::cout << "ZAPISANO SMIERC STARTOWA: Pokoj [" << worldY << "][" << worldX << "] Wrog ze startu: " << enemyKey << std::endl;
+
                             delete worldObjects[i];
                             worldObjects.erase(worldObjects.begin() + i);
-                            continue; // Przejdź do następnego obiektu
+                            continue; 
                         }
                     }
                     // Wróg dotyka gracza (gracz zbiera obrażenia)
@@ -926,7 +961,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 worldX = 3;
                 worldY = 9;
 
-                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right);
+                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
 
                 currentState = GameState::Gameplay;
             }

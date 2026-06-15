@@ -158,7 +158,11 @@ class Moblin : public Enemy
         const sf::Texture* texture_right;
 
 public:
+<<<<<<< HEAD
     Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 150.0f)
+=======
+    Moblin(const sf::Texture& tex_up,const sf::Texture& tex_down,const sf::Texture& tex_left,const sf::Texture& tex_right, float x, float y) : Enemy(x, y, 50.0f)
+>>>>>>> a4138acdcb6a81fb24641b172b6081ccc505f6d9
     {   
         this->texture_down = &tex_down;
         this->texture_up = &tex_up;

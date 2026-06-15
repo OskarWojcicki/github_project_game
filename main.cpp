@@ -26,9 +26,9 @@ const char room1[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
+    {'#','F','F','F','P','P','P','P','P','P','P','P','P','P','P'},
+    {'#','F','F','F','P','P','P','P','P','P','P','P','P','P','P'},
+    {'#','F','F','F','P','P','P','P','P','P','P','P','P','P','P'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
@@ -37,13 +37,13 @@ const char room1[11][15]=
 
 const char room2[11][15]=
 {
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'P','P','P','P','P','P','P','P','P','F','F','F','F','F','#'},
+    {'P','P','P','P','P','P','P','P','P','F','F','F','F','F','#'},
+    {'P','P','P','P','P','P','P','P','P','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
@@ -52,62 +52,62 @@ const char room2[11][15]=
 
 const char room3[11][15]=
 {
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'}
 };
 
 const char room4[11][15]=
 {
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'}
 };
 
 const char room5[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','C','C','C','C','C','C','C','C','C','C','C','C','C','#'},
-    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'S','S','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'S','S','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'S','S','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'#','C','S','S','S','S','S','S','S','S','S','S','S','C','#'},
-    {'#','C','C','C','C','C','C','C','C','C','C','C','C','C','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'P','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'P','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'P','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
 const char room6[11][15]=
 {
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','#','F','F','P','P','P','P','P','P','P','P','P'},
+    {'#','F','F','#','F','F','P','P','P','P','P','P','P','P','P'},
+    {'#','F','F','#','F','F','P','P','P','P','P','P','P','P','P'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'}
 };
 
 const char room7[11][15]=
@@ -116,13 +116,13 @@ const char room7[11][15]=
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
+    {'P','P','P','P','P','P','P','P','P','F','F','F','F','F','#'},
+    {'P','P','P','P','P','P','P','P','P','F','F','F','F','F','#'},
+    {'P','P','P','P','P','P','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','F','F','F','F','F','P','P','P','F','F','F','F','F','#'},
+    {'#','#','#','#','#','#','P','P','P','#','#','#','#','#','#'}
 };
 
 const char room8[11][15]=
@@ -130,11 +130,11 @@ const char room8[11][15]=
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},  
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'P','P','P','P','P','P','P','P','P','P','P','P','P','P','P'},
+    {'P','P','P','P','P','P','P','P','P','P','P','P','P','P','P'},
+    {'P','P','P','P','P','P','P','P','P','P','P','P','P','P','P'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},  
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
@@ -143,15 +143,15 @@ const char room8[11][15]=
 const char room9[11][15]=
 {
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','P'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','P'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','P'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
+    {'#','P','P','P','P','P','P','P','P','P','P','P','P','P','#'},
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
@@ -299,7 +299,7 @@ const char (*worldMap[10][10])[15]=
     {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
 };
 
-void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, std::vector<std::string> (&defeatedEnemies)[10][10])
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,std::vector<std::string> (&defeatedEnemies)[10][10])
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
     int currentHP = 3; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
@@ -348,6 +348,10 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
             {
                 wordlObjects.push_back(new Background(t_cien, posX,posY,false));
             }
+            else if(selectedRoom[row][col] == 'P')
+            {
+                wordlObjects.push_back(new Background(t_piasek,posX,posY,false));
+            }
         }
     }
 
@@ -359,8 +363,6 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     
     wordlObjects.push_back(player);
 
-    // --- FUNKCJA POMOCNICZA DO SPRAWDZANIA CZY WRÓG ŻYJE ---
-    // Lambda sprawdza, czy wróg o danej pozycji X i Y został już zabity w pokoju [wy][wx]
     auto czyZyje = [&](float x, float y) -> bool {
         std::string key = std::to_string((int)x) + "_" + std::to_string((int)y);
         for(const auto& deadKey : defeatedEnemies[wy][wx]) {
@@ -370,43 +372,95 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         }
         return true; // Nie ma go na liście martwych, czyli żyje
     };
+    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
+    if(selectedRoom==room2)
+    {
+        if(czyZyje(300.0f, 400.0f))wordlObjects.push_back(new Slime(t_slime, 300.0f, 400.0f));
+        if(czyZyje(400.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime, 400.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_stone, 546.0f, 380.0f, true));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 450.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 498.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 546.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 594.0f, 100.0f, false));
 
-    // --- Generowanie zawartości pokoju z uwzględnieniem pamięci śmierci ---
-    if(selectedRoom == room2)
-    {
-        if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
-        if(czyZyje(600.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 450.0f, 148.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 498.0f, 196.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 546.0f, 196.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 594.0f, 148.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 498.0f, 148.0f, false));
+        wordlObjects.push_back(new Background(t_stone, 546.0f, 148.0f, true));
+
+
+
     }
-    
-    if(selectedRoom == room5)
+    if(selectedRoom==room5)
     {
-        wordlObjects.push_back(new Chest(336.0f, 240.0f, "SWORD"));
+        wordlObjects.push_back(new Chest(336.0f, 140.0f, "SWORD"));
     }
-    
-    if(selectedRoom == room3)
+    if(selectedRoom==room3)
     {
-        if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 400.0f));
-        if(czyZyje(600.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime, 600.0f, 200.0f));
-        if(czyZyje(300.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime, 300.0f, 200.0f));
+        if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
+        if(czyZyje(600.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
+        if(czyZyje(300.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime,300.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 284.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 188.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 92.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 284.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 188.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 92.0f, false));
+
+        
     }
-    
-    if(selectedRoom == room7)
+    if(selectedRoom==room7)
     {
-        if(czyZyje(100.0f, 100.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 100.0f));
-        if(czyZyje(400.0f, 300.0f)) wordlObjects.push_back(new Skieleton(400.0f, 300.0f));
+        if(czyZyje(100.0f, 100.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 100.0f));
+        if(czyZyje(300.0f, 100.0f))wordlObjects.push_back(new Skieleton(t_skieleton_down,t_skieleton_up,t_skieleton_sides,t_proj,300.0f, 100.0f));
+        if(czyZyje(100.0f, 200.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 200.0f));
+        wordlObjects.push_back(new Background(t_stone, 536.0f, 300.0f, true));
+
+        
     }
-    
-    if(selectedRoom == room8)
+    if(selectedRoom==room8)
     {
-        if(czyZyje(100.0f, 400.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 400.0f));
-        if(czyZyje(100.0f, 300.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 300.0f));
-        if(czyZyje(100.0f, 200.0f)) wordlObjects.push_back(new Moblin(t_moblin_up, t_moblin_down, t_moblin_left, t_moblin_right, 100.0f, 200.0f));
+        if(czyZyje(100.0f, 400.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 400.0f));
+        if(czyZyje(100.0f, 300.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 300.0f));
+      
     }
-    
-    if(selectedRoom == room9)
+    if(selectedRoom==room9)
     {
-        if(czyZyje(336.0f, 240.0f)) wordlObjects.push_back(new Skieleton(336.0f, 240.0f));
+        if(czyZyje(336.0f, 240.0f))wordlObjects.push_back(new Skieleton(t_skieleton_down,t_skieleton_up,t_skieleton_sides,t_proj,336.0f,240.0f));
     }
+      if(selectedRoom==room1)
+    {
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 150.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 198.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 246.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 298.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 346.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_stone, 546.0f, 380.0f, true));
+        wordlObjects.push_back(new Background(t_kwiatek, 346.0f, 380.0f, false));
+        wordlObjects.push_back(new Background(t_kwiatek, 300.0f, 380.0f, false));
+    }
+        if(selectedRoom==room4)
+    {
+        if(czyZyje(336.0f, 140.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,336.0f, 140.0f));
+        wordlObjects.push_back(new Background(t_stone, 120.0f, 380.0f, true));
+        wordlObjects.push_back(new Background(t_stone, 120.0f, 100.0f, true));
+        wordlObjects.push_back(new Background(t_stone, 536.0f, 100.0f, true));
+        wordlObjects.push_back(new Background(t_stone, 536.0f, 380.0f, true));
+        
+
+    }
+        if(selectedRoom==room6)
+    {
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 120.0f, 380.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 120.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 100.0f, false));
+        wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 380.0f, false));
+
+    }
+
+
 }
 
 
@@ -416,23 +470,34 @@ int main()
 
     sf::Music backgroundMusic;
     sf::Music titleMusic;
+    sf::Music gameOverMusic;
 
-    if(!titleMusic.openFromFile("muzyka/muzyka_title_screen.mp3")) 
+    if(!titleMusic.openFromFile("muzyka/title_screen.mp3")) 
     {
         std::cout << "Blad w ladowaniu muzyki menu" << std::endl;
     }
     else
     {
         titleMusic.setLoop(true);
-        titleMusic.setVolume(50.0f);
-        titleMusic.play(); // Muzyka zaczyna grać natychmiast
+        titleMusic.setVolume(80.0f);
+        titleMusic.play(); 
+    }
+
+    if(!gameOverMusic.openFromFile("muzyka/muzyka_gameOver.mp3"))
+    {
+        std::cout << "Blad w ladowaniu muzyki Game Over" << std::endl;
+    }
+    else
+    {
+        gameOverMusic.setLoop(false); 
+        gameOverMusic.setVolume(80.0f);
     }
 
     window.setFramerateLimit(60);
 
-    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right;
-    if (!tex_drzewa.loadFromFile("grafiki/drzewa.png") ||
-        !tex_floor1.loadFromFile("grafiki/floor1.png") ||
+    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_up,tex_skieleton_down,tex_skieleton_sides,tex_strzala, tex_piasek,tex_wysoka_trawa,tex_stone, tex_kwiatek;
+    if (!tex_drzewa.loadFromFile("grafiki/pokemon_fence.png") ||
+        !tex_floor1.loadFromFile("grafiki/pokemon_grass.png") ||
         !tex_floor2.loadFromFile("grafiki/floor2.png") ||
         !tex_cien.loadFromFile("grafiki/cien.png") ||
         !tex_serduszko.loadFromFile("grafiki/Serduszko2.png") ||
@@ -440,7 +505,15 @@ int main()
         !tex_moblin_up.loadFromFile("grafiki/moblin_up.png")||
         !tex_moblin_down.loadFromFile("grafiki/moblin_down.png") ||
         !tex_moblin_left.loadFromFile("grafiki/moblin_left.png") ||
-        !tex_moblin_right.loadFromFile("grafiki/moblin_right.png"))
+        !tex_moblin_righ.loadFromFile("grafiki/moblin_right.png") ||
+        !tex_skieleton_sides.loadFromFile("grafiki/skieleton_sides.png") ||
+        !tex_skieleton_down.loadFromFile("grafiki/skieleton_down.png") ||
+        !tex_skieleton_up.loadFromFile("grafiki/skieleton_up.png") ||
+        !tex_strzala.loadFromFile("grafiki/strzala.png") ||
+        !tex_piasek.loadFromFile("grafiki/piasek.png") ||
+        !tex_wysoka_trawa.loadFromFile("grafiki/wysoka_trawa.png") ||
+        !tex_stone.loadFromFile("grafiki/stone.png") ||
+        !tex_kwiatek.loadFromFile("grafiki/kwiatek.png"))
     {
         std::cout << "!!! Blad w ladowaniu tekstur otoczenia !!!" << std::endl;
     }
@@ -517,17 +590,17 @@ int main()
                     worldY = 4;
 
                     titleMusic.stop();
-                    if(!backgroundMusic.openFromFile("muzyka/muzyka_lvl1.mp3"))
+                    if(!backgroundMusic.openFromFile("muzyka/lvl1.mp3"))
                     {
                         std::cout << "Blad w ladowaniu muzyki" << std::endl;
                     }
                     else
                     {
                         backgroundMusic.setLoop(true);
-                        backgroundMusic.setVolume(100.0f); // 100% może urwać uszy na słuchawkach ;)
+                        backgroundMusic.setVolume(50.0f); 
                         backgroundMusic.play();
                     }
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -538,10 +611,12 @@ int main()
                 {
                     std::cout << "Restart gry... Ladowanie poziomu od nowa.\n";
         
+                    gameOverMusic.stop();  
+                    backgroundMusic.play();
                     // Resetujemy pozycję mapy do punktu startowego (tak jak przy nowej grze)
                     worldX = 1;
                     worldY = 4;
-                    //reset pamięci o pokonanych wrogach
+                    
                     for (int y = 0; y < 10; ++y)
                     {
                         for (int x = 0; x < 10; ++x)
@@ -549,9 +624,10 @@ int main()
                             defeatedEnemies[y][x].clear();
                         }
                     }
+                    
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
@@ -669,7 +745,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
                 }
                 else
                 {
@@ -682,7 +758,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
                 }
                 else
                 {
@@ -694,7 +770,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
                 }
                 else
                 {
@@ -706,7 +782,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
                 }
                 else 
                 {
@@ -952,7 +1028,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-        // ==============================================================================
         
         else if(currentState==GameState::Kurtyna_lvl2)
         {
@@ -961,7 +1036,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 worldX = 3;
                 worldY = 9;
 
-                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_right,defeatedEnemies);
+                Rooms(worldX,worldY,worldObjects,340.0f,240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
 
                 currentState = GameState::Gameplay;
             }
@@ -971,6 +1046,12 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
         {
             if (player->getHP() <= 0)
             {
+                currentState = GameState::GameOver;
+                curtainHeight = 0.0f;
+
+                backgroundMusic.stop(); 
+                gameOverMusic.play();   
+                
                 currentState = GameState::GameOver;
                 curtainHeight = 0.0f;
             }

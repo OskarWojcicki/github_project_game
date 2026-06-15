@@ -3,6 +3,8 @@
 #include <iostream>
 #include "Character.h"
 #include <cmath>
+#include <SFML/Audio.hpp>
+
 
 
 class Link : public Character
@@ -26,6 +28,8 @@ class Link : public Character
     sf::Texture texture_down;
     sf::Texture texture_up;
     sf::Texture texture_sides;
+    sf::SoundBuffer hurtBuffer;
+    sf::Sound hurtSound;
 
     public:
     Link(float x, float y): Character(x, y, 3, 120.0f)
@@ -36,6 +40,15 @@ class Link : public Character
         if(!texture_down.loadFromFile("grafiki/chodzenie_down.png") || !texture_up.loadFromFile("grafiki/chodzenie_up.png") || !texture_sides.loadFromFile("grafiki/chodzenie_sides.png"))
         {
             std::cout<<"Blad w czytywaniu postaci"<<std::endl;
+        }
+        if (!hurtBuffer.loadFromFile("muzyka/muzyka_taking_dmg.mp3"))
+        {
+            std::cout << "Blad w czytywaniu dzwieku link_hurt.wav!" << std::endl;
+        }
+        else
+        {
+            hurtSound.setBuffer(hurtBuffer);
+            hurtSound.setVolume(100.0f); // Głośność od 0 do 100
         }
         sprite.setTexture(texture_down);
 
@@ -190,11 +203,14 @@ class Link : public Character
     int getHP() const { return hp; }
     bool isInvincible() const { return invincibilityTimer > 0.0f; }
 
-    void takeDamage(int amount) {
+    void takeDamage(int amount)
+     {
         if (!isInvincible()) {
             hp -= amount;
         if (hp < 0) hp = 0; // Życie nie może spaść poniżej zera
         invincibilityTimer = invincibilityDuration; // Uruchomienie ochrony
+
+        hurtSound.play();
         std::cout << "Link stracil " << amount << " HP! Pozostalo: " << hp << "\n";
         }
     }

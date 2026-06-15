@@ -30,17 +30,17 @@ public:
 
         this->sprite.setTexture(tex);
 
-        this->sprite.setTextureRect(sf::IntRect(225, 5, 16, 7));
-        this->sprite.setOrigin(8.0f, 3.5f); // Środek strzały
+        this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 9));
+        this->sprite.setOrigin(15.0f, 4.0f); // Środek strzały
         this->sprite.setPosition(x, y);
-        this->sprite.setScale(1.75f, 1.75f);
+        this->sprite.setScale(2.0f, 2.0f);
 
         // Normalizujemy wektor kierunku pocisku
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         if (length != 0)
         {
             velocity = (direction / length) * speed;
-            float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f;
+            float angle = (std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f) + 180.0f;
             this->sprite.setRotation(angle);
         }
     }
@@ -310,7 +310,7 @@ class Slime : public Enemy
         
         // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
         // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
-        this->sprite.setScale(1.0f, 1.0f); 
+        this->sprite.setScale(1.2f, 1.2f); 
 
         // Pozycja startowa sprajta na środku hitboxu shape
         this->sprite.setPosition(
@@ -431,12 +431,17 @@ public:
         {
             this->shape.move(dir * speed * deltaTime);
         }
+        int szerokosc_klatki=32;
+        int wysokosc_klatki=32;
 
         // Dynamicznie podmieniamy tekstury przekazane z maina
         if (std::abs(dir.x) > std::abs(dir.y))
         {
             this->sprite.setTexture(*texture_sides);
             patrzy_wLewo = (dir.x < 0.0f);
+
+            szerokosc_klatki=46;
+            wysokosc_klatki=37;
         }
         else
         {
@@ -449,6 +454,9 @@ public:
                 this->sprite.setTexture(*texture_down);
             }
             patrzy_wLewo = false;
+
+            szerokosc_klatki=32;
+            wysokosc_klatki=35;
         }
 
         // 3. SEKCJA ANIMACJI (0-2: chód, 3-5: napinanie łuku)
@@ -474,17 +482,18 @@ public:
 
         // 4. USTAWIANIE STRUKTURY KLATKI
         this->klatkaStruktura.top = 0;
+        this->klatkaStruktura.height = wysokosc_klatki;
         this->sprite.setScale(1.75f, 1.75f); 
 
-        if (patrzy_wLewo && this->sprite.getTexture() == texture_sides)
+        if (!patrzy_wLewo && this->sprite.getTexture() == texture_sides)
         {
-            this->klatkaStruktura.left = (aktualna_klatka * 32) + 32;
-            this->klatkaStruktura.width = -32; // Lustrzane odbicie dla chodzenia w lewo
+            this->klatkaStruktura.left = (aktualna_klatka * szerokosc_klatki) + szerokosc_klatki;
+            this->klatkaStruktura.width = -szerokosc_klatki; // Lustrzane odbicie dla chodzenia w lewo
         }
         else
         {
-            this->klatkaStruktura.left = aktualna_klatka * 32;
-            this->klatkaStruktura.width = 32;
+            this->klatkaStruktura.left = aktualna_klatka * szerokosc_klatki;
+            this->klatkaStruktura.width = szerokosc_klatki;
         }
 
         this->sprite.setTextureRect(this->klatkaStruktura);
@@ -499,14 +508,18 @@ public:
                 sf::Vector2f playerCenter(player->getBounds().left + (player->getBounds().width / 2.0f), player->getBounds().top + (player->getBounds().height / 2.0f));
                 sf::Vector2f shootDir = playerCenter - skeletonCenter;
 
-                // Spawnowanie starego pocisku
-                worldObjects.push_back(new Projectile(*texture_projectile, skeletonCenter.x, skeletonCenter.y, shootDir));
 
                 float length = std::sqrt(shootDir.x * shootDir.x + shootDir.y * shootDir.y);
+                sf::Vector2f spawnPos = skeletonCenter;
+
                 if (length != 0.0f)
                 {
+                    spawnPos += (shootDir / length) * 38.0f;
+
                     recoilVelocity = -(shootDir / length) * 300.0f;
                 }
+                 worldObjects.push_back(new Projectile(*texture_projectile, spawnPos.x, spawnPos.y, shootDir));
+
             }
             aktualna_klatka = 0;
             shootClock.restart();

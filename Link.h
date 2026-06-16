@@ -41,7 +41,7 @@ class Link : public Character
         {
             std::cout<<"Blad w czytywaniu postaci"<<std::endl;
         }
-        if (!hurtBuffer.loadFromFile("muzyka/muzyka_taking_dmg.mp3"))
+        if (!hurtBuffer.loadFromFile("muzyka/taking_dmg.mp3"))
         {
             std::cout << "Blad w czytywaniu dzwieku link_hurt.wav!" << std::endl;
         }
@@ -62,41 +62,24 @@ class Link : public Character
 
     void handleEvents(sf::Event& event)
     {
-        // Obsługa wciskania klawiszy (BEZ SPACJI)
         if (event.type == sf::Event::KeyPressed)
         {
             if (event.key.code == sf::Keyboard::W) move_up = true;
             if (event.key.code == sf::Keyboard::S) move_down = true;
             if (event.key.code == sf::Keyboard::A) move_left = true;
             if (event.key.code == sf::Keyboard::D) move_right = true;
+            if (event.key.code == sf::Keyboard::Space) isAttacking = true;
             if (event.key.code == sf::Keyboard::E) interactPressed = true; 
         }
         
-        // Obsługa puszczania klawiszy (BEZ SPACJI)
         if (event.type == sf::Event::KeyReleased)
         {
             if (event.key.code == sf::Keyboard::W) move_up = false;
             if (event.key.code == sf::Keyboard::S) move_down = false;
             if (event.key.code == sf::Keyboard::A) move_left = false;
             if (event.key.code == sf::Keyboard::D) move_right = false;
+            if (event.key.code == sf::Keyboard::Space) isAttacking = false;
             if (event.key.code == sf::Keyboard::E) interactPressed = false;
-        }
-
-        // TYLKO LPM AKTYWUJE STAN ATAKU
-        if (event.type == sf::Event::MouseButtonPressed)
-        {
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                isAttacking = true;
-            }
-        }
-
-        if (event.type == sf::Event::MouseButtonReleased)
-        {
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                isAttacking = false;
-            }
         }
     }
 

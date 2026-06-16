@@ -99,7 +99,7 @@ public:
     int getHP() const { return hp; }
     bool isInvincible() const { return invincibilityTimer > 0.0f; }
 
-    void takeDamage(int amount) {
+    virtual void takeDamage(int amount) {
         if (!isInvincible()) { // Obrażenia wchodzą tylko, gdy wróg NIE JEST odporny
             hp -= amount;
             if (hp < 0) hp = 0;

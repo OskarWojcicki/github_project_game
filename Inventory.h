@@ -1,40 +1,45 @@
-#ifndef INVENTORY_H
-#define INVENTORY_H
-
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
+#include "Game.h"
+#include "Items.h" // Dołączamy Twoje przedmioty!
 
-class Inventory {
+class Inventory : public Game
+{
 private:
     sf::Texture slotsTexture;
     sf::Sprite slotsSprite;
 
     sf::Texture selectionTexture;
-    sf::Sprite selectionSprite; // Nasza złota ramka Hotbar_selection.png
+    sf::Sprite selectionSprite; 
 
-    int activeSlot = 0;         // Indeks wybranego slotu (od 0 do 4)
+    int activeSlot = 0;         
     const int maxSlots = 5;
 
-    // Marginesy dopasowane do Twojego paska (wartości poglądowe, dostosuj jeśli trzeba)
-    float startOffsetX = -6.0f;  // Odległość od lewej krawędzi paska do 1. slotu
-    float startOffsetY = -5.0f;  // Odległość od górnej krawędzi paska do slotu
-    float slotWidth = 40.0f;    // Szerokość jednego slotu + odstęp (od środka do środka)
+    float startOffsetX = -6.0f;  
+    float startOffsetY = -5.0f;  
+    float slotWidth = 40.0f;    
+
+    // --- NOWOŚĆ: Przechowywanie Twoich obiektów Item ---
+    std::vector<Item*> items;
+
+    // Margines wewnątrz pojedynczego okienka (żeby ikona była wyśrodkowana)
+    float itemOffsetX = 4.0f; 
+    float itemOffsetY = 4.0f;
 
 public:
     Inventory() {
-        // 1. Ładowanie tła ekwipunku
         if (!slotsTexture.loadFromFile("grafiki/Sloty.png")) {
-            std::cout << "!!! Error loading Sloty.png texture !!!" << std::endl;
+            std::cout << "!!! Error loading Sloty.png texture !!!\n";
         }
         slotsSprite.setTexture(slotsTexture);
 
-        // 2. Ładowanie złotej ramki wyboru
         if (!selectionTexture.loadFromFile("grafiki/Hotbar_selection3.png")) {
-            std::cout << "!!! Error loading Hotbar_selection.png texture !!!" << std::endl;
+            std::cout << "!!! Error loading Hotbar_selection3.png texture !!!\n";
         }
         selectionSprite.setTexture(selectionTexture);
 
-        // 3. Pozycjonowanie paska w lewym dolnym rogu (okno 720x528)
         float slotsHeight = slotsSprite.getLocalBounds().height;
         float margin = 15.0f;
 
@@ -42,42 +47,89 @@ public:
         float posY = 528.0f - slotsHeight - margin;
 
         slotsSprite.setPosition(posX, posY);
+
+        // Zabezpieczamy wektor na 5 slotów wypełnionych na razie niczym (nullptr)
+        items.resize(maxSlots, nullptr);
     }
 
-    // Funkcje do zmiany aktywnego slotu za pomocą scrolla
-    void nextSlot() {
-        activeSlot = (activeSlot + 1) % maxSlots; // Zapętla: 4 -> 0
-        std::cout << "Active slot: " << activeSlot << std::endl;
+    // Destruktor - zwolni pamięć przedmiotów przy wyłączaniu gry
+    ~Inventory() {
+        clear();
     }
 
-    void prevSlot() {
-        activeSlot = (activeSlot - 1 + maxSlots) % maxSlots; // Zapętla: 0 -> 4
-        std::cout << "Active slot: " << activeSlot << std::endl;
-    }
+    void update(float deltaTime) override {}
 
-    // Zwraca aktualnie wybrany slot (przyda się później do używania przedmiotów)
-    int getActiveSlot() const {
-        return activeSlot;
-    }
-
-    // Renderowanie paska i złotej ramki
-    void render(sf::RenderWindow& window) {
-        // Najpierw rysujemy cały pasek
+    // --- ZAKTUALIZOWANA METODA DRAW ---
+    void draw(sf::RenderWindow& window) override {
+        // 1. Rysujemy ramkę slotów (tło)
         window.draw(slotsSprite);
 
-        // Pobieramy aktualną pozycję paska, żeby od niej liczyć pozycję ramki
+        // 2. Rysujemy przedmioty, które znajdują się w slotach
         sf::Vector2f basePos = slotsSprite.getPosition();
+        for (int i = 0; i < maxSlots; ++i) {
+            if (items[i] != nullptr) {
+                // Obliczamy matematycznie pozycję x i y dla ikony w slocie i
+                float itemX = basePos.x + itemOffsetX + (i * slotWidth);
+                float itemY = basePos.y + itemOffsetY;
+                
+                // Ustawiamy pozycję sprite'a przedmiotu i go rysujemy
+                items[i]->setPosition(itemX, itemY);
+                items[i]->setScale(2.0f, 2.0f);
+                items[i]->draw(window); // Wywołujemy metodę draw z klasy Item!
+            }
+        }
 
-        // MATEMATYKA POZYCJI RAMKI:
-        // X = początek paska + margines startowy + (numer slotu * szerokość slotu)
+        // 3. Rysujemy ramkę wyboru (na samym wierzchu)
         float frameX = basePos.x + startOffsetX + (activeSlot * slotWidth);
         float frameY = basePos.y + startOffsetY;
 
         selectionSprite.setPosition(frameX, frameY);
-        
-        // Rysujemy złotą ramkę NA pasku
         window.draw(selectionSprite);
     }
-};
 
-#endif // INVENTORY_H
+    sf::FloatRect getBounds() override {
+        return slotsSprite.getGlobalBounds();
+    }
+
+    // --- NOWE METODY DO ZARZĄDZANIA PRZEDMIOTAMI ---
+
+    // Wrzucanie przedmiotu do konkretnego slotu
+    void setItem(int slot, Item* item) {
+        if (slot >= 0 && slot < maxSlots) {
+            if (items[slot] != nullptr) {
+                delete items[slot]; // Zapobiegamy wyciekom pamięci
+            }
+            items[slot] = item;
+        }
+    }
+
+    // Czyszczenie ekwipunku przy restarcie/nowej grze
+    void clear() {
+        for (int i = 0; i < maxSlots; ++i) {
+            if (items[i] != nullptr) {
+                delete items[i];
+                items[i] = nullptr;
+            }
+        }
+    }
+
+    // Pobranie przedmiotu z aktywnego slotu (do walki/używania)
+    Item* getActiveItem() const {
+        return items[activeSlot];
+    }
+
+    // --- TWOJE METODY LOGIKI INWENTARZA ---
+    void nextSlot() {
+        activeSlot = (activeSlot + 1) % maxSlots;
+        std::cout << "Active slot: " << activeSlot << "\n";
+    }
+
+    void prevSlot() {
+        activeSlot = (activeSlot - 1 + maxSlots) % maxSlots;
+        std::cout << "Active slot: " << activeSlot << "\n";
+    }
+
+    int getActiveSlot() const {
+        return activeSlot;
+    }
+};

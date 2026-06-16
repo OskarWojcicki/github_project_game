@@ -390,8 +390,6 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         wordlObjects.push_back(new Background(t_kwiatek, 498.0f, 148.0f, false));
         wordlObjects.push_back(new Background(t_stone, 546.0f, 148.0f, true));
 
-
-
     }
     if(selectedRoom==room5)
     {
@@ -428,64 +426,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
     if(selectedRoom==room9)
     {
-
-    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
-    if(selectedRoom==room2)
-    {
-        if(czyZyje(300.0f,400.0f))wordlObjects.push_back(new Slime(t_slime, 300.0f, 400.0f));
-        if(czyZyje(400.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime, 400.0f, 200.0f));
-        wordlObjects.push_back(new Background(t_stone, 546.0f, 380.0f, true));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 450.0f, 100.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 498.0f, 100.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 546.0f, 100.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 594.0f, 100.0f, false));
-
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 450.0f, 148.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 498.0f, 196.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 546.0f, 196.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 594.0f, 148.0f, false));
-        wordlObjects.push_back(new Background(t_kwiatek, 498.0f, 148.0f, false));
-        wordlObjects.push_back(new Background(t_stone, 546.0f, 148.0f, true));
-
-
-
-    }
-    if(selectedRoom==room5)
-    {
-        wordlObjects.push_back(new Chest(336.0f, 140.0f, "SWORD"));
-    }
-    if(selectedRoom==room3)
-    {
-        if(czyZyje(600.0f, 400.0f))wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
-        if(czyZyje(600.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
-        if(czyZyje(300.0f, 200.0f)) wordlObjects.push_back(new Slime(t_slime,300.0f, 200.0f));
-        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 284.0f, false));
-        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 188.0f, false));
-        wordlObjects.push_back(new Background(t_kwiatek, 500.0f, 92.0f, false));
-        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 284.0f, false));
-        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 188.0f, false));
-        wordlObjects.push_back(new Background(t_kwiatek, 190.0f, 92.0f, false));
-
-        
-    }
-    if(selectedRoom==room7)
-    {
-        if(czyZyje(100.0f,100.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 100.0f));
-       if(czyZyje(300.0f, 100.0f)) wordlObjects.push_back(new Skieleton(t_skieleton_down,t_skieleton_up,t_skieleton_sides,t_proj,300.0f, 100.0f));
-       if(czyZyje(100.0f, 200.0f)) wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 200.0f));
-        wordlObjects.push_back(new Background(t_stone, 536.0f, 300.0f, true));
-
-        
-    }
-    if(selectedRoom==room8)
-    {
-        if(czyZyje(100.0f, 214.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 262.0f));
-        if(czyZyje(100.0f, 300.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,100.0f, 300.0f));
-      
-    }
-    if(selectedRoom==room9)
-    {
-       if(czyZyje(336.0f, 240.0f)) wordlObjects.push_back(new Skieleton(t_skieleton_down,t_skieleton_up,t_skieleton_sides,t_proj,336.0f,240.0f));
+        if(czyZyje(336.0f, 240.0f))wordlObjects.push_back(new Skieleton(t_skieleton_down,t_skieleton_up,t_skieleton_sides,t_proj,336.0f,240.0f));
     }
       if(selectedRoom==room1)
     {
@@ -516,28 +457,6 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 380.0f, false));
 
     }
-
-
-    }
-        if(selectedRoom==room4)
-    {
-        if(czyZyje(336.0f, 140.0f))wordlObjects.push_back(new Moblin(t_moblin_up,t_moblin_down,t_moblin_left,t_moblin_right,336.0f, 140.0f));
-        wordlObjects.push_back(new Background(t_stone, 120.0f, 380.0f, true));
-        wordlObjects.push_back(new Background(t_stone, 120.0f, 100.0f, true));
-        wordlObjects.push_back(new Background(t_stone, 536.0f, 100.0f, true));
-        wordlObjects.push_back(new Background(t_stone, 536.0f, 380.0f, true));
-        
-
-    }
-        if(selectedRoom==room6)
-    {
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 120.0f, 380.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 120.0f, 100.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 100.0f, false));
-        wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 380.0f, false));
-
-    }
-
 }
 
 
@@ -591,8 +510,6 @@ int main()
         !tex_wysoka_trawa.loadFromFile("grafiki/wysoka_trawa.png") ||
         !tex_stone.loadFromFile("grafiki/stone.png") ||
         !tex_kwiatek.loadFromFile("grafiki/kwiatek.png"))
-        !tex_strzala.loadFromFile("grafiki/strzala.png"))
-
     {
         std::cout << "!!! Blad w ladowaniu tekstur otoczenia !!!" << std::endl;
     }
@@ -679,8 +596,15 @@ int main()
                         backgroundMusic.setVolume(50.0f); 
                         backgroundMusic.play();
                     }
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
 
+                    playerInventory.clear(); // Czyszczenie starych śmieci (np. po wcześniejszej grze)
+                            
+                            playerInventory.setItem(0, new Potion());    // Slot 1 (indeks 0)
+                            playerInventory.setItem(1, new Sword());     // Slot 2 (indeks 1)
+                            playerInventory.setItem(2, new Bow());       // Slot 3 (indeks 2)
+                            playerInventory.setItem(3, new Boomerang()); // Slot 4 (indeks 3)
+
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -708,11 +632,10 @@ int main()
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
-
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
-                        player->setHP(10); 
+                        player->setHP(3); 
                     }
 
                     // Wracamy do rozgrywki
@@ -736,6 +659,43 @@ int main()
                      playerInventory.nextSlot(); // Przewiń slot w prawo
                  }
              }
+            }
+            
+            if (currentState == GameState::Gameplay)
+            {
+                if (event.type == sf::Event::MouseButtonPressed) 
+                {
+                    if (event.mouseButton.button == sf::Mouse::Right) 
+                    {
+                        Item* activeItem = playerInventory.getActiveItem();
+
+                        if (activeItem != nullptr) 
+                        {
+                            std::string itemName = activeItem->getName();
+
+                            if (itemName == "Sword") {
+                                std::cout << "[PPM] Atakujesz mieczem!\n";
+                                activeItem->use(player);
+                            }
+                            else if (itemName == "Bow") {
+                                std::cout << "[PPM] Wypuszczasz strzale z luku!\n";
+                            }
+                            else if (itemName == "Boomerang") {
+                                std::cout << "[PPM] Rzucasz bumerangiem!\n";
+                            }
+                            else if (itemName == "Potion") {
+                                std::cout << "[PPM] Pijesz miksture lecznicza!\n";
+                                activeItem->use(player);
+                                playerInventory.setItem(playerInventory.getActiveSlot(), nullptr);
+                            }
+                        } 
+                        else {
+                            std::cout << "[PPM] Kliknales, ale ten slot jest pusty!\n";
+                        }
+                    }
+                }
+                // ===============================================================
+                
             }
 
             if(currentState == GameState::Gameplay && player != nullptr)
@@ -827,7 +787,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 {
                     worldX++;
                     Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
-
                 }
                 else
                 {
@@ -841,7 +800,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 {
                     worldX--;
                     Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
-
                 }
                 else
                 {
@@ -854,7 +812,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 {
                     worldY++;
                     Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
-
                 }
                 else
                 {
@@ -867,7 +824,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 {
                     worldY--;
                     Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa,tex_floor1,tex_floor2,tex_cien,tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek, defeatedEnemies);
-
                 }
                 else 
                 {
@@ -1136,9 +1092,6 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
 
                 backgroundMusic.stop(); 
                 gameOverMusic.play();   
-                
-                currentState = GameState::GameOver;
-                curtainHeight = 0.0f;
             }
         }
 
@@ -1181,7 +1134,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
 
-            playerInventory.render(window);
+            playerInventory.draw(window);
         }
         else if(currentState == GameState::Kurtyna_lvl2)
         {

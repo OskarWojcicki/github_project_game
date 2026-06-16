@@ -390,8 +390,6 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         wordlObjects.push_back(new Background(t_kwiatek, 498.0f, 148.0f, false));
         wordlObjects.push_back(new Background(t_stone, 546.0f, 148.0f, true));
 
-
-
     }
     if(selectedRoom==room5)
     {
@@ -459,8 +457,6 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         wordlObjects.push_back(new Background(t_wysoka_trawa, 536.0f, 380.0f, false));
 
     }
-
-
 }
 
 
@@ -1009,7 +1005,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                         // Jeśli przeciwnik umarł, usuwamy go z pamięci i z wektora
                         if (enemy->isDead())
                         {
-                            std::cout << "Enemy died!\n";
+                           std::cout << "Enemy died!\n";
 
                             // POBIERAMY POZYCJĘ STARTOWĄ, A NIE AKTUALNĄ:
                             sf::Vector2f sPos = enemy->getStartPosition();

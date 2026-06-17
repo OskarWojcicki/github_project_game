@@ -18,24 +18,17 @@ private:
     bool isPlayerOwned;
 
 public:
-    Projectile(const sf::Texture& tex, float x, float y, sf::Vector2f direction, bool playerOwned = false)
+    Projectile(const sf::Texture& tex, float x, float y, sf::Vector2f direction, sf::IntRect rect= sf::IntRect(0,0,16,9),float scale = 2.0f, bool playerOwned = false)
     {
         this->isPlayerOwned = playerOwned;
         speed = 200.0f; // Pocisk leci dość szybko
-        
-        // bulletShape.setRadius(6.0f);
-        // bulletShape.setFillColor(sf::Color::White); // Biała kuleczka
-        // bulletShape.setOutlineColor(sf::Color::Black);
-        // bulletShape.setOutlineThickness(1.0f);
-        // bulletShape.setOrigin(6.0f, 6.0f); // Środek kółka
-        // bulletShape.setPosition(x, y);
 
         this->sprite.setTexture(tex);
 
-        this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 9));
+        this->sprite.setTextureRect(rect);
         this->sprite.setOrigin(15.0f, 4.0f); // Środek strzały
         this->sprite.setPosition(x, y);
-        this->sprite.setScale(2.0f, 2.0f);
+        this->sprite.setScale(scale,scale);
 
         // Normalizujemy wektor kierunku pocisku
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);

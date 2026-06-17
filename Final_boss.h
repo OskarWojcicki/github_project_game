@@ -168,6 +168,8 @@ private:
     const sf::Texture& tex1;
     const sf::Texture& tex2;
     const sf::Texture& texOczu;
+    const sf::Texture& texOgien;
+    sf::Clock damageClock;
     
     // Parametry
     int maxHp;
@@ -176,8 +178,8 @@ private:
     int aktualnyYOffset = 0;
 
 public:
-    Final_boss(const sf::Texture& t1, const sf::Texture& t2, const sf::Texture& tOczy, float x, float y) 
-        : Enemy(x, y, 35.0f), tex1(t1), tex2(t2), texOczu(tOczy), hpBar(100.0f, 15.0f, 40.0f)
+    Final_boss(const sf::Texture& t1, const sf::Texture& t2, const sf::Texture& tOczy, const sf::Texture& tOgien, float x, float y) 
+        : Enemy(x, y, 35.0f), tex1(t1), tex2(t2), texOczu(tOczy),texOgien(tOgien), hpBar(100.0f, 15.0f, 40.0f)
     {
         this->maxHp = 40;
         this->hp = this->maxHp;
@@ -196,6 +198,10 @@ public:
         this->sprite.setScale(1.5f, 1.5f);
         this->startPosition = sf::Vector2f(x, y);
         
+        this->shape.setFillColor(sf::Color::Transparent); // Przezroczysty środek
+this->shape.setOutlineColor(sf::Color::Red);       // Czerwona ramka
+this->shape.setOutlineThickness(2.0f);
+
         this->invincibilityDuration = 0.5f; // Czas nietykalności po otrzymaniu dmg
     }
 
@@ -209,6 +215,23 @@ public:
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
+        if (player != nullptr && this->getBounds().intersects(player->getBounds()))
+    {
+        // Sprawdzamy czy minęła sekunda od ostatniego uderzenia
+        if (damageClock.getElapsedTime().asSeconds() >= 1.0f) 
+        {
+            // Obliczamy kierunek odpychania (od Boss -> Gracz)
+            sf::Vector2f dir = player->getPosition() - this->shape.getPosition();
+            float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+            if (len > 0) dir /= len; // Normalizacja wektora
+
+            // Zadaj obrażenia i odepchnij
+            player->takeDamage(1); 
+            player->applyKnockback(dir, 600.0f); // Siła 300.0f
+            
+            damageClock.restart();
+        }
+    }
         recoilVelocity = sf::Vector2f(0.0f, 0.0f);
         float czas_w_stanie = stateClock.getElapsedTime().asSeconds();
         
@@ -224,7 +247,7 @@ public:
                 aktualnyYOffset = 0;
                 
                 if (czas_w_stanie > 4.0f) {
-                    this->shape.setSize(sf::Vector2f(96.0f, 96.0f));
+                    this->shape.setSize(sf::Vector2f(160.0f, 160.0f));
                     this->sprite.setScale(2.5f, 2.5f);
                     aktualnyEtap = Boss_state::Faza_Oka;
                     stateClock.restart();
@@ -259,8 +282,8 @@ public:
                     aktualnyYOffset = 64; 
                 }
 
-                this->shape.move(getDirectionToPlayer() * speed * deltaTime);
-                
+                float currentSpeed = isEyeOpen ? (speed * 0.5f) : (speed * 1.8f);
+                this->shape.move(getDirectionToPlayer() * currentSpeed * deltaTime);                
                 if (this->hp <= maxHp / 2) { 
                     aktualnyEtap = Boss_state::Faza_PolHp; 
                     isEyeOpen = true; // W kolejnej fazie znowu podatny
@@ -295,8 +318,11 @@ public:
                 
                 this->shape.move(getDirectionToPlayer() * (speed * 1.7f) * deltaTime);
                 this->sprite.setColor(sf::Color(255, 150, 150));
-                if (attackClock.getElapsedTime().asSeconds() >= 1.3f) {
-                    worldObjects.push_back(new Projectile(*this->sprite.getTexture(), shape.getPosition().x, shape.getPosition().y, getDirectionToPlayer()));
+                if (attackClock.getElapsedTime().asSeconds() >= 2.5f) {
+
+                    sf::IntRect bossRect(0, 0, 23, 31);
+
+                    worldObjects.push_back(new Projectile(texOgien, shape.getPosition().x, shape.getPosition().y, getDirectionToPlayer(),bossRect, 4.0f));
                     attackClock.restart();
                 }
                 break;

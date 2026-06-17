@@ -70,7 +70,6 @@ public:
     }
 };
 
-
 // Klasa bazowa (Abstrakcyjna)
 class Enemy : public Character
 {
@@ -532,4 +531,143 @@ public:
             shootClock.restart();
         }
     }
+};
+
+// ==========================================
+// NOWA KLASA: POCISK BUMERANGU
+// ==========================================
+class BoomerangProjectile : public Game
+{
+private:
+    sf::Sprite sprite;
+    sf::CircleShape fallbackShape; // Koło ratunkowe, gdyby nie było tekstury
+    bool hasTexture = false;
+
+    std::vector<Enemy*> targets;   // Kolejka przeciwników do trafienia
+    int currentTargetIndex = 0;    // Którego wroga teraz gonimy
+    bool returningToPlayer = false;// Czy bumerang wraca już do Linka
+    float speed = 280.0f;          // Prędkość lotu bumerangu
+    int damage = 3;                // Obrażenia bumerangu
+
+public:
+    BoomerangProjectile(sf::Texture* tex, sf::Vector2f startPos, const std::vector<Game*>& worldObjects)
+    {
+        if (tex != nullptr) {
+            sprite.setTexture(*tex);
+            sprite.setOrigin(tex->getSize().x / 2.0f, tex->getSize().y / 2.0f);
+            sprite.setPosition(startPos);
+            hasTexture = true;
+        } else {
+            fallbackShape.setRadius(12.0f);
+            fallbackShape.setFillColor(sf::Color::Yellow);
+            fallbackShape.setOrigin(12.0f, 12.0f);
+            fallbackShape.setPosition(startPos);
+        }
+
+        // FAZA NAMIERZANIA: Skanujemy pokój i szukamy wrogów
+        for (auto* obj : worldObjects) {
+            Enemy* e = dynamic_cast<Enemy*>(obj);
+            if (e != nullptr && !e->isDead()) {
+                targets.push_back(e);
+            }
+        }
+
+        // Jeśli pokój jest pusty, od razu wraca do gracza
+        if (targets.empty()) {
+            returningToPlayer = true;
+        }
+    }
+
+    void update(float deltaTime) override
+    {
+        // Obracanie bumerangu w locie dla lepszego efektu wizualnego
+        if (hasTexture) sprite.rotate(800.0f * deltaTime);
+        else fallbackShape.rotate(800.0f * deltaTime);
+
+        sf::Vector2f currentPos = hasTexture ? sprite.getPosition() : fallbackShape.getPosition();
+        sf::Vector2f targetPos;
+
+        if (!returningToPlayer) {
+            // Sprawdzamy czy cel w międzyczasie nie zginął od czegoś innego
+            if (currentTargetIndex >= targets.size()) {
+                returningToPlayer = true;
+                return;
+            }
+
+            Enemy* currentEnemy = targets[currentTargetIndex];
+            
+            // Bezpiecznik: jeśli wróg został usunięty z pamięci (nullptr lub martwy), bierzemy następnego
+            if (currentEnemy == nullptr || currentEnemy->isDead()) {
+                currentTargetIndex++;
+                if (currentTargetIndex >= targets.size()) {
+                    returningToPlayer = true;
+                }
+                return;
+            }
+
+            targetPos = currentEnemy->getPosition();
+
+            // Przemieszczanie w stronę wroga
+            sf::Vector2f dir = targetPos - currentPos;
+            float dist = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+
+            if (dist > 5.0f) {
+                dir /= dist;
+                currentPos += dir * speed * deltaTime;
+            } else {
+                // TRAFIENIE WROGA! Zadajemy obrażenia i odrzucamy go
+                currentEnemy->takeDamage(damage);
+                
+                if (player != nullptr) {
+                    sf::Vector2f knockbackDir = currentEnemy->getPosition() - player->getPosition();
+                    float len = std::sqrt(knockbackDir.x * knockbackDir.x + knockbackDir.y * knockbackDir.y);
+                    if (len != 0.0f) knockbackDir /= len;
+                    currentEnemy->applyKnockback(knockbackDir, 400.0f);
+                }
+
+                std::cout << "[BUMERANG] Trafiono wroga! HP wroga: " << currentEnemy->getHP() << "\n";
+
+                // Przełączamy na kolejny cel
+                currentTargetIndex++;
+                if (currentTargetIndex >= targets.size()) {
+                    returningToPlayer = true;
+                }
+            }
+        }
+        else {
+            // FAZA POWROTU: Gonimy pozycję Linka
+            if (player == nullptr) return;
+
+            sf::FloatRect pBounds = player->getBounds();
+            targetPos = sf::Vector2f(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
+
+            sf::Vector2f dir = targetPos - currentPos;
+            float dist = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+
+            if (dist > 10.0f) {
+                dir /= dist;
+                currentPos += dir * speed * deltaTime;
+            } else {
+                // Bumerang wrócił do rąk gracza – oznaczamy go jako "martwy" przez HP = 0, aby usunąć go w main.cpp
+                damage = -1; // Flaga sygnałowa do usunięcia
+            }
+        }
+
+        // Zapisujemy nową pozycję
+        if (hasTexture) sprite.setPosition(currentPos);
+        else fallbackShape.setPosition(currentPos);
+    }
+
+    void draw(sf::RenderWindow& window) override
+    {
+        if (hasTexture) window.draw(sprite);
+        else window.draw(fallbackShape);
+    }
+
+    sf::FloatRect getBounds() override
+    {
+        return hasTexture ? sprite.getGlobalBounds() : fallbackShape.getGlobalBounds();
+    }
+
+    bool isFinished() const { return damage == -1; }
 };

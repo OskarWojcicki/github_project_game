@@ -303,7 +303,7 @@ const char (*worldMap[10][10])[15]=
 void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,const sf::Texture& t_przemiana1,const sf::Texture& t_przemiana2, const sf::Texture& t_oczy,const sf::Texture& t_ogien, std::vector<std::string> (&defeatedEnemies)[10][10])
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
-    int currentHP = 3; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
+    int currentHP = 30; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
     if (player != nullptr)
     {
         currentHP = player->getHP();
@@ -427,7 +427,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
 
 
-    if(selectedRoom==room9)
+    if(selectedRoom==room1)
     {
         if(czyZyje(336.0f, 240.0f))wordlObjects.push_back(new Final_boss(t_przemiana1,t_przemiana2,t_oczy,t_ogien,336.0f,240.0f));
     }
@@ -1042,7 +1042,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
                 sf::Vector2f shootDir = player->getFacingDirection();
 
                 // Tworzymy strzałę w świecie gry
-                worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, true));
+                worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir,sf::IntRect(0, 0, 16, 9), 2.0f, true));
                 
                 bowCooldownClock.restart(); // Uruchamiamy globalny 2-sekundowy cooldown broni
                 std::cout << "[ŁUK] Puszczono cięciwę! Strzała wystrzelona.\n";

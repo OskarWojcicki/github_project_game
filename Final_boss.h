@@ -5,6 +5,11 @@
 #include <cmath> 
 #include "Enemies.h"
 
+        // frames[0] = sf::IntRect(0, 0, 16, 10);   // Np. Oko
+        // frames[1] = sf::IntRect(13, 0, 17, 16);  // Np. Oko z kulką
+        // frames[2] = sf::IntRect(30, 0, 15, 14);  // Np. Oko z małą kulką
+        // frames[3] = sf::IntRect(47, 0, 12, 94);  // Np. Laser ciemny
+        // frames[4] = sf::IntRect(60, 0, 14, 95);  // Np. Laser jasny
 enum class Boss_state
 {
     Transformacja,
@@ -19,97 +24,92 @@ enum class Boss_state
 class Flying_eyes : public Enemy
 {
 private:
+    const float SCALE = 3.5f; 
     sf::Clock animClock;
-    sf::Clock laserCycleClock;      
-    sf::Clock damageClock;          
-    
-    int klatka_szerokosc = 32;
-    float maxLaserDystans = 400.0f; 
-    
-    sf::Vector2f stalyKierunekLaseru; 
-    bool laserAktywny = false;       
+    sf::Clock laserCycleClock;
+    sf::Vector2f startPos; 
+    sf::IntRect frames[6]; 
+    bool laserAktywny = false;
 
 public:
     Flying_eyes(const sf::Texture& tex, float x, float y) : Enemy(x, y, 0.0f)
     {
-        this->hp = 2;
-        this->speed = 0.0f; 
+        this->startPos = sf::Vector2f(x, y);
         this->sprite.setTexture(tex);
+        this->hp = 2;
 
-        this->sprite.setTextureRect(sf::IntRect(0, 0, klatka_szerokosc, 32));
-        this->sprite.setScale(2.0f, 2.0f);
-        this->shape.setSize(sf::Vector2f(64.0f, 64.0f));
-        this->shape.setPosition(x, y);
-        this->sprite.setOrigin(klatka_szerokosc / 2.0f, 16.0f);
+        // Definicje klatek
+        frames[0] = sf::IntRect(0, 0, 16, 10);
+        frames[1] = sf::IntRect(13, 0, 17, 16);
+        frames[2] = sf::IntRect(30, 0, 15, 14);
+        frames[3] = sf::IntRect(47, 0, 12, 94);
+        frames[4] = sf::IntRect(60, 0, 14, 95);
 
-        if (player != nullptr)
-        {
-            sf::Vector2f startPozycja = this->shape.getPosition() + sf::Vector2f(32.0f, 32.0f);
-            sf::Vector2f graczPoz = sf::Vector2f(player->getBounds().left + player->getBounds().width / 2.0f, player->getBounds().top + player->getBounds().height / 2.0f);
-            
-            sf::Vector2f dir = graczPoz - startPozycja;
-            float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-            if (len != 0.0f) {
-                this->stalyKierunekLaseru = dir / len; 
-            } else {
-                this->stalyKierunekLaseru = sf::Vector2f(0.0f, 1.0f); 
-            }
-        }
-        else
-        {
-            this->stalyKierunekLaseru = sf::Vector2f(0.0f, 1.0f);
-        }
+        this->sprite.setScale(SCALE, SCALE);
+        this->sprite.setOrigin(7.0f, 47.0f); 
+        this->sprite.setPosition(startPos);
+        
+        // Ustawienie przezroczystości (nie widzisz ramki w finalnej grze)
+        this->shape.setFillColor(sf::Color::Transparent); 
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
-        this->sprite.setPosition(
-            this->shape.getPosition().x + (this->shape.getSize().x / 2.0f),
-            this->shape.getPosition().y + (this->shape.getSize().y / 2.0f)
-        );
+        // 1. Reset na start każdej klatki (zabezpieczenie)
+        this->shape.setSize(sf::Vector2f(0.0f, 0.0f));
+        this->shape.setPosition(-1000.0f, -1000.0f); 
+        laserAktywny = false;
 
-        int aktualna_klatka = static_cast<int>(animClock.getElapsedTime().asSeconds() / 0.12f) % 3;
-        this->sprite.setTextureRect(sf::IntRect(aktualna_klatka * klatka_szerokosc, 0, klatka_szerokosc, 32));
+        float czas = laserCycleClock.getElapsedTime().asSeconds();
+        int idx = 0;
 
-        float czasCyklu = laserCycleClock.getElapsedTime().asSeconds();
-        if (czasCyklu < 2.0f) { laserAktywny = true; }
-        else if (czasCyklu < 4.0f) { laserAktywny = false; }
-        else { laserCycleClock.restart(); }
+        // 2. Logika stanów
+        if (czas < 2.0f) {
+            // FAZA OKA
+            laserAktywny = false;
+            idx = (static_cast<int>(animClock.getElapsedTime().asSeconds() * 4.0f)) % 3;
+        } 
+        else {
+            // FAZA LASERA
+            laserAktywny = true;
+            idx = 3 + (static_cast<int>(animClock.getElapsedTime().asSeconds() * 4.0f) % 2);
+            
+            // Wymiary hitboksa
+            float w = 14.0f * SCALE;
+            float h = 95.0f * SCALE;
+            this->shape.setSize(sf::Vector2f(w, h));
+            this->shape.setOrigin(w / 2.0f, 0.0f);
 
-        if (laserAktywny && player != nullptr && !player->isInvincible())
+            // --- TU USTAWASZ POZYCJĘ ---
+            // Zmieniaj te dwie wartości, aż hitbox "siądzie" idealnie na laserze:
+            float offsetX = 20.0f;  // W prawo (+) lub w lewo (-)
+            float offsetY = -120.0f; // W dół (+) lub w górę (-) 
+
+            // Ustawiamy pozycję hitboksa względem startPos
+            this->shape.setPosition(startPos.x + offsetX, startPos.y + offsetY);
+        }
+
+        if (czas > 4.0f) laserCycleClock.restart();
+
+        // 3. Aktualizacja wizualna
+        this->sprite.setTextureRect(frames[idx]);
+        this->sprite.setPosition(startPos);
+
+        // 4. Kolizja (tylko gdy laser aktywny)
+        if (laserAktywny && player != nullptr && this->shape.getGlobalBounds().intersects(player->getBounds()))
         {
-            sf::Vector2f startPozycja = this->shape.getPosition() + sf::Vector2f(32.0f, 32.0f);
-            sf::Vector2f graczPoz = sf::Vector2f(player->getBounds().left + player->getBounds().width / 2.0f, player->getBounds().top + player->getBounds().height / 2.0f);
-
-            sf::Vector2f wektorDoGracza = graczPoz - startPozycja;
-            float rzutNaKierunek = wektorDoGracza.x * stalyKierunekLaseru.x + wektorDoGracza.y * stalyKierunekLaseru.y;
-
-            if (rzutNaKierunek >= 0.0f && rzutNaKierunek <= maxLaserDystans)
-            {
-                sf::Vector2f najblizszyPunkt = startPozycja + stalyKierunekLaseru * rzutNaKierunek;
-                float dx = graczPoz.x - najblizszyPunkt.x;
-                float dy = graczPoz.y - najblizszyPunkt.y;
-                float odlegloscOdLasera = std::sqrt(dx * dx + dy * dy);
-
-                if (odlegloscOdLasera < 15.0f)
-                {
-                    if (damageClock.getElapsedTime().asSeconds() >= 0.5f)
-                    {
-                        player->takeDamage(1);
-                        player->applyKnockback(stalyKierunekLaseru, 200.0f);
-                        damageClock.restart();
-                    }
-                }
-            }
+            player->takeDamage(1);
         }
     }
 
     void draw(sf::RenderWindow& window) override
     {
         window.draw(this->sprite);
+        
+        // Aby widzieć, gdzie jest hitbox podczas ustawiania, odkomentuj poniższą linię:
+        window.draw(this->shape); 
     }
 };
-
 
 class HealthBar {
 private:
@@ -247,7 +247,7 @@ this->shape.setOutlineThickness(2.0f);
                 aktualnyYOffset = 0;
                 
                 if (czas_w_stanie > 4.0f) {
-                    this->shape.setSize(sf::Vector2f(160.0f, 160.0f));
+                    this->shape.setSize(sf::Vector2f(80.0f, 80.0f));
                     this->sprite.setScale(2.5f, 2.5f);
                     aktualnyEtap = Boss_state::Faza_Oka;
                     stateClock.restart();
@@ -282,7 +282,7 @@ this->shape.setOutlineThickness(2.0f);
                     aktualnyYOffset = 64; 
                 }
 
-                float currentSpeed = isEyeOpen ? (speed * 0.5f) : (speed * 1.8f);
+                float currentSpeed = isEyeOpen ? (speed * 0.5f) : (speed * 1.2f);
                 this->shape.move(getDirectionToPlayer() * currentSpeed * deltaTime);                
                 if (this->hp <= maxHp / 2) { 
                     aktualnyEtap = Boss_state::Faza_PolHp; 
@@ -298,9 +298,13 @@ this->shape.setOutlineThickness(2.0f);
                 aktywnaTex = &tex2;
                 aktualnyYOffset = 128;
 
-                if (!oczy_zrespowane) {
-                    worldObjects.push_back(new Flying_eyes(this->texOczu, 150.0f + (rand() % 400), 100.0f + (rand() % 300)));
-                    worldObjects.push_back(new Flying_eyes(this->texOczu, 150.0f + (rand() % 400), 100.0f + (rand() % 300)));
+                if (!oczy_zrespowane)
+                {
+
+                    float offsetX = 7.0f;
+                    float offsetY = 47.0f;
+                    worldObjects.push_back(new Flying_eyes(this->texOczu, 150.0f + offsetX + (rand() % 400), 100.0f + offsetY + (rand() % 300)));
+                    worldObjects.push_back(new Flying_eyes(this->texOczu, 150.0f + offsetX + (rand() % 400), 100.0f + offsetY + (rand() % 300)));
                     oczy_zrespowane = true;
                 }
                 this->shape.move(getDirectionToPlayer() * (speed * 1.25f) * deltaTime);
@@ -318,11 +322,17 @@ this->shape.setOutlineThickness(2.0f);
                 
                 this->shape.move(getDirectionToPlayer() * (speed * 1.7f) * deltaTime);
                 this->sprite.setColor(sf::Color(255, 150, 150));
+
+                sf::Vector2f bossSize = shape.getSize();
+
+                float centerX = shape.getPosition().x + (bossSize.x / 2.0f);
+                float centerY = shape.getPosition().y + (bossSize.y / 2.0f);
+
                 if (attackClock.getElapsedTime().asSeconds() >= 2.5f) {
 
-                    sf::IntRect bossRect(0, 0, 23, 31);
+                    sf::IntRect bossRect(0, 0, 14, 14);
 
-                    worldObjects.push_back(new Projectile(texOgien, shape.getPosition().x, shape.getPosition().y, getDirectionToPlayer(),bossRect, 4.0f));
+                    worldObjects.push_back(new Projectile(texOgien, centerX, centerY, getDirectionToPlayer(),bossRect, 1.5f));
                     attackClock.restart();
                 }
                 break;

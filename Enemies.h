@@ -29,7 +29,6 @@ public:
         this->sprite.setOrigin(15.0f, 4.0f); // Środek strzały
         this->sprite.setPosition(x, y);
         this->sprite.setScale(scale,scale);
-
         // Normalizujemy wektor kierunku pocisku
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         if (length != 0)

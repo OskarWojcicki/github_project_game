@@ -90,14 +90,6 @@ class Link : public Character
                 isAttacking = true;
             }
         }
-
-        if (event.type == sf::Event::MouseButtonReleased)
-        {
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                isAttacking = false;
-            }
-        }
     }
 
     void update(float deltaTime) override

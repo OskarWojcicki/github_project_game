@@ -15,10 +15,12 @@ private:
     sf::Vector2f velocity;
     float speed;
     sf::Sprite sprite;
+    bool isPlayerOwned;
 
 public:
-    Projectile(const sf::Texture& tex, float x, float y, sf::Vector2f direction)
+    Projectile(const sf::Texture& tex, float x, float y, sf::Vector2f direction, bool playerOwned = false)
     {
+        this->isPlayerOwned = playerOwned;
         speed = 200.0f; // Pocisk leci dość szybko
         
         // bulletShape.setRadius(6.0f);
@@ -45,6 +47,7 @@ public:
         }
     }
 
+    bool getIsPlayerOwned() const { return isPlayerOwned; }
     // Dopasowane do sygnatury z Game.h (przyjmuje deltaTime)
     void update(float deltaTime) override
     {

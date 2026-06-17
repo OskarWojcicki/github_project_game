@@ -575,6 +575,8 @@ int main()
     sf::Clock clock;
     Inventory playerInventory;
     std::vector<std::string> defeatedEnemies[10][10];
+    bool canShootBow = true;
+    sf::Clock bowCooldownClock;
 
     while(window.isOpen())
     {
@@ -705,7 +707,10 @@ int main()
                         }
                     }
                 }
-                // ===============================================================
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    canShootBow = true; // Pozwala na kolejny strzał po puszczeniu LPM
+                }
                 
             }
 
@@ -975,111 +980,209 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
             }
         }
 // ==================== NOWA LOGIKA WALKI (ZABIJANIE WROGÓW) ====================
-        if (currentState == GameState::Gameplay && player != nullptr)
-        {
-            sf::FloatRect playerBounds = player->getBounds();
+if (currentState == GameState::Gameplay && player != nullptr)
+{
+    sf::FloatRect playerBounds = player->getBounds();
 
-            // Hitbox ataku Linka
-            sf::FloatRect attackHitbox = playerBounds;
-            float attackRange = 25.0f; 
+    // 1. GLOBALNA OBSŁUGA STRZELANIA Z ŁUKU (Zabezpieczona, z dodanym cooldownem 2s)
+    Item* activeItem = playerInventory.getActiveItem();
+    if (activeItem != nullptr && activeItem->getName() == "Bow") {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (canShootBow) {
+                // --- NOWY WARUNEK: Sprawdzamy czy minęły 2 sekundy od ostatniego strzału ---
+                if (bowCooldownClock.getElapsedTime().asSeconds() >= 2.0f) {
+                    
+                    canShootBow = false; // Blokada trzymania przycisku
 
-            if (player->getIsAttacking())
-            {
-                sf::Vector2f dir = player->getFacingDirection();
-                if (dir.x > 0) attackHitbox.width += attackRange;          
-                else if (dir.x < 0) { attackHitbox.left -= attackRange; attackHitbox.width += attackRange; } 
-                else if (dir.y > 0) attackHitbox.height += attackRange;    
-                else if (dir.y < 0) { attackHitbox.top -= attackRange; attackHitbox.height += attackRange; } 
-            }
+                    // Środek gracza jako punkt startowy
+                    sf::FloatRect pBounds = player->getBounds();
+                    sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
 
-            // ITERACJA OD TYŁU (od size()-1 do 0) – kluczowa do bezpiecznego usuwania obiektów!
-            for (int i = static_cast<int>(worldObjects.size()) - 1; i >= 0; --i)
-            {
-                if (worldObjects[i] == player) continue;
+                    // Kierunek, w który patrzy Link
+                    sf::Vector2f shootDir = player->getFacingDirection();
 
-                // --- ROZPOZNANIE PRZECIWNIKA ---
-                Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
-                if (enemy != nullptr)
-                {
-                    sf::FloatRect enemyBounds = enemy->getBounds();
+                    // Tworzymy nową strzałę gracza
+                    worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, true));
+                    
+                    // --- RESTARTUJEMY ZEGAR: Od tego momentu znowu odliczamy 2 sekundy ---
+                    bowCooldownClock.restart();
 
-                    // Gracz atakuje i trafia wroga
-                    if (player->getIsAttacking() && attackHitbox.intersects(enemyBounds))
-                    {
-                        // Dodajemy zadawanie obrażeń potworowi
-                        enemy->takeDamage(1); 
-                        
-                        sf::Vector2f knockbackDir = player->getFacingDirection();
-                        enemy->applyKnockback(knockbackDir, 600.0f); 
-                        std::cout << "Link slashed an enemy! Enemy HP: " << enemy->getHP() << "\n";
-
-                        // Jeśli przeciwnik umarł, usuwamy go z pamięci i z wektora
-                        if (enemy->isDead())
-                        {
-                           std::cout << "Enemy died!\n";
-
-                            // POBIERAMY POZYCJĘ STARTOWĄ, A NIE AKTUALNĄ:
-                            sf::Vector2f sPos = enemy->getStartPosition();
-                            std::string enemyKey = std::to_string((int)sPos.x) + "_" + std::to_string((int)sPos.y);
-                            
-                            defeatedEnemies[worldY][worldX].push_back(enemyKey);
-                            
-                            // TEST W KONSOLI (teraz powinieneś zobaczyć np. równiutkie 600_400):
-                            std::cout << "ZAPISANO SMIERC STARTOWA: Pokoj [" << worldY << "][" << worldX << "] Wrog ze startu: " << enemyKey << std::endl;
-
-                            delete worldObjects[i];
-                            worldObjects.erase(worldObjects.begin() + i);
-                            continue; 
-                        }
-                    }
-                    // Wróg dotyka gracza (gracz zbiera obrażenia)
-                    else if (playerBounds.intersects(enemyBounds))
-                    {
-                        if (!player->isInvincible()) 
-                        {
-                            player->takeDamage(1); 
-
-                            sf::Vector2f diff = player->getPosition() - enemy->getPosition();
-                            float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
-                            if (length != 0.0f)
-                            {
-                                sf::Vector2f pushDir = diff / length;
-                                player->applyKnockback(pushDir, 500.0f);
-                            }
-                        }
-                    }
-                    continue; 
+                    std::cout << "[ŁUK] Wystrzelono strzałę! Następny strzał za 2 sekundy.\n";
                 }
-
-                // --- ROZPOZNANIE POCISKU SZKIELETA ---
-                Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]);
-                if (bullet != nullptr)
-                {
-                    sf::FloatRect bulletBounds = bullet->getBounds();
-
-                    if (playerBounds.intersects(bulletBounds))
-                    {
-                        if (!player->isInvincible())
-                        {
-                            player->takeDamage(2); 
-
-                            sf::Vector2f bulletCenter(bulletBounds.left + bulletBounds.width/2.f, bulletBounds.top + bulletBounds.height/2.f);
-                            sf::Vector2f diff = player->getPosition() - bulletCenter;
-                            float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
-                            if (length != 0.0f)
-                            {
-                                sf::Vector2f pushDir = diff / length;
-                                player->applyKnockback(pushDir, 400.0f);
-                            }
-                        }
-
-                        // Bezpieczne czyszczenie pocisku
-                        delete worldObjects[i];
-                        worldObjects.erase(worldObjects.begin() + i);
-                    }
+                else {
+                    // Kod opcjonalny: Możesz tu wrzucić komunikat w konsoli, jeśli chcesz widzieć, że cooldown działa
+                    // std::cout << "[ŁUK] Ładuję strzałę... Poczekaj jeszcze trochę!\n";
                 }
             }
         }
+    }
+
+    // ITERACJA OD TYŁU PO OBIEKTACH ŚWIATA
+    for (int i = static_cast<int>(worldObjects.size()) - 1; i >= 0; --i)
+    {
+        if (worldObjects[i] == player) continue;
+
+        // A. OBSŁUGA STRZAŁY GRACZA TRAFIAJĄCEJ WROGÓW
+        Projectile* arrow = dynamic_cast<Projectile*>(worldObjects[i]);
+        if (arrow != nullptr) {
+            if (arrow->getIsPlayerOwned()) {
+                sf::FloatRect arrowBounds = arrow->getBounds();
+
+                for (int j = static_cast<int>(worldObjects.size()) - 1; j >= 0; --j) {
+                    Enemy* targetEnemy = dynamic_cast<Enemy*>(worldObjects[j]);
+                    
+                    if (targetEnemy != nullptr) {
+                        if (targetEnemy->getBounds().intersects(arrowBounds)) {
+                            targetEnemy->takeDamage(5); // 5 punktów obrażeń
+
+                            // Odrzut wroga
+                            sf::Vector2f knockbackDir = targetEnemy->getPosition() - player->getPosition();
+                            float len = std::sqrt(knockbackDir.x * knockbackDir.x + knockbackDir.y * knockbackDir.y);
+                            if (len != 0.0f) knockbackDir /= len;
+                            targetEnemy->applyKnockback(knockbackDir, 500.0f);
+
+                            std::cout << "Strzala Linka trafia wroga! HP wroga: " << targetEnemy->getHP() << "\n";
+
+                            if (targetEnemy->isDead()) {
+                                std::cout << "Przeciwnik zginal od strzaly!\n";
+                                sf::Vector2f sPos = targetEnemy->getStartPosition();
+                                std::string enemyKey = std::to_string((int)sPos.x) + "_" + std::to_string((int)sPos.y);
+                                defeatedEnemies[worldY][worldX].push_back(enemyKey);
+                                
+                                delete worldObjects[j];
+                                worldObjects.erase(worldObjects.begin() + j);
+                                
+                                if (j <= i) {
+                                    --i;
+                                }
+                            }
+
+                            // BEZPIECZNE USUWANIE STRZAŁY
+                            delete worldObjects[i];
+                            worldObjects.erase(worldObjects.begin() + i);
+                            
+                            --i; 
+                            break; 
+                        }
+                    }
+                }
+                continue; 
+            }
+        }
+
+        // --- ROZPOZNANIE PRZECIWNIKA (Miecz i Atak wręcz) ---
+        Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
+        if (enemy != nullptr)
+        {
+            if (player->getIsAttacking())
+            {
+                // 2. LOGIKA DLA MIECZA (Atak obszarowy)
+                if (activeItem != nullptr && activeItem->getName() == "Sword")
+                {
+                    sf::FloatRect pBounds = player->getBounds();
+                    sf::FloatRect eBounds = enemy->getBounds();
+
+                    sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
+                    sf::Vector2f enemyCenter(eBounds.left + eBounds.width / 2.0f, eBounds.top + eBounds.height / 2.0f);
+
+                    float dx = playerCenter.x - enemyCenter.x;
+                    float dy = playerCenter.y - enemyCenter.y;
+                    float distance = std::sqrt(dx * dx + dy * dy);
+
+                    float attackRange = 100.0f;
+
+                    if (distance <= attackRange)
+                    {
+                        enemy->takeDamage(5);
+
+                        sf::Vector2f knockbackDir = enemyCenter - playerCenter;
+                        float len = std::sqrt(knockbackDir.x * knockbackDir.x + knockbackDir.y * knockbackDir.y);
+                        if (len != 0.0f) knockbackDir /= len;
+
+                        enemy->applyKnockback(knockbackDir, 600.0f);
+                        std::cout << "Miecz kosi dookola! HP wroga: " << enemy->getHP() << "\n";
+                    }
+                }
+                // 3. LOGIKA DLA PIĘŚCI (Gdy nie ma miecza ani łuku)
+                else if (activeItem == nullptr || (activeItem->getName() != "Sword" && activeItem->getName() != "Bow"))
+                {
+                    sf::FloatRect attackHitbox = player->getBounds();
+                    float baseRange = 25.0f;
+                    sf::Vector2f dir = player->getFacingDirection();
+
+                    if (dir.x > 0) attackHitbox.width += baseRange;          
+                    else if (dir.x < 0) { attackHitbox.left -= baseRange; attackHitbox.width += baseRange; } 
+                    else if (dir.y > 0) attackHitbox.height += baseRange;    
+                    else if (dir.y < 0) { attackHitbox.top -= baseRange; attackHitbox.height += baseRange; }
+
+                    if (attackHitbox.intersects(enemy->getBounds()))
+                    {
+                        enemy->takeDamage(1);
+                        sf::Vector2f knockbackDir = player->getFacingDirection();
+                        enemy->applyKnockback(knockbackDir, 600.0f);
+                        std::cout << "Zwykly atak kierunkowy! HP wroga: " << enemy->getHP() << "\n";
+                    }
+                }
+
+                // Sprawdzenie śmierci wroga po ataku mieczem/pięścią
+                if (enemy->isDead())
+                {
+                    std::cout << "Przeciwnik zginal!\n";
+                    sf::Vector2f sPos = enemy->getStartPosition();
+                    std::string enemyKey = std::to_string((int)sPos.x) + "_" + std::to_string((int)sPos.y);
+                    
+                    defeatedEnemies[worldY][worldX].push_back(enemyKey);
+                    
+                    delete worldObjects[i];
+                    worldObjects.erase(worldObjects.begin() + i);
+                    continue; 
+                }
+            }
+            // Wróg dotyka gracza
+            else if (player->getBounds().intersects(enemy->getBounds()))
+            {
+                if (!player->isInvincible()) 
+                {
+                    player->takeDamage(1); 
+                    sf::Vector2f diff = player->getPosition() - enemy->getPosition();
+                    float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+                    if (length != 0.0f) player->applyKnockback(diff / length, 500.0f);
+                }
+            }
+            continue; 
+        }
+    
+        // B. OBSŁUGA POCISKU SZKIELETA (WROGA) TRAFIAJĄCEGO LINKA
+        Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]);
+        if (bullet != nullptr)
+        {
+            if (!bullet->getIsPlayerOwned())
+            {
+                sf::FloatRect bulletBounds = bullet->getBounds();
+
+                if (playerBounds.intersects(bulletBounds))
+                {
+                    if (!player->isInvincible())
+                    {
+                        player->takeDamage(2); 
+
+                        sf::Vector2f bulletCenter(bulletBounds.left + bulletBounds.width/2.f, bulletBounds.top + bulletBounds.height/2.f);
+                        sf::Vector2f diff = player->getPosition() - bulletCenter;
+                        float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+                        if (length != 0.0f)
+                        {
+                            sf::Vector2f pushDir = diff / length;
+                            player->applyKnockback(pushDir, 400.0f);
+                        }
+                    }
+
+                    delete worldObjects[i];
+                    worldObjects.erase(worldObjects.begin() + i);
+                }
+            }
+        }
+    }
+}
         
         else if(currentState==GameState::Kurtyna_lvl2)
         {

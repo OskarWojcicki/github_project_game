@@ -81,6 +81,15 @@ class Link : public Character
             if (event.key.code == sf::Keyboard::Space) isAttacking = false;
             if (event.key.code == sf::Keyboard::E) interactPressed = false;
         }
+
+        // TYLKO LPM AKTYWUJE STAN ATAKU
+        if (event.type == sf::Event::MouseButtonPressed)
+        {
+            if (event.mouseButton.button == sf::Mouse::Left)
+            {
+                isAttacking = true;
+            }
+        }
     }
 
     void update(float deltaTime) override

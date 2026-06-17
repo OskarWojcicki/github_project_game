@@ -590,10 +590,13 @@ int main()
     Inventory playerInventory;
     std::vector<std::string> defeatedEnemies[10][10];
     bool canShootBow = true;
+    bool canAttackSword = true;
     sf::Clock bowCooldownClock;
     sf::Clock boomerangCooldownClock; // <-- DOPISZ TO TUTAJ
     bool hasActiveBoomerang = false;
     sf::Clock swordCooldownClock;
+    sf::Clock bowShotDelayClock;
+    bool isChargingBowShot = false;
 
     int lastRoom = -1;
 
@@ -731,11 +734,11 @@ int main()
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
                     canShootBow = true; // Pozwala na kolejny strzał po puszczeniu LPM
+                    canAttackSword = true;
                 
-                if (player != nullptr)
-                    {
-                        player->stopAttack(); // Resetujemy flagę isAttacking w klasie Link
-                    }}
+                    if (player != nullptr && !player->getIsSlashingSword()) {
+                            player->stopAttack(); 
+                        }}
                 
             }
 
@@ -1013,19 +1016,36 @@ if (currentState == GameState::Gameplay && player != nullptr)
     
     // 1. GLOBALNA OBSŁUGA STRZELANIA Z ŁUKU
     if (activeItem != nullptr && activeItem->getName() == "Bow") {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            if (canShootBow) {
-                if (bowCooldownClock.getElapsedTime().asSeconds() >= 2.0f) {
-                    canShootBow = false; 
+        
+        // WYKRYCIE KLIKNIĘCIA: Gracz klika LPM i łuk nie jest na cooldownie ani w trakcie ładowania
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && canShootBow && !isChargingBowShot) {
+            if (bowCooldownClock.getElapsedTime().asSeconds() >= 2.0f) {
+                
+                canShootBow = false;           // Blokujemy kolejne kliknięcia (aż puści LPM)
+                isChargingBowShot = true;     // Odpalamy stan ładowania strzału
+                bowShotDelayClock.restart();  // Resetujemy stoper opóźnienia
+                
+                player->setDrawingBow(true);   // Włączamy jednorazową animację łucznika i stopujemy ruch!
+                std::cout << "[ŁUK] Napinanie cięciwy... Wystrzał za 0.5s.\n";
+            }
+        }
 
-                    sf::FloatRect pBounds = player->getBounds();
-                    sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
-                    sf::Vector2f shootDir = player->getFacingDirection();
+        // PROCES ODREAGOWANIA OPÓŹNIENIA: Jeśli łuk się ładuje, sprawdzamy czy minęło pół sekundy
+        if (isChargingBowShot) {
+            if (bowShotDelayClock.getElapsedTime().asSeconds() >= 0.5f) {
+                
+                // MINĘŁO 0.5 SEKUNDY -> POTWIERDZAMY WYSTRZAŁ STRZAŁY!
+                isChargingBowShot = false; // Kończymy ładowanie strzału
 
-                    worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, sf::IntRect(0, 0, 16, 9), 2.0f, true));                    bowCooldownClock.restart();
+                sf::FloatRect pBounds = player->getBounds();
+                sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
+                sf::Vector2f shootDir = player->getFacingDirection();
 
-                    std::cout << "[ŁUK] Wystrzelono strzałę! Następny strzał za 2 sekundy.\n";
-                }
+                // Tworzymy strzałę w świecie gry
+                worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, true));
+                
+                bowCooldownClock.restart(); // Uruchamiamy globalny 2-sekundowy cooldown broni
+                std::cout << "[ŁUK] Puszczono cięciwę! Strzała wystrzelona.\n";
             }
         }
     }
@@ -1046,6 +1066,16 @@ if (currentState == GameState::Gameplay && player != nullptr)
                 boomerangCooldownClock.restart();
                 std::cout << "[BUMERANG] Bumerang ruszył w tango po przeciwnikach!\n";
             }
+        }
+    }
+
+    // 1C. NOWOŚĆ: GLOBALNA OBSŁUGA ATAKU MIECZEM (DZIAŁA ZAWSZE, NAWET BEZ POTWORÓW)
+    if (player->getIsAttacking() && activeItem != nullptr && activeItem->getName() == "Sword") {
+        if (canAttackSword) {
+            player->setSlashingSword(true); // Odpala powiększoną klatkę 48x48 w Link.h
+            canAttackSword = false;
+            swordCooldownClock.restart();
+            std::cout << "[MIECZ] Zamach mieczem na sucho!\n";
         }
     }
 
@@ -1132,7 +1162,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
 
             if (player->getIsAttacking())
             {
-                // 2. LOGIKA DLA MIECZA
+                // 2. LOGIKA ZADAWANIA OBRAŻEŃ MIECZEM (Wykonuje się tylko, gdy trzymamy miecz)
                 if (activeItem != nullptr && activeItem->getName() == "Sword")
                 {
                     sf::FloatRect pBounds = player->getBounds();
@@ -1208,7 +1238,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
         }
     
         // B. OBSŁUGA POCISKU SZKIELETA
-        Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]);
+        Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]); // Zmieniłem na Projectile*, bo wkradła się literówka s
         if (bullet != nullptr)
         {
             if (!bullet->getIsPlayerOwned())

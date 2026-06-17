@@ -133,4 +133,7 @@ public:
         }
         sprite.setTexture(texture);
     }
+    int getDamage() const override {
+        return 3; 
+    }
 };

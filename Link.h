@@ -91,6 +91,10 @@ class Link : public Character
             }
         }
     }
+    void stopAttack()
+{
+    this->isAttacking = false;
+}
 
     void update(float deltaTime) override
     {

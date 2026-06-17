@@ -496,7 +496,9 @@ int main()
 
     window.setFramerateLimit(60);
 
-    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_up,tex_skieleton_down,tex_skieleton_sides,tex_strzala, tex_piasek,tex_wysoka_trawa,tex_stone, tex_kwiatek, tex_boss_przemiana1,tex_boss_przemiana2, tex_oczy;
+
+    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_up,tex_skieleton_down,tex_skieleton_sides,tex_strzala, tex_piasek,tex_wysoka_trawa,tex_stone, tex_kwiatek, tex_boss_przemiana1,tex_boss_przemiana2, tex_oczy, tex_bumerang;
+
     if (!tex_drzewa.loadFromFile("grafiki/pokemon_fence.png") ||
         !tex_floor1.loadFromFile("grafiki/pokemon_grass.png") ||
         !tex_floor2.loadFromFile("grafiki/floor2.png") ||
@@ -515,6 +517,7 @@ int main()
         !tex_wysoka_trawa.loadFromFile("grafiki/wysoka_trawa.png") ||
         !tex_stone.loadFromFile("grafiki/stone.png") ||
         !tex_kwiatek.loadFromFile("grafiki/kwiatek.png")||
+        !tex_bumerang.loadFromFile("grafiki/Boomerang.png")||
         !tex_boss_przemiana1.loadFromFile("grafiki/przemiana_cz1.png") ||
         !tex_boss_przemiana2.loadFromFile("grafiki/przemiana_cz2.png")||
         !tex_oczy.loadFromFile("grafiki/oczy.png"))
@@ -577,6 +580,9 @@ int main()
     std::vector<std::string> defeatedEnemies[10][10];
     bool canShootBow = true;
     sf::Clock bowCooldownClock;
+    sf::Clock boomerangCooldownClock; // <-- DOPISZ TO TUTAJ
+    bool hasActiveBoomerang = false;
+    sf::Clock swordCooldownClock;
 
     while(window.isOpen())
     {
@@ -710,7 +716,11 @@ int main()
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
                     canShootBow = true; // Pozwala na kolejny strzał po puszczeniu LPM
-                }
+                
+                if (player != nullptr)
+                    {
+                        player->stopAttack(); // Resetujemy flagę isAttacking w klasie Link
+                    }}
                 
             }
 
@@ -984,35 +994,43 @@ if (currentState == GameState::Gameplay && player != nullptr)
 {
     sf::FloatRect playerBounds = player->getBounds();
 
-    // 1. GLOBALNA OBSŁUGA STRZELANIA Z ŁUKU (Zabezpieczona, z dodanym cooldownem 2s)
     Item* activeItem = playerInventory.getActiveItem();
+    
+    // 1. GLOBALNA OBSŁUGA STRZELANIA Z ŁUKU
     if (activeItem != nullptr && activeItem->getName() == "Bow") {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             if (canShootBow) {
-                // --- NOWY WARUNEK: Sprawdzamy czy minęły 2 sekundy od ostatniego strzału ---
                 if (bowCooldownClock.getElapsedTime().asSeconds() >= 2.0f) {
-                    
-                    canShootBow = false; // Blokada trzymania przycisku
+                    canShootBow = false; 
 
-                    // Środek gracza jako punkt startowy
                     sf::FloatRect pBounds = player->getBounds();
                     sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
-
-                    // Kierunek, w który patrzy Link
                     sf::Vector2f shootDir = player->getFacingDirection();
 
-                    // Tworzymy nową strzałę gracza
                     worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, true));
-                    
-                    // --- RESTARTUJEMY ZEGAR: Od tego momentu znowu odliczamy 2 sekundy ---
                     bowCooldownClock.restart();
 
                     std::cout << "[ŁUK] Wystrzelono strzałę! Następny strzał za 2 sekundy.\n";
                 }
-                else {
-                    // Kod opcjonalny: Możesz tu wrzucić komunikat w konsoli, jeśli chcesz widzieć, że cooldown działa
-                    // std::cout << "[ŁUK] Ładuję strzałę... Poczekaj jeszcze trochę!\n";
-                }
+            }
+        }
+    }
+
+    // 1B. NOWOŚĆ: GLOBALNA OBSŁUGA RZUTU BUMERANGIEM
+    if (activeItem != nullptr && activeItem->getName() == "Boomerang") {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            // Można rzucić jeśli bumerang nie jest w locie i minęły 1.5 sekundy
+            if (!hasActiveBoomerang && boomerangCooldownClock.getElapsedTime().asSeconds() >= 1.5f) {
+                
+                sf::FloatRect pBounds = player->getBounds();
+                sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
+
+                // Tworzymy bumerang i przekazujemy mu cały wektor worldObjects, aby sam wyłapał wrogów!
+                worldObjects.push_back(new BoomerangProjectile(&tex_bumerang, playerCenter, worldObjects));
+                
+                hasActiveBoomerang = true;
+                boomerangCooldownClock.restart();
+                std::cout << "[BUMERANG] Bumerang ruszył w tango po przeciwnikach!\n";
             }
         }
     }
@@ -1021,6 +1039,19 @@ if (currentState == GameState::Gameplay && player != nullptr)
     for (int i = static_cast<int>(worldObjects.size()) - 1; i >= 0; --i)
     {
         if (worldObjects[i] == player) continue;
+
+        // NOWOŚĆ: Sprawdzanie czy obiekt to nasz powracający bumerang
+        BoomerangProjectile* boom = dynamic_cast<BoomerangProjectile*>(worldObjects[i]);
+        if (boom != nullptr) {
+            if (boom->isFinished()) {
+                // Bumerang dotknął Linka na powrocie! Usuwamy go i odblokowujemy rzut
+                delete worldObjects[i];
+                worldObjects.erase(worldObjects.begin() + i);
+                hasActiveBoomerang = false;
+                std::cout << "[BUMERANG] Złapano bumerang z powrotem!\n";
+                continue;
+            }
+        }
 
         // A. OBSŁUGA STRZAŁY GRACZA TRAFIAJĄCEJ WROGÓW
         Projectile* arrow = dynamic_cast<Projectile*>(worldObjects[i]);
@@ -1033,9 +1064,8 @@ if (currentState == GameState::Gameplay && player != nullptr)
                     
                     if (targetEnemy != nullptr) {
                         if (targetEnemy->getBounds().intersects(arrowBounds)) {
-                            targetEnemy->takeDamage(5); // 5 punktów obrażeń
+                            targetEnemy->takeDamage(5); 
 
-                            // Odrzut wroga
                             sf::Vector2f knockbackDir = targetEnemy->getPosition() - player->getPosition();
                             float len = std::sqrt(knockbackDir.x * knockbackDir.x + knockbackDir.y * knockbackDir.y);
                             if (len != 0.0f) knockbackDir /= len;
@@ -1057,10 +1087,8 @@ if (currentState == GameState::Gameplay && player != nullptr)
                                 }
                             }
 
-                            // BEZPIECZNE USUWANIE STRZAŁY
                             delete worldObjects[i];
                             worldObjects.erase(worldObjects.begin() + i);
-                            
                             --i; 
                             break; 
                         }
@@ -1070,13 +1098,27 @@ if (currentState == GameState::Gameplay && player != nullptr)
             }
         }
 
-        // --- ROZPOZNANIE PRZECIWNIKA (Miecz i Atak wręcz) ---
+        // --- ROZPOZNANIE PRZECIWNIKA ---
         Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
         if (enemy != nullptr)
         {
+            // Jeśli przeciwnik zginął (np. bumerang go dobił przed chwilą)
+            if (enemy->isDead())
+            {
+                std::cout << "Przeciwnik zginal od obrazen!\n";
+                sf::Vector2f sPos = enemy->getStartPosition();
+                std::string enemyKey = std::to_string((int)sPos.x) + "_" + std::to_string((int)sPos.y);
+                
+                defeatedEnemies[worldY][worldX].push_back(enemyKey);
+                
+                delete worldObjects[i];
+                worldObjects.erase(worldObjects.begin() + i);
+                continue; 
+            }
+
             if (player->getIsAttacking())
             {
-                // 2. LOGIKA DLA MIECZA (Atak obszarowy)
+                // 2. LOGIKA DLA MIECZA
                 if (activeItem != nullptr && activeItem->getName() == "Sword")
                 {
                     sf::FloatRect pBounds = player->getBounds();
@@ -1103,8 +1145,8 @@ if (currentState == GameState::Gameplay && player != nullptr)
                         std::cout << "Miecz kosi dookola! HP wroga: " << enemy->getHP() << "\n";
                     }
                 }
-                // 3. LOGIKA DLA PIĘŚCI (Gdy nie ma miecza ani łuku)
-                else if (activeItem == nullptr || (activeItem->getName() != "Sword" && activeItem->getName() != "Bow"))
+                // 3. LOGIKA DLA PIĘŚCI
+                else if (activeItem == nullptr || (activeItem->getName() != "Sword" && activeItem->getName() != "Bow" && activeItem->getName() != "Boomerang"))
                 {
                     sf::FloatRect attackHitbox = player->getBounds();
                     float baseRange = 25.0f;
@@ -1124,7 +1166,6 @@ if (currentState == GameState::Gameplay && player != nullptr)
                     }
                 }
 
-                // Sprawdzenie śmierci wroga po ataku mieczem/pięścią
                 if (enemy->isDead())
                 {
                     std::cout << "Przeciwnik zginal!\n";
@@ -1152,7 +1193,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
             continue; 
         }
     
-        // B. OBSŁUGA POCISKU SZKIELETA (WROGA) TRAFIAJĄCEGO LINKA
+        // B. OBSŁUGA POCISKU SZKIELETA
         Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]);
         if (bullet != nullptr)
         {

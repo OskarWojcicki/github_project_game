@@ -300,7 +300,7 @@ const char (*worldMap[10][10])[15]=
     {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
 };
 
-void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,const sf::Texture& t_przemiana1,const sf::Texture& t_przemiana2, const sf::Texture& t_oczy, std::vector<std::string> (&defeatedEnemies)[10][10])
+void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,const sf::Texture& t_przemiana1,const sf::Texture& t_przemiana2, const sf::Texture& t_oczy,const sf::Texture& t_ogien, std::vector<std::string> (&defeatedEnemies)[10][10])
 {
     // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
     int currentHP = 3; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
@@ -427,9 +427,9 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
 
 
-    if(selectedRoom==room1)
+    if(selectedRoom==room9)
     {
-        if(czyZyje(336.0f, 240.0f))wordlObjects.push_back(new Final_boss(t_przemiana1,t_przemiana2,t_oczy,100.0f,240.0f));
+        if(czyZyje(336.0f, 240.0f))wordlObjects.push_back(new Final_boss(t_przemiana1,t_przemiana2,t_oczy,t_ogien,336.0f,240.0f));
     }
 
 
@@ -472,6 +472,7 @@ int main()
     sf::Music backgroundMusic;
     sf::Music titleMusic;
     sf::Music gameOverMusic;
+    sf::Music BossMusic;
 
     if(!titleMusic.openFromFile("muzyka/title_screen.mp3")) 
     {
@@ -482,6 +483,15 @@ int main()
         titleMusic.setLoop(true);
         titleMusic.setVolume(80.0f);
         titleMusic.play(); 
+    }
+           if(!BossMusic.openFromFile("muzyka/boss_muzyka.mp3"))
+    {
+        std::cout << "Blad w ladowaniu muzyki Game Over" << std::endl;
+    }
+    else
+    {
+        gameOverMusic.setLoop(true); 
+        gameOverMusic.setVolume(80.0f);
     }
 
     if(!gameOverMusic.openFromFile("muzyka/gameOver.mp3"))
@@ -497,7 +507,7 @@ int main()
     window.setFramerateLimit(60);
 
 
-    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_up,tex_skieleton_down,tex_skieleton_sides,tex_strzala, tex_piasek,tex_wysoka_trawa,tex_stone, tex_kwiatek, tex_boss_przemiana1,tex_boss_przemiana2, tex_oczy, tex_bumerang;
+    sf::Texture tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_serduszko, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_up,tex_skieleton_down,tex_skieleton_sides,tex_strzala, tex_piasek,tex_wysoka_trawa,tex_stone, tex_kwiatek, tex_boss_przemiana1,tex_boss_przemiana2, tex_oczy,tex_ogien, tex_bumerang;
 
     if (!tex_drzewa.loadFromFile("grafiki/pokemon_fence.png") ||
         !tex_floor1.loadFromFile("grafiki/pokemon_grass.png") ||
@@ -520,7 +530,8 @@ int main()
         !tex_bumerang.loadFromFile("grafiki/Boomerang.png")||
         !tex_boss_przemiana1.loadFromFile("grafiki/przemiana_cz1.png") ||
         !tex_boss_przemiana2.loadFromFile("grafiki/przemiana_cz2.png")||
-        !tex_oczy.loadFromFile("grafiki/oczy.png"))
+        !tex_oczy.loadFromFile("grafiki/oczy.png")||
+        !tex_ogien.loadFromFile("grafiki/ogien.png"))
  
     {
         std::cout << "!!! Blad w ladowaniu tekstur otoczenia !!!" << std::endl;
@@ -584,8 +595,12 @@ int main()
     bool hasActiveBoomerang = false;
     sf::Clock swordCooldownClock;
 
+    int lastRoom = -1;
+
     while(window.isOpen())
-    {
+    {   
+        int currentRoom = (worldX == 0 && worldY == 0) ? 9 : 1;
+
         float deltaTime = clock.restart().asSeconds();
         sf::Event event;
 
@@ -623,7 +638,7 @@ int main()
                             playerInventory.setItem(2, new Bow());       // Slot 3 (indeks 2)
                             playerInventory.setItem(3, new Boomerang()); // Slot 4 (indeks 3)
 
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, defeatedEnemies);
                     currentState = GameState::Gameplay;
                 }
             }
@@ -650,7 +665,7 @@ int main()
                     
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, defeatedEnemies);
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
@@ -812,7 +827,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, defeatedEnemies);
                 }
                 else
                 {
@@ -825,7 +840,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, tex_ogien,defeatedEnemies);
                 }
                 else
                 {
@@ -837,7 +852,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, defeatedEnemies);
                 }
                 else
                 {
@@ -849,7 +864,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, defeatedEnemies);
                 }
                 else 
                 {
@@ -1007,8 +1022,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
                     sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
                     sf::Vector2f shootDir = player->getFacingDirection();
 
-                    worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, true));
-                    bowCooldownClock.restart();
+                    worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir, sf::IntRect(0, 0, 16, 9), 2.0f, true));                    bowCooldownClock.restart();
 
                     std::cout << "[ŁUK] Wystrzelono strzałę! Następny strzał za 2 sekundy.\n";
                 }
@@ -1232,7 +1246,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
                 worldX = 3;
                 worldY = 9;
 
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, defeatedEnemies);
 
                 currentState = GameState::Gameplay;
             }
@@ -1310,6 +1324,23 @@ if (currentState == GameState::Gameplay && player != nullptr)
                 window.draw(retryText);
             }
         }
+        if (currentRoom != lastRoom) 
+{
+    if (currentRoom == 9) // Wchodzimy do bossa
+    {
+        backgroundMusic.stop();
+        if (BossMusic.getStatus() != sf::Music::Playing) 
+            BossMusic.play();
+    } 
+    else // Jesteśmy w dowolnym innym pokoju
+    {
+        BossMusic.stop();
+        if (backgroundMusic.getStatus() != sf::Music::Playing) 
+            backgroundMusic.play();
+    }
+    lastRoom = currentRoom; 
+}
+
         window.display();
     }
 

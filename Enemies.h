@@ -101,7 +101,7 @@ public:
     int getHP() const { return hp; }
     bool isInvincible() const { return invincibilityTimer > 0.0f; }
 
-    void takeDamage(int amount) {
+    virtual void takeDamage(int amount) {
         if (!isInvincible()) { // Obrażenia wchodzą tylko, gdy wróg NIE JEST odporny
             hp -= amount;
             if (hp < 0) hp = 0;
@@ -124,7 +124,7 @@ protected:
     float friction = 8.0f;
     int hp;
     float invincibilityTimer = 0.0f;       // Aktualny czas odporności
-    const float invincibilityDuration = 0.4f; // Jak długo wróg jest odporny po ciosie (np. 0.4 sekundy)
+    float invincibilityDuration = 0.4f; // Jak długo wróg jest odporny po ciosie (np. 0.4 sekundy)
     sf::Vector2f startPosition;
     // Zwraca wektor ruchu W STRONĘ gracza
     sf::Vector2f getDirectionToPlayer()

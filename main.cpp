@@ -797,7 +797,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX + 1 < 10 && worldMap[worldY][worldX + 1] != nullptr)
                 {
                     worldX++;
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 20.0f, playerPos.y, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
                 }
                 else
                 {
@@ -810,7 +810,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldX - 1 >= 0 && worldMap[worldY][worldX - 1] != nullptr)
                 {
                     worldX--;
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, 630.0f, playerPos.y, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
                 }
                 else
                 {
@@ -822,7 +822,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY + 1 < 10 && worldMap[worldY + 1][worldX] != nullptr)
                 {
                     worldY++;
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 20.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
                 }
                 else
                 {
@@ -834,7 +834,7 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 if(worldY - 1 >= 0 && worldMap[worldY - 1][worldX] != nullptr)
                 {
                     worldY--;
-                    Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
+                    Rooms(worldX, worldY, worldObjects, playerPos.x, 500.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy, defeatedEnemies);
                 }
                 else 
                 {

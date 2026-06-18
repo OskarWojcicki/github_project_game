@@ -19,6 +19,10 @@ Głównym celem gracza jest pokonanie wszystkich potworów oraz final boss'a, un
 - **Wybór przedmiotu w ekwipunku:** `Scroll Myszy`
 - **Otwieranie skrzyni:** `E`
 
+## Final Boss
+
+Final Boss ma specyficzną, inną od pozostałych przeciwników mechanikę. Aby zadawać mu obrażenia należy atakować go tylko wtedy, gdy ma on otwarte oko. W innym przypadku nie dostaje obrażeń. Pokonanie go wiąże się z zakończeniem gry oraz przejścia do Menu.
+
 ## 👤 Autorzy
 - **Oskar Wójcicki** - [OskarWojcicki](https://github.com/OskarWojcicki)
 - **Dominik Zieliński** - [Dominik5062](https://github.com/Dominik5062)

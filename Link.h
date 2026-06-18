@@ -7,7 +7,7 @@
 
 class Link : public Character
 {
-    private:
+private:
     bool move_up = false;
     bool move_down = false;
     bool move_left = false;
@@ -21,48 +21,47 @@ class Link : public Character
     bool interactPressed = false;
     int hp = 10;
     float invincibilityTimer = 0.0f;
-    const float invincibilityDuration = 1.0f; // 1 sekunda nieśmiertelności po oberwaniu
+    const float invincibilityDuration = 1.0f; 
 
-    // Tekstury standardowego poruszania
     sf::Texture texture_down;
     sf::Texture texture_up;
     sf::Texture texture_sides;
 
-    // Tekstury celowania z łuku
     sf::Texture tex_bow_down;
     sf::Texture tex_bow_up;
     sf::Texture tex_bow_sides;
-    bool isDrawingBow = false; // Flaga celowania z łuku
+    bool isDrawingBow = false; 
 
-    // Tekstura ataku mieczem
-    sf::Texture tex_sword;
-    bool isSlashingSword = false; // Flaga machania mieczem
+    sf::Texture tex_sword_up;
+    sf::Texture tex_sword_down;
+    sf::Texture tex_sword_sides;
+    bool isSlashingSword = false; 
 
-    // Dźwięki obrażeń
     sf::SoundBuffer hurtBuffer;
     sf::Sound hurtSound;
 
-    public:
+public:
     Link(float x, float y): Character(x, y, 3, 120.0f)
     {
         shape.setSize(sf::Vector2f(48.0f, 48.0f));
         shape.setFillColor(sf::Color::Green);
 
-        // Ładowanie wszystkich tekstur (Chodzenie + Łucznik + Miecznik)
         if(!texture_down.loadFromFile("grafiki/chodzenie_down.png") || 
            !texture_up.loadFromFile("grafiki/chodzenie_up.png") || 
            !texture_sides.loadFromFile("grafiki/chodzenie_sides.png") ||
            !tex_bow_down.loadFromFile("grafiki/lucznik_down.png") || 
            !tex_bow_up.loadFromFile("grafiki/lucznik_up.png") || 
            !tex_bow_sides.loadFromFile("grafiki/lucznik_sides.png") ||
-           !tex_sword.loadFromFile("grafiki/miecznik.png"))
+           !tex_sword_up.loadFromFile("grafiki/miecznik_up.png")||
+           !tex_sword_down.loadFromFile("grafiki/miecznik_down.png")||
+           !tex_sword_sides.loadFromFile("grafiki/miecznik_sides.png"))
         {
             std::cout << "Blad w czytywaniu grafik postaci!" << std::endl;
         }
 
         if (!hurtBuffer.loadFromFile("muzyka/taking_dmg.mp3"))
         {
-            std::cout << "Blad w czytywaniu dzwieku link_hurt.wav!" << std::endl;
+            std::cout << "Blad w czytywaniu dzwieku taking_dmg.mp3!" << std::endl;
         }
         else
         {
@@ -71,7 +70,6 @@ class Link : public Character
         }
         
         sprite.setTexture(texture_down);
-
         klatkaStruktura = sf::IntRect(0, 0, szerokosc_klatki, wysokosc_klatki);
         sprite.setTextureRect(klatkaStruktura);
         sprite.setOrigin(szerokosc_klatki / 2.0f, wysokosc_klatki / 2.0f);
@@ -109,17 +107,13 @@ class Link : public Character
         }
     }
 
-    void stopAttack()
-    {
-        this->isAttacking = false;
-    }
+    void stopAttack() { this->isAttacking = false; }
 
     void update(float deltaTime) override
     {
         sf::Vector2f movement(0.0f, 0.0f);
         bool czy_w_ruchu = false;
 
-        // Odrzut po obrażeniach
         if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
         {
             this->shape.move(recoilVelocity * deltaTime);
@@ -127,48 +121,24 @@ class Link : public Character
             recoilVelocity.y -= recoilVelocity.y * friction * deltaTime;
 
             if (std::sqrt(recoilVelocity.x * recoilVelocity.x + recoilVelocity.y * recoilVelocity.y) < 10.0f)
-            {
                 recoilVelocity = sf::Vector2f(0.0f, 0.0f);
-            }
         }
         
-        // Blokada ruchu podczas napinania łuku LUB ataku mieczem
         if (!isDrawingBow && !isSlashingSword)
         {
-            if(move_up)
-            {
-                movement.y -= speed;
-                czy_w_ruchu = true;
-                facingDirection = sf::Vector2f(0.0f, -1.0f);
-            }
-            if(move_down)
-            {
-                movement.y += speed;
-                czy_w_ruchu = true;
-                facingDirection = sf::Vector2f(0.0f, 1.0f);
-            }    
-            if(move_left)
-            {
-                movement.x -= speed;
-                patrzy_wLewo = true;
-                czy_w_ruchu = true;
-                facingDirection = sf::Vector2f(-1.0f, 0.0f);
-            }
-            if(move_right)
-            {
-                movement.x += speed;
-                patrzy_wLewo = false;
-                czy_w_ruchu = true;
-                facingDirection = sf::Vector2f(1.0f, 0.0f);
-            }
-
+            if(move_up) { movement.y -= speed; czy_w_ruchu = true; facingDirection = sf::Vector2f(0.0f, -1.0f); }
+            if(move_down) { movement.y += speed; czy_w_ruchu = true; facingDirection = sf::Vector2f(0.0f, 1.0f); }    
+            if(move_left) { movement.x -= speed; patrzy_wLewo = true; czy_w_ruchu = true; facingDirection = sf::Vector2f(-1.0f, 0.0f); }
+            if(move_right) { movement.x += speed; patrzy_wLewo = false; czy_w_ruchu = true; facingDirection = sf::Vector2f(1.0f, 0.0f); }
             shape.move(movement * deltaTime);
         }
 
         // SYSTEM DOBIERANIA AKTUALNEJ TEKSTURY
         if (isSlashingSword)
         {
-            sprite.setTexture(tex_sword);
+            if (facingDirection.y < 0.0f) sprite.setTexture(tex_sword_up);
+            else if (facingDirection.y > 0.0f) sprite.setTexture(tex_sword_down);
+            else sprite.setTexture(tex_sword_sides);
         }
         else if (isDrawingBow)
         {
@@ -183,7 +153,7 @@ class Link : public Character
             else if (move_left || move_right) sprite.setTexture(texture_sides);
         }
 
-        // Animacja klatek
+        // Animacja
         bool stan_animowany = czy_w_ruchu || isDrawingBow || isSlashingSword;
         if(stan_animowany) 
         {
@@ -191,87 +161,51 @@ class Link : public Character
             if(licznikCzasu >= czasKlatki)
             {
                 licznikCzasu = 0.0f;
-                
                 if (isDrawingBow || isSlashingSword) {
                     int nastepnaKlatka = static_cast<int>(aktualnaKlatka) + 1;
-                    if (nastepnaKlatka >= 10) {
-                        isDrawingBow = false; 
-                        isSlashingSword = false; 
-                        aktualnaKlatka = 0.0f;
-                    } else {
-                        aktualnaKlatka = static_cast<float>(nastepnaKlatka);
-                    }
+                    if (nastepnaKlatka >= 10) { isDrawingBow = false; isSlashingSword = false; aktualnaKlatka = 0.0f; } 
+                    else { aktualnaKlatka = static_cast<float>(nastepnaKlatka); }
                 } 
-                else {
-                    aktualnaKlatka = (static_cast<int>(aktualnaKlatka) + 1) % 10;
-                }
+                else { aktualnaKlatka = (static_cast<int>(aktualnaKlatka) + 1) % 10; }
             }
         }
-        else
-        {
-            aktualnaKlatka = 0.0f;
-        }
+        else { aktualnaKlatka = 0.0f; }
 
-        // ===============================================================
-        // DYNAMICZNE USTAWIANIE ROZMIARU WYCINKI (Zwykły / Łucznik / Miecznik)
-        // ===============================================================
-        double szerokoscWycinki = szerokosc_klatki; // Domyślnie 24
-        double wysokoscWycinki = wysokosc_klatki;  // Domyślnie 30
+        // DYNAMICZNE USTAWIANIE ROZMIARU WYCINKI
+        double szerokoscWycinki = szerokosc_klatki; 
+        double wysokoscWycinki = wysokosc_klatki; 
 
-        if (isSlashingSword)
-        {
-            szerokoscWycinki = 48;
-            wysokoscWycinki = 48;
-        }
-        else if (isDrawingBow && sprite.getTexture() == &tex_bow_sides)
-        {
-            szerokoscWycinki = 26.1;
-            wysokoscWycinki = 26;
-        }
+        if (isSlashingSword) { szerokoscWycinki = 33; wysokoscWycinki = 39; }
+        else if (isDrawingBow && sprite.getTexture() == &tex_bow_sides) { szerokoscWycinki = 26.1; wysokoscWycinki = 26; }
 
         klatkaStruktura.top = 0;
         klatkaStruktura.height = wysokoscWycinki;
         
-        // ===============================================================
-        // LOGIKA STRONY: Wyłączamy odbicie lustrzane dla miecza
-        // ===============================================================
-        if (isSlashingSword)
+        // LOGIKA STRONY: Teraz wspólna dla wszystkich!
+        bool aktualnie_boki = (sprite.getTexture() == &texture_sides || 
+                               sprite.getTexture() == &tex_bow_sides || 
+                               sprite.getTexture() == &tex_sword_sides);
+
+        if(patrzy_wLewo && aktualnie_boki)
         {
-            // Miecznik ignoruje kierunek patrzenia - rysuje klatki prosto z pliku od lewej do prawej
-            klatkaStruktura.left = static_cast<int>(aktualnaKlatka) * szerokoscWycinki * 0.98f;
-            klatkaStruktura.width = szerokoscWycinki;
+            klatkaStruktura.left = (static_cast<int>(aktualnaKlatka) * szerokoscWycinki * 0.98f) + szerokoscWycinki;
+            klatkaStruktura.width = -szerokoscWycinki;
         }
         else
         {
-            // Standardowa obsługa odbicia lustrzanego dla chodzenia i łucznika
-            bool aktualnie_boki = (sprite.getTexture() == &texture_sides || sprite.getTexture() == &tex_bow_sides);
-            if(patrzy_wLewo && aktualnie_boki)
-            {
-                klatkaStruktura.left = (static_cast<int>(aktualnaKlatka) * szerokoscWycinki * 0.98f) + szerokoscWycinki;
-                klatkaStruktura.width = -szerokoscWycinki;
-            }
-            else
-            {
-                klatkaStruktura.left = static_cast<int>(aktualnaKlatka) * szerokoscWycinki * 0.98f;
-                klatkaStruktura.width = szerokoscWycinki;
-            }
+            klatkaStruktura.left = static_cast<int>(aktualnaKlatka) * szerokoscWycinki * 0.98f;
+            klatkaStruktura.width = szerokoscWycinki;
         }
 
         sprite.setTextureRect(klatkaStruktura);
         sprite.setPosition(shape.getPosition().x + (shape.getSize().x / 2.0f), shape.getPosition().y + (shape.getSize().y / 2.0f));
 
-        if (invincibilityTimer > 0.0f) {
-            invincibilityTimer -= deltaTime;
-        }
+        if (invincibilityTimer > 0.0f) invincibilityTimer -= deltaTime;
     }
 
+    // Gettery i Settery
     sf::Vector2f getPosition() const { return shape.getPosition(); }
-    void setPosition(float x, float y)
-    {
-        shape.setPosition(x, y);
-        sprite.setPosition(x + (shape.getSize().x / 2.0f), y + (shape.getSize().y / 2.0f));    
-    }   
-
+    void setPosition(float x, float y) { shape.setPosition(x, y); sprite.setPosition(x + (shape.getSize().x / 2.0f), y + (shape.getSize().y / 2.0f)); }
     bool getIsAttacking() const { return isAttacking; }
     sf::Vector2f getFacingDirection() const { return facingDirection; }
     void applyKnockback(sf::Vector2f direction, float force) { recoilVelocity = direction * force; }
@@ -280,8 +214,7 @@ class Link : public Character
     int getHP() const { return hp; }
     bool isInvincible() const { return invincibilityTimer > 0.0f; }
 
-    void takeDamage(int amount)
-    {
+    void takeDamage(int amount) {
         if (!isInvincible()) {
             hp -= amount;
             if (hp < 0) hp = 0;
@@ -290,15 +223,10 @@ class Link : public Character
         }
     }
 
-    void heal(int amount) {
-        hp += amount;
-        if (hp > 10) hp = 10;
-    }
-    
+    void heal(int amount) { hp += amount; if (hp > 10) hp = 10; }
     void setHP(int newHP) { hp = newHP; }
     void setDrawingBow(bool drawing) { this->isDrawingBow = drawing; }
     bool getIsDrawingBow() const { return isDrawingBow; }
-
     void setSlashingSword(bool slashing) { this->isSlashingSword = slashing; }
     bool getIsSlashingSword() const { return isSlashingSword; }
 };

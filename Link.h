@@ -213,8 +213,8 @@ class Link : public Character
 
         if (isSlashingSword)
         {
-            szerokoscWycinki = 49.0;
-            wysokoscWycinki = 48.0;
+            szerokoscWycinki = 48;
+            wysokoscWycinki = 48;
         }
         else if (isDrawingBow && sprite.getTexture() == &tex_bow_sides)
         {

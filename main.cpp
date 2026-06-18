@@ -4,7 +4,6 @@
 #include "Link.h"
 #include "Enemies.h"
 #include "Chest.h"
-#include "Ptaszek.h"
 #include "Inventory.h"
 #include <SFML/Audio.hpp>
 #include "Final_boss.h"
@@ -158,133 +157,6 @@ const char room9[11][15]=
     {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
 };
 
-//pokoje lvl 2
-const char room10[11][15]=
-{
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-};
-const char room11[11][15]=
-{
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-};
-const char room12[11][15]=
-{
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
-};
-const char room13[11][15]=
-{
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-};
-const char room14[11][15]=
-{
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-};
-const char room15[11][15]=
-{
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','F'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-};
-const char room16[11][15]=
-{
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'F','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-};
-const char room17[11][15]=
-{
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
-};
-const char room18[11][15]=
-{
-    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','F','F','F','F','F','F','F','F','F','F','F','F','F','#'},
-    {'#','#','#','#','#','#','F','F','F','#','#','#','#','#','#'}
-};
 
 
 const char (*worldMap[10][10])[15]=
@@ -295,11 +167,11 @@ const char (*worldMap[10][10])[15]=
     {nullptr, nullptr, room3,   nullptr, nullptr,  nullptr, nullptr, nullptr, nullptr, nullptr},
     {nullptr, room1,   room2,   nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
 
-    {nullptr, nullptr, nullptr, room18, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-    {nullptr, nullptr, nullptr, room17, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-    {room15, room14, room13, room16, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-    {nullptr, nullptr, room12, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-    {nullptr, nullptr, room11, room10, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
 };
 
 void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,const sf::Texture& t_przemiana1,const sf::Texture& t_przemiana2, const sf::Texture& t_oczy,const sf::Texture& t_ogien,sf::Font& font, std::vector<std::string> (&defeatedEnemies)[10][10])
@@ -825,12 +697,7 @@ int main()
                         }
                     }
 
-                    if(!wrogowie_zyja)
-                    {
-                        std::cout<<"Ptaszek zabierze Linka na LVL 2"<<std::endl;
-                        currentState = GameState::Kurtyna_lvl2;
-                        transitionClock.restart();
-                    }
+
                 }
             }
             

@@ -304,8 +304,7 @@ const char (*worldMap[10][10])[15]=
 
 void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float startY, const sf::Texture& t_drzewa, const sf::Texture& t_floor1, const sf::Texture& t_floor2, const sf::Texture& t_cien,const sf::Texture& t_slime, const sf::Texture& t_moblin_up,const sf::Texture& t_moblin_down,const sf::Texture& t_moblin_left,const sf::Texture& t_moblin_right, const sf::Texture& t_skieleton_down, const sf::Texture& t_skieleton_up,const sf::Texture& t_skieleton_sides,const sf::Texture& t_proj, const sf::Texture& t_piasek,const sf::Texture& t_wysoka_trawa,const sf::Texture& t_stone, const sf::Texture& t_kwiatek,const sf::Texture& t_przemiana1,const sf::Texture& t_przemiana2, const sf::Texture& t_oczy,const sf::Texture& t_ogien,sf::Font& font, std::vector<std::string> (&defeatedEnemies)[10][10])
 {
-    // 1. ZAPAMIĘTYWANIE HP: Jeśli gracz już istniał, pobieramy jego obecne punkty życia
-    int currentHP = 30; // Domyślnie 10 (np. przy pierwszym uruchomieniu gry)
+    int currentHP = 3;
     if (player != nullptr)
     {
         currentHP = player->getHP();
@@ -314,7 +313,6 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     finalBoss = nullptr;
     player = nullptr;
 
-    // Czyszczenie starego pokoju
     for(auto& object : wordlObjects)
     {
         delete object;
@@ -359,10 +357,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         }
     }
 
-    // 2. PRZYWRACANIE HP: Tworzymy nowego Linka w nowym miejscu...
     player = new Link(startX, startY);
-    
-    // ... i ustawiamy mu zapamiętane punkty życia!
     player->setHP(currentHP); 
     
     wordlObjects.push_back(player);
@@ -430,7 +425,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
 
 
-    if(selectedRoom==room1)
+    if(selectedRoom==room9)
     {
     Final_boss* boss = new Final_boss(t_przemiana1, t_przemiana2, t_oczy, t_ogien,font, 336.0f, 240.0f);
     finalBoss = boss; // <--- TO JEST KLUCZOWE
@@ -468,6 +463,17 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
 }
 
+int getEnemyCount(const std::vector<Game*>& worldObjects) {
+    int count = 0;
+    for (const auto& obj : worldObjects)
+    {
+        Enemy* enemy = dynamic_cast<Enemy*>(obj);
+        if (enemy != nullptr) {
+            count++;
+        }
+    }
+    return count;
+}
 
 int main()
 {
@@ -659,10 +665,8 @@ int main()
 
                     playerInventory.clear(); // Czyszczenie starych śmieci (np. po wcześniejszej grze)
                             
-                            playerInventory.setItem(0, new Potion());    // Slot 1 (indeks 0)
-                            playerInventory.setItem(1, new Sword());     // Slot 2 (indeks 1)
-                            playerInventory.setItem(2, new Bow());       // Slot 3 (indeks 2)
-                            playerInventory.setItem(3, new Boomerang()); // Slot 4 (indeks 3)
+                            playerInventory.setItem(0, new Bow());
+
 
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, font,defeatedEnemies);
                     currentState = GameState::Gameplay;
@@ -688,6 +692,8 @@ int main()
                             defeatedEnemies[y][x].clear();
                         }
                     }
+                    playerInventory.clear();
+                    playerInventory.setItem(0, new Bow());
                     
                     // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
                     // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
@@ -695,7 +701,7 @@ int main()
         
                     // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
-                        player->setHP(5); 
+                        player->setHP(3); 
                     }
 
                     // Wracamy do rozgrywki
@@ -793,6 +799,9 @@ int main()
                         if(playerBounds.intersects(interactionZone))
                         {
                             chest -> interact(player);
+                            playerInventory.setItem(3, new Potion());
+                            playerInventory.setItem(1, new Sword());
+                            playerInventory.setItem(2, new Boomerang());
                             break;
                         }
                     }

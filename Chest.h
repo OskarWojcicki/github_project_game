@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Game.h"
+#include "Items.h"
 class Link;
 
 class Chest : public Game
@@ -66,28 +67,28 @@ public:
         return sprite.getPosition();
     }
 
-    void interact(Link* playerObj)
+    Item* interact(Link* playerObj)
     {
         if(isOpened)
         {
-            return;
+            return nullptr;
         }
         isOpened = true;
         
         sprite.setTextureRect(sf::IntRect(96,0,szerokosc_klatki,wysokosc_klatki));
-
-        if(reward_type == "SWORD")
-        {
-            std::cout<<"Znaleziono miecz! Schowano do ekwipunku."<<std::endl;
+        
+        // Tworzymy odpowiedni obiekt na podstawie reward_type
+        if (reward_type == "Sword") {
+            return new Sword();
         }
-        else if(reward_type == "BOOMERANG")
-        {
-            std::cout<<"Znaleziono bumerang! Schowano do ekwipunku."<<std::endl;
+        else if (reward_type == "Bow") {
+            return new Bow();
         }
-        else if(reward_type == "BOW")
-        {
-            std::cout<<"Znaleziono luk! Schowano do ekwipunku."<<std::endl;
+        else if (reward_type == "Boomerang") {
+            // Jeśli Boomerang wymaga argumentów, podaj je tutaj, np. new Boomerang()
+            return new Boomerang(); 
         }
-
+        
+        return nullptr;
     }
 };

@@ -5,11 +5,6 @@
 #include <cmath> 
 #include "Enemies.h"
 
-        // frames[0] = sf::IntRect(0, 0, 16, 10);   // Np. Oko
-        // frames[1] = sf::IntRect(13, 0, 17, 16);  // Np. Oko z kulką
-        // frames[2] = sf::IntRect(30, 0, 15, 14);  // Np. Oko z małą kulką
-        // frames[3] = sf::IntRect(47, 0, 12, 94);  // Np. Laser ciemny
-        // frames[4] = sf::IntRect(60, 0, 14, 95);  // Np. Laser jasny
 enum class Boss_state
 {
     Transformacja,
@@ -18,7 +13,7 @@ enum class Boss_state
     Faza_zadymka
 };
 
-// 1. KLASA STACJONARNYCH OCZU
+// 1. KLASA OCZU
 
 class Flying_eyes : public Enemy
 {
@@ -37,7 +32,6 @@ public:
         this->sprite.setTexture(tex);
         this->hp = 2;
 
-        // Definicje klatek
         frames[0] = sf::IntRect(0, 0, 16, 10);
         frames[1] = sf::IntRect(13, 0, 17, 16);
         frames[2] = sf::IntRect(30, 0, 15, 14);
@@ -48,13 +42,11 @@ public:
         this->sprite.setOrigin(7.0f, 47.0f); 
         this->sprite.setPosition(startPos);
         
-        // Ustawienie przezroczystości (nie widzisz ramki w finalnej grze)
         this->shape.setFillColor(sf::Color::Transparent); 
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
-        // 1. Reset na start każdej klatki 
         this->shape.setSize(sf::Vector2f(0.0f, 0.0f));
         this->shape.setPosition(-1000.0f, -1000.0f); 
         laserAktywny = false;
@@ -62,7 +54,6 @@ public:
         float czas = laserCycleClock.getElapsedTime().asSeconds();
         int idx = 0;
 
-        // 2. Logika stanów
         if (czas < 2.0f) {
             // FAZA OKA
             laserAktywny = false;
@@ -73,7 +64,6 @@ public:
             laserAktywny = true;
             idx = 3 + (static_cast<int>(animClock.getElapsedTime().asSeconds() * 4.0f) % 2);
             
-            // Wymiary hitboksa
             float w = 14.0f * SCALE;
             float h = 95.0f * SCALE;
             this->shape.setSize(sf::Vector2f(w, h));
@@ -82,17 +72,14 @@ public:
             float offsetX = 20.0f;  
             float offsetY = -120.0f; 
 
-            // Ustawiamy pozycję hitboksa względem startPos
             this->shape.setPosition(startPos.x + offsetX, startPos.y + offsetY);
         }
 
         if (czas > 4.0f) laserCycleClock.restart();
 
-        // 3. Aktualizacja wizualna
         this->sprite.setTextureRect(frames[idx]);
         this->sprite.setPosition(startPos);
 
-        // 4. Kolizja 
         if (laserAktywny && player != nullptr && this->shape.getGlobalBounds().intersects(player->getBounds()))
         {
             player->takeDamage(1);
@@ -111,19 +98,16 @@ private:
     sf::RectangleShape background; 
     sf::RectangleShape foreground; 
     float maxHp;
-    sf::Text bossLabel; // Dodaj to
+    sf::Text bossLabel; 
 
 public:
     HealthBar(float width, float height, float max, sf::Font& font) : maxHp(max) {
-        // Tło
         background.setSize(sf::Vector2f(width, height));
         background.setFillColor(sf::Color(50, 50, 50)); 
 
-        // Pasek
         foreground.setSize(sf::Vector2f(width, height));
         foreground.setFillColor(sf::Color::Red);
 
-        // Ustawienia tekstu
         bossLabel.setFont(font);
         bossLabel.setString("BOSS");
         bossLabel.setCharacterSize(18);
@@ -136,11 +120,9 @@ public:
 
         foreground.setSize(sf::Vector2f(background.getSize().x * percent, background.getSize().y));
 
-        // Teraz pozycja jest przekazywana bezpośrednio (na sztywno)
         background.setPosition(screenPosition);
         foreground.setPosition(screenPosition);
         
-        // Tekst nad paskiem
         bossLabel.setPosition(screenPosition.x, screenPosition.y - 25);
     }
 
@@ -151,30 +133,25 @@ public:
     }
 };
 
-// ============================================================================
+
 // 2. KLASA GŁÓWNEGO BOSSA
-// ============================================================================
 class Final_boss : public Enemy
 {
 protected:
-    // Stan bosa
     Boss_state aktualnyEtap;
-    bool isEyeOpen; // Czy oko jest otwarte (podatność)
+    bool isEyeOpen; 
     bool oczy_zrespowane;
     
-    // UI i pomocnicze
     HealthBar hpBar;
     sf::Clock stateClock, attackClock, animClock, phaseTimer;
     float currentPhaseDuration;
     
-    // Zasoby
     const sf::Texture& tex1;
     const sf::Texture& tex2;
     const sf::Texture& texOczu;
     const sf::Texture& texOgien;
     sf::Clock damageClock;
     
-    // Parametry
     int klatka_szerokosc = 64;
     int klatka_wysokosc = 64;
     int aktualnyYOffset = 0;
@@ -194,7 +171,7 @@ public:
         // Logika oka
         this->isEyeOpen = true; 
         this->oczy_zrespowane = false;
-        this->currentPhaseDuration = 2.0f; // Startowy czas fazy
+        this->currentPhaseDuration = 2.0f; 
 
         this->sprite.setTexture(tex1);
         this->shape.setSize(sf::Vector2f(48.0f, 48.0f));
@@ -203,36 +180,32 @@ public:
         this->sprite.setScale(1.5f, 1.5f);
         this->startPosition = sf::Vector2f(x, y);
         
-        this->shape.setFillColor(sf::Color::Transparent); // Przezroczysty środek
-        this->shape.setOutlineColor(sf::Color::Red);       // Czerwona ramka
+        this->shape.setFillColor(sf::Color::Transparent); 
+        this->shape.setOutlineColor(sf::Color::Red);       
         this->shape.setOutlineThickness(2.0f);
 
-        this->invincibilityDuration = 0.5f; // Czas nietykalności po otrzymaniu dmg
+        this->invincibilityDuration = 0.5f; 
     }
 
-    // Funkcja sprawdzająca czy można bić bossa
     bool isVulnerable() const {
         if (aktualnyEtap == Boss_state::Faza_Oka) {
-            return isEyeOpen; // Tylko gdy oko otwarte
+            return isEyeOpen; 
         }
-        return true; // W innych fazach jest podatny
+        return true; 
     }
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
         if (player != nullptr && this->getBounds().intersects(player->getBounds()))
     {
-        // Sprawdzamy czy minęła sekunda od ostatniego uderzenia
         if (damageClock.getElapsedTime().asSeconds() >= 1.0f) 
         {
-            // Obliczamy kierunek odpychania (od Boss -> Gracz)
             sf::Vector2f dir = player->getPosition() - this->shape.getPosition();
             float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-            if (len > 0) dir /= len; // Normalizacja wektora
+            if (len > 0) dir /= len; 
 
-            // Zadaj obrażenia i odepchnij
             player->takeDamage(1); 
-            player->applyKnockback(dir, 600.0f); // Siła 300.0f
+            player->applyKnockback(dir, 600.0f); 
             
             damageClock.restart();
         }
@@ -243,7 +216,6 @@ public:
         int klatka = 0;
         const sf::Texture* aktywnaTex = &tex1;
 
-        // Logika faz
         switch (aktualnyEtap)
         {
             case Boss_state::Transformacja:
@@ -263,26 +235,23 @@ public:
                 
             case Boss_state::Faza_Oka:
             {
-                // --- LOSOWE PRZEŁĄCZANIE (OKO / PELERYNKA) ---
                 if (phaseTimer.getElapsedTime().asSeconds() >= currentPhaseDuration) {
                     isEyeOpen = !isEyeOpen;
                     phaseTimer.restart();
                     
                     if (isEyeOpen) {
-                        currentPhaseDuration = 1.5f + static_cast<float>(rand() % 150) / 100.0f; // 1.5-3s otwarte
+                        currentPhaseDuration = 1.5f + static_cast<float>(rand() % 150) / 100.0f; 
                     } else {
-                        currentPhaseDuration = 3.0f + static_cast<float>(rand() % 300) / 100.0f; // 3-6s zamknięte
+                        currentPhaseDuration = 3.0f + static_cast<float>(rand() % 300) / 100.0f;
                     }
                 }
 
                 aktywnaTex = &tex2;
 
                 if (isEyeOpen) {
-                    // OTWARTY - klatki 0-14
                     klatka = static_cast<int>(animClock.getElapsedTime().asSeconds() / 0.15f) % 15;
                     aktualnyYOffset = 128; 
                 } else {
-                    // ZAMKNIĘTY/PELERYNKA - klatki 15-16
                     klatka = 15 + (static_cast<int>(animClock.getElapsedTime().asSeconds() / 0.4f) % 2);
                     aktualnyYOffset = 64; 
                 }
@@ -291,7 +260,7 @@ public:
                 this->shape.move(getDirectionToPlayer() * currentSpeed * deltaTime);                
                 if (this->hp <= maxHp / 2) { 
                     aktualnyEtap = Boss_state::Faza_PolHp; 
-                    isEyeOpen = true; // W kolejnej fazie znowu podatny
+                    isEyeOpen = true; 
                     stateClock.restart(); 
                     attackClock.restart(); 
                 }
@@ -343,11 +312,9 @@ public:
                 break;
         }
 
-        // Aktualizacja UI i Sprite
         hpBar.update(static_cast<float>(this->hp), this->shape.getPosition());
         this->sprite.setTexture(*aktywnaTex);
         
-        // Zabezpieczenie przed wyjściem poza teksturę
         if (aktualnyYOffset + klatka_wysokosc > (int)aktywnaTex->getSize().y) aktualnyYOffset = 0;
     
         this->sprite.setTextureRect(sf::IntRect(klatka * klatka_szerokosc, aktualnyYOffset, klatka_szerokosc, klatka_wysokosc));
@@ -360,7 +327,6 @@ public:
     }
     
     void takeDamage(int amount) override {
-        // Blokada bicia, jeśli oko zamknięte (tylko w fazie oka)
         if (!isVulnerable()) return;
 
         if(!isInvincible()) {

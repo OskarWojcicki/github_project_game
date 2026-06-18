@@ -18,9 +18,8 @@ enum class Boss_state
     Faza_zadymka
 };
 
-// ============================================================================
 // 1. KLASA STACJONARNYCH OCZU
-// ============================================================================
+
 class Flying_eyes : public Enemy
 {
 private:
@@ -55,7 +54,7 @@ public:
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
-        // 1. Reset na start każdej klatki (zabezpieczenie)
+        // 1. Reset na start każdej klatki 
         this->shape.setSize(sf::Vector2f(0.0f, 0.0f));
         this->shape.setPosition(-1000.0f, -1000.0f); 
         laserAktywny = false;
@@ -80,10 +79,8 @@ public:
             this->shape.setSize(sf::Vector2f(w, h));
             this->shape.setOrigin(w / 2.0f, 0.0f);
 
-            // --- TU USTAWASZ POZYCJĘ ---
-            // Zmieniaj te dwie wartości, aż hitbox "siądzie" idealnie na laserze:
-            float offsetX = 20.0f;  // W prawo (+) lub w lewo (-)
-            float offsetY = -120.0f; // W dół (+) lub w górę (-) 
+            float offsetX = 20.0f;  
+            float offsetY = -120.0f; 
 
             // Ustawiamy pozycję hitboksa względem startPos
             this->shape.setPosition(startPos.x + offsetX, startPos.y + offsetY);
@@ -95,7 +92,7 @@ public:
         this->sprite.setTextureRect(frames[idx]);
         this->sprite.setPosition(startPos);
 
-        // 4. Kolizja (tylko gdy laser aktywny)
+        // 4. Kolizja 
         if (laserAktywny && player != nullptr && this->shape.getGlobalBounds().intersects(player->getBounds()))
         {
             player->takeDamage(1);
@@ -106,45 +103,51 @@ public:
     {
         window.draw(this->sprite);
         
-        // Aby widzieć, gdzie jest hitbox podczas ustawiania, odkomentuj poniższą linię:
-        window.draw(this->shape); 
     }
 };
 
 class HealthBar {
 private:
-    sf::RectangleShape background; // Szare tło
-    sf::RectangleShape foreground; // Czerwony pasek
+    sf::RectangleShape background; 
+    sf::RectangleShape foreground; 
     float maxHp;
-    
+    sf::Text bossLabel; // Dodaj to
 
 public:
-    HealthBar(float width, float height, float max) : maxHp(max) {
-        // Ustawienia tła
+    HealthBar(float width, float height, float max, sf::Font& font) : maxHp(max) {
+        // Tło
         background.setSize(sf::Vector2f(width, height));
-        background.setFillColor(sf::Color(50, 50, 50)); // Ciemnoszary
+        background.setFillColor(sf::Color(50, 50, 50)); 
 
-        // Ustawienia paska
+        // Pasek
         foreground.setSize(sf::Vector2f(width, height));
         foreground.setFillColor(sf::Color::Red);
+
+        // Ustawienia tekstu
+        bossLabel.setFont(font);
+        bossLabel.setString("BOSS");
+        bossLabel.setCharacterSize(18);
+        bossLabel.setFillColor(sf::Color::White);
     }
 
-    void update(float currentHp, sf::Vector2f position) {
-        // Obliczamy procent zdrowia (od 0.0 do 1.0)
+    void update(float currentHp, sf::Vector2f screenPosition) {
         float percent = currentHp / maxHp;
         if (percent < 0) percent = 0;
 
-        // Skalujemy szerokość paska
         foreground.setSize(sf::Vector2f(background.getSize().x * percent, background.getSize().y));
 
-        // Ustawiamy pozycję (np. nad głową bossa)
-        background.setPosition(position.x, position.y - 20); // 20px nad bossem
-        foreground.setPosition(position.x, position.y - 20);
+        // Teraz pozycja jest przekazywana bezpośrednio (na sztywno)
+        background.setPosition(screenPosition);
+        foreground.setPosition(screenPosition);
+        
+        // Tekst nad paskiem
+        bossLabel.setPosition(screenPosition.x, screenPosition.y - 25);
     }
 
     void draw(sf::RenderWindow& window) {
         window.draw(background);
         window.draw(foreground);
+        window.draw(bossLabel); // Rysujemy tekst
     }
 };
 
@@ -153,7 +156,7 @@ public:
 // ============================================================================
 class Final_boss : public Enemy
 {
-private:
+protected:
     // Stan bosa
     Boss_state aktualnyEtap;
     bool isEyeOpen; // Czy oko jest otwarte (podatność)
@@ -172,15 +175,17 @@ private:
     sf::Clock damageClock;
     
     // Parametry
-    int maxHp;
     int klatka_szerokosc = 64;
     int klatka_wysokosc = 64;
     int aktualnyYOffset = 0;
+    int maxHp;
 
 public:
-    Final_boss(const sf::Texture& t1, const sf::Texture& t2, const sf::Texture& tOczy, const sf::Texture& tOgien, float x, float y) 
-        : Enemy(x, y, 35.0f), tex1(t1), tex2(t2), texOczu(tOczy),texOgien(tOgien), hpBar(100.0f, 15.0f, 40.0f)
+    Final_boss(const sf::Texture& t1, const sf::Texture& t2, const sf::Texture& tOczy, const sf::Texture& tOgien,sf::Font& font, float x, float y) 
+        : Enemy(x, y, 35.0f), tex1(t1), tex2(t2), texOczu(tOczy),texOgien(tOgien), hpBar(100.0f, 15.0f, 40.0f,font)
     {
+
+
         this->maxHp = 40;
         this->hp = this->maxHp;
         this->speed = 45.0f;
@@ -199,8 +204,8 @@ public:
         this->startPosition = sf::Vector2f(x, y);
         
         this->shape.setFillColor(sf::Color::Transparent); // Przezroczysty środek
-this->shape.setOutlineColor(sf::Color::Red);       // Czerwona ramka
-this->shape.setOutlineThickness(2.0f);
+        this->shape.setOutlineColor(sf::Color::Red);       // Czerwona ramka
+        this->shape.setOutlineThickness(2.0f);
 
         this->invincibilityDuration = 0.5f; // Czas nietykalności po otrzymaniu dmg
     }
@@ -247,7 +252,7 @@ this->shape.setOutlineThickness(2.0f);
                 aktualnyYOffset = 0;
                 
                 if (czas_w_stanie > 4.0f) {
-                    this->shape.setSize(sf::Vector2f(80.0f, 80.0f));
+                    this->shape.setSize(sf::Vector2f(80.0f, 130.0f));
                     this->sprite.setScale(2.5f, 2.5f);
                     aktualnyEtap = Boss_state::Faza_Oka;
                     stateClock.restart();

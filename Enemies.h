@@ -110,11 +110,12 @@ public:
         }
     }
     sf::Vector2f getStartPosition() const { return startPosition; }
+    
+    int hp;
 
 protected:
     sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f); // Aktualna prędkość odrzutu
     float friction = 8.0f;
-    int hp;
     float invincibilityTimer = 0.0f;       // Aktualny czas odporności
     float invincibilityDuration = 0.4f; // Jak długo wróg jest odporny po ciosie (np. 0.4 sekundy)
     sf::Vector2f startPosition;

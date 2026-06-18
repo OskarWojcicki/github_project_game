@@ -119,7 +119,6 @@ class Link : public Character
         sf::Vector2f movement(0.0f, 0.0f);
         bool czy_w_ruchu = false;
 
-        // Odrzut po obrażeniach
         if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
         {
             this->shape.move(recoilVelocity * deltaTime);
@@ -132,7 +131,6 @@ class Link : public Character
             }
         }
         
-        // Blokada ruchu podczas napinania łuku LUB ataku mieczem
         if (!isDrawingBow && !isSlashingSword)
         {
             if(move_up)
@@ -165,7 +163,6 @@ class Link : public Character
             shape.move(movement * deltaTime);
         }
 
-        // SYSTEM DOBIERANIA AKTUALNEJ TEKSTURY
         if (isSlashingSword)
         {
             sprite.setTexture(tex_sword);
@@ -183,7 +180,6 @@ class Link : public Character
             else if (move_left || move_right) sprite.setTexture(texture_sides);
         }
 
-        // Animacja klatek
         bool stan_animowany = czy_w_ruchu || isDrawingBow || isSlashingSword;
         if(stan_animowany) 
         {
@@ -212,11 +208,8 @@ class Link : public Character
             aktualnaKlatka = 0.0f;
         }
 
-        // ===============================================================
-        // DYNAMICZNE USTAWIANIE ROZMIARU WYCINKI (Zwykły / Łucznik / Miecznik)
-        // ===============================================================
-        double szerokoscWycinki = szerokosc_klatki; // Domyślnie 24
-        double wysokoscWycinki = wysokosc_klatki;  // Domyślnie 30
+        double szerokoscWycinki = szerokosc_klatki; 
+        double wysokoscWycinki = wysokosc_klatki;  
 
         if (isSlashingSword)
         {
@@ -232,9 +225,7 @@ class Link : public Character
         klatkaStruktura.top = 0;
         klatkaStruktura.height = wysokoscWycinki;
         
-        // ===============================================================
-        // LOGIKA STRONY: Wyłączamy odbicie lustrzane dla miecza
-        // ===============================================================
+
         if (isSlashingSword)
         {
             // Miecznik ignoruje kierunek patrzenia - rysuje klatki prosto z pliku od lewej do prawej
@@ -243,7 +234,6 @@ class Link : public Character
         }
         else
         {
-            // Standardowa obsługa odbicia lustrzanego dla chodzenia i łucznika
             bool aktualnie_boki = (sprite.getTexture() == &texture_sides || sprite.getTexture() == &tex_bow_sides);
             if(patrzy_wLewo && aktualnie_boki)
             {

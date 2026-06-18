@@ -428,7 +428,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     if(selectedRoom==room9)
     {
     Final_boss* boss = new Final_boss(t_przemiana1, t_przemiana2, t_oczy, t_ogien,font, 336.0f, 240.0f);
-    finalBoss = boss; // <--- TO JEST KLUCZOWE
+    finalBoss = boss; 
     wordlObjects.push_back(boss);    }
 
 
@@ -483,7 +483,9 @@ int main()
     sf::Music titleMusic;
     sf::Music gameOverMusic;
     sf::Music BossMusic;
+    sf::Music winMusic;
 
+    
     if(!titleMusic.openFromFile("muzyka/title_screen.mp3")) 
     {
         std::cout << "Blad w ladowaniu muzyki menu" << std::endl;
@@ -513,6 +515,19 @@ int main()
         gameOverMusic.setLoop(false); 
         gameOverMusic.setVolume(80.0f);
     }
+
+
+        if(!winMusic.openFromFile("muzyka/muzyka_wygrana.mp3"))
+    {
+        std::cout << "Blad w ladowaniu muzyki " << std::endl;
+    }
+    else
+    {
+        gameOverMusic.setLoop(false); 
+        gameOverMusic.setVolume(80.0f);
+    }
+
+
 
     window.setFramerateLimit(60);
 
@@ -1055,6 +1070,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
         
         // WYKRYCIE KLIKNIĘCIA: Gracz klika LPM i łuk nie jest na cooldownie ani w trakcie ładowania
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && canShootBow && !isChargingBowShot) {
+            
             if (bowCooldownClock.getElapsedTime().asSeconds() >= 2.0f) {
                 
                 canShootBow = false;           // Blokujemy kolejne kliknięcia (aż puści LPM)
@@ -1393,16 +1409,17 @@ if (currentState == GameState::Gameplay && player != nullptr)
             if (curtainHeight >= 528.0f)
             {
                 window.draw(gameOverText);
-                window.draw(retryText);
+                window.draw(retryText); 
             }
         }
         else if(currentState == GameState::Win)
-{
+        {
+            
     // 1. Rysujemy świat gry
-    for(auto& object : worldObjects)
-    {
-        object->draw(window); 
-    }
+        for(auto& object : worldObjects)
+        {
+            object->draw(window); 
+        }
     
     // 2. Ustawiamy rozmiar (tylko jeśli kurtyna ma być widoczna)
     gameOverCurtain.setSize(sf::Vector2f(720.0f, 528.0f)); // Ustaw pełny rozmiar
@@ -1415,7 +1432,18 @@ if (currentState == GameState::Gameplay && player != nullptr)
     window.draw(win_text);
     window.draw(wyjscie_tex);
 }
-        if (currentRoom != lastRoom) 
+
+    if (currentState == GameState::Win)
+{
+    BossMusic.stop();
+    backgroundMusic.stop();
+    
+    if (winMusic.getStatus() != sf::Music::Playing) 
+    {
+        winMusic.play();
+    }
+}
+    if (currentRoom != lastRoom) 
 {
     if (currentRoom == 9) // Wchodzimy do bossa
     {

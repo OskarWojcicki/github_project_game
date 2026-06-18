@@ -6,9 +6,7 @@
 #include "Link.h"
 
 
-// ==========================================
 // 1. KLASA ABSTRAKCYJNA: Item
-// ==========================================
 class Item : public Game 
 {
 protected:
@@ -20,13 +18,11 @@ public:
     Item(std::string itemName) : name(itemName) {}
     virtual ~Item() {}
 
-    // ZMIANA: Metoda use() przyjmuje teraz wskaźnik na naszego bohatera
     virtual void use(Link* hero) = 0;
 
     std::string getName() const { return name; }
 
     void update(float deltaTime) override {
-        // Logika np. animacji leżenia przedmiotu na ziemi
     }
 
     void draw(sf::RenderWindow& window) override {
@@ -46,9 +42,7 @@ public:
     }
 };
 
-// ==========================================
 // 2. KLASA: Potion (Dziedziczy po Item)
-// ==========================================
 class Potion : public Item 
 {
 private:
@@ -69,9 +63,7 @@ void use(Link* hero) override{
 }
 };
 
-// ==========================================
 // 3. KLASA ABSTRAKCYJNA: Weapon (Dziedziczy po Item)
-// ==========================================
 class Weapon : public Item 
 {
 protected:
@@ -84,15 +76,12 @@ public:
         return damage;
     }
 
-    // ZMIANA: Dostosowanie sygnatury do metody wirtualnej z klasy Item
     void use(Link* hero) override {
         std::cout << "Wybrano bron: " << name << " (Obrazenia: " << getDamage() << ")\n";
     }
 };
 
-// ==========================================
 // 4. KLASY POCHODNE OD WEAPON
-// ==========================================
 
 // --- SWORD ---
 class Sword : public Weapon 
@@ -108,7 +97,6 @@ public:
     int getDamage() const override {
         return damage; 
     }
-    // Ponieważ nie nadpisujemy use() w Sword, klasa użyje metody z klasy Weapon.
 };
 
 // --- BOW ---

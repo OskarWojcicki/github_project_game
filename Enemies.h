@@ -7,7 +7,6 @@
 
 extern Link* player;
 
-// Nowa klasa reprezentująca pocisk (kuleleczkę) wystrzeloną przez Szkieleta
 class Projectile : public Game
 {
 private:
@@ -21,15 +20,15 @@ public:
     Projectile(const sf::Texture& tex, float x, float y, sf::Vector2f direction, sf::IntRect rect= sf::IntRect(0,0,16,9),float scale = 2.0f, bool playerOwned = false)
     {
         this->isPlayerOwned = playerOwned;
-        speed = 200.0f; // Pocisk leci dość szybko
+        speed = 200.0f; 
 
         this->sprite.setTexture(tex);
 
         this->sprite.setTextureRect(rect);
-        this->sprite.setOrigin(15.0f, 4.0f); // Środek strzały
+        this->sprite.setOrigin(15.0f, 4.0f); 
         this->sprite.setPosition(x, y);
         this->sprite.setScale(scale,scale);
-        // Normalizujemy wektor kierunku pocisku
+
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         if (length != 0)
         {
@@ -40,10 +39,9 @@ public:
     }
 
     bool getIsPlayerOwned() const { return isPlayerOwned; }
-    // Dopasowane do sygnatury z Game.h (przyjmuje deltaTime)
+
     void update(float deltaTime) override
     {
-        // bulletShape.move(velocity * deltaTime);
         sprite.move(velocity * deltaTime);
     }
 
@@ -52,10 +50,8 @@ public:
         window.draw(sprite);
     }
 
-    // Wymagane przez silnik (pocisk nie jest ścianą)
     bool isSolid() const override { return false; }
     
-    // Dopasowane do sygnatury z Game.h (brak słówka const)
     sf::FloatRect getBounds() override 
     {
         return sprite.getGlobalBounds();
@@ -68,17 +64,14 @@ class Enemy : public Character
 public:
     Enemy(float x, float y, float speed) : Character(x, y, 1, speed)
     {
-        // Korzystamy z pola 'shape' odziedziczonego z klasy Character!
         this->shape.setSize(sf::Vector2f(40.0f, 40.0f));
         this->shape.setOutlineColor(sf::Color::Black);
         this->shape.setOutlineThickness(2.0f);
         this->shape.setPosition(x, y);
     }
 
-    // Nowa wirtualna metoda dla sztucznej inteligencji, która potrzebuje dostępu do wektora obiektów świata
     virtual void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) = 0;
 
-    // Spełniamy wymaganie czystej funkcji wirtualnej z Game.h/Character.h
     void update(float deltaTime) override {} 
 
     void draw(sf::RenderWindow& window) override
@@ -94,16 +87,15 @@ public:
     bool isInvincible() const { return invincibilityTimer > 0.0f; }
 
     virtual void takeDamage(int amount) {
-        if (!isInvincible()) { // Obrażenia wchodzą tylko, gdy wróg NIE JEST odporny
+        if (!isInvincible()) { 
             hp -= amount;
             if (hp < 0) hp = 0;
-            invincibilityTimer = invincibilityDuration; // Włączenie ochrony
+            invincibilityTimer = invincibilityDuration; 
         }
     }
     
     bool isDead() const { return hp <= 0; }
 
-    // --- METODA UPDATE DLA ODLICZANIA CZASU ---
     void updateInvincibility(float deltaTime) {
         if (invincibilityTimer > 0.0f) {
             invincibilityTimer -= deltaTime;
@@ -114,12 +106,12 @@ public:
     int hp;
 
 protected:
-    sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f); // Aktualna prędkość odrzutu
+    sf::Vector2f recoilVelocity = sf::Vector2f(0.0f, 0.0f); 
     float friction = 8.0f;
-    float invincibilityTimer = 0.0f;       // Aktualny czas odporności
-    float invincibilityDuration = 0.4f; // Jak długo wróg jest odporny po ciosie (np. 0.4 sekundy)
+    float invincibilityTimer = 0.0f;       
+    float invincibilityDuration = 0.4f; 
     sf::Vector2f startPosition;
-    // Zwraca wektor ruchu W STRONĘ gracza
+
     sf::Vector2f getDirectionToPlayer()
     {
         if (player == nullptr) return sf::Vector2f(0.f, 0.f);
@@ -138,7 +130,7 @@ protected:
 };
 
 
-
+// 1. Klasa Moblin 
 class Moblin : public Enemy
 {
     private:
@@ -161,7 +153,7 @@ public:
         this->texture_right = &tex_right;
 
         this->shape.setFillColor(sf::Color::Transparent);
-        this->shape.setOutlineColor(sf::Color::Transparent); // Ukrywamy też ramkę debugowania
+        this->shape.setOutlineColor(sf::Color::Transparent); 
 
         this->sprite.setTexture(tex_down);
 
@@ -171,14 +163,10 @@ public:
         this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_moblina, wysokosc_moblina);
         this->sprite.setTextureRect(this->klatkaStruktura);
 
-        // Środek sprajta ustawiamy na jego centrum
         this->sprite.setOrigin(szerokosc_moblina/ 2.0f, wysokosc_moblina / 2.0f);
         
-        // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
-        // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
         this->sprite.setScale(1.75f, 1.75f); 
 
-        // Pozycja startowa sprajta na środku hitboxu shape
         this->sprite.setPosition(
             x + (this->shape.getSize().x / 2.0f),
             y + (this->shape.getSize().y / 2.0f)
@@ -192,22 +180,18 @@ public:
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
         sf::Vector2f dir(0.0f,0.0f);
-// A. Jeśli potwór dostał cios i ma prędkość odrzutu – przesuń go siłą odrzutu
     if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
     {
         this->shape.move(recoilVelocity * deltaTime);
 
-        // Wyhamowywanie odrzutu przez tarcie
         recoilVelocity.x -= recoilVelocity.x * friction * deltaTime;
         recoilVelocity.y -= recoilVelocity.y * friction * deltaTime;
 
-        // Jeśli odrzut jest już ledwo widoczny, zatrzymaj go całkowicie
         if (std::sqrt(recoilVelocity.x * recoilVelocity.x + recoilVelocity.y * recoilVelocity.y) < 10.0f)
         {
             recoilVelocity = sf::Vector2f(0.0f, 0.0f);
         }
     }
-    // B. Jeśli nie ma odrzutu, potwór wykonuje swój normalny ruch w stronę gracza
     else 
     {
         dir = getDirectionToPlayer();
@@ -264,11 +248,10 @@ public:
     this->klatkaStruktura.top = 0;
     this->klatkaStruktura.width = klatka_szerokosc;
     this->klatkaStruktura.height = klatka_wysokosc;
-    this->klatkaStruktura.left = aktualna_klatka * klatka_szerokosc; // Skok mnoży się przez aktualną szerokość!
+    this->klatkaStruktura.left = aktualna_klatka * klatka_szerokosc; 
     
     this->sprite.setTextureRect(this->klatkaStruktura);
 
-    // Aktualizacja origin na wypadek, gdyby wymiary się zmieniły
     this->sprite.setOrigin(klatka_szerokosc / 2.0f, klatka_wysokosc / 2.0f);
 
     this->sprite.setPosition(
@@ -302,14 +285,10 @@ class Slime : public Enemy
         this->klatkaStruktura = sf::IntRect(0, 0, szerokosc_slima, wysokosc_slima);
         this->sprite.setTextureRect(this->klatkaStruktura);
 
-        // Środek sprajta ustawiamy na jego centrum
         this->sprite.setOrigin(szerokosc_slima / 2.0f, wysokosc_slima / 2.0f);
         
-        // Ponieważ obiekt ma 32x32, a hitboxy masz na 40x40 lub 48x48, 
-        // możemy go delikatnie przeskalować, żeby lepiej pasował do świata gry
         this->sprite.setScale(1.2f, 1.2f); 
 
-        // Pozycja startowa sprajta na środku hitboxu shape
         this->sprite.setPosition(
             x + (this->shape.getSize().x / 2.0f),
             y + (this->shape.getSize().y / 2.0f)
@@ -320,22 +299,18 @@ class Slime : public Enemy
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
-// A. Jeśli potwór dostał cios i ma prędkość odrzutu – przesuń go siłą odrzutu
     if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
     {
         this->shape.move(recoilVelocity * deltaTime);
 
-        // Wyhamowywanie odrzutu przez tarcie
         recoilVelocity.x -= recoilVelocity.x * friction * deltaTime;
         recoilVelocity.y -= recoilVelocity.y * friction * deltaTime;
 
-        // Jeśli odrzut jest już ledwo widoczny, zatrzymaj go całkowicie
         if (std::sqrt(recoilVelocity.x * recoilVelocity.x + recoilVelocity.y * recoilVelocity.y) < 10.0f)
         {
             recoilVelocity = sf::Vector2f(0.0f, 0.0f);
         }
     }
-    // B. Jeśli nie ma odrzutu, potwór wykonuje swój normalny ruch w stronę gracza
     else 
     {
         sf::Vector2f dir = getDirectionToPlayer();
@@ -391,11 +366,9 @@ public:
         this->texture_sides = &t_sides;
         this->texture_projectile = &t_proj;
 
-        // Ukrywamy debugowy kwadrat
         this->shape.setFillColor(sf::Color::Transparent);
         this->shape.setOutlineColor(sf::Color::Transparent);
 
-        // Ustawiamy domyślną teksturę na start (patrzy w dół)
         this->sprite.setTexture(*texture_down);
         
         this->klatkaStruktura = sf::IntRect(0, 0, 32, 32); 
@@ -410,7 +383,6 @@ public:
 
     void updateEnemyAI(std::vector<Game*>& worldObjects, float deltaTime) override
     {
-        // 1. OBSŁUGA PŁYNNEGO ODRZUTU (Wywoływane w każdej klatce)
         if (recoilVelocity.x != 0.0f || recoilVelocity.y != 0.0f)
         {
             this->shape.move(recoilVelocity * deltaTime);
@@ -421,11 +393,9 @@ public:
                 recoilVelocity = sf::Vector2f(0.0f, 0.0f);
         }
 
-        // 2. LOGIKA PORUSZANIA I WYBORU TEKSTURY
         sf::Vector2f dir = getDirectionToPlayer();
         float czasOdStrzalu = shootClock.getElapsedTime().asSeconds();
 
-        // Jeśli łucznik nie naciąga łuku (czas < 2.2s) i nie ma odrzutu -> idzie
         if (czasOdStrzalu < 2.2f && recoilVelocity.x == 0.0f && recoilVelocity.y == 0.0f)
         {
             this->shape.move(dir * speed * deltaTime);
@@ -433,7 +403,6 @@ public:
         int szerokosc_klatki=32;
         int wysokosc_klatki=32;
 
-        // Dynamicznie podmieniamy tekstury przekazane z maina
         if (std::abs(dir.x) > std::abs(dir.y))
         {
             this->sprite.setTexture(*texture_sides);
@@ -458,7 +427,6 @@ public:
             wysokosc_klatki=35;
         }
 
-        // 3. SEKCJA ANIMACJI (0-2: chód, 3-5: napinanie łuku)
         if (czasOdStrzalu >= 2.2f)
         {
             czasAnimacji += deltaTime;
@@ -479,7 +447,6 @@ public:
             }
         }
 
-        // 4. USTAWIANIE STRUKTURY KLATKI
         this->klatkaStruktura.top = 0;
         this->klatkaStruktura.height = wysokosc_klatki;
         this->sprite.setScale(1.75f, 1.75f); 
@@ -498,7 +465,6 @@ public:
         this->sprite.setTextureRect(this->klatkaStruktura);
         this->sprite.setPosition(this->shape.getPosition().x + 20.0f, this->shape.getPosition().y + 20.0f);
 
-        // 5. STRZAŁ (Zostawiamy na razie Twoją białą kuleczkę jako pocisk)
         if (czasOdStrzalu >= 3.0f)
         {
             if (player != nullptr)
@@ -526,21 +492,19 @@ public:
     }
 };
 
-// ==========================================
-// NOWA KLASA: POCISK BUMERANGU
-// ==========================================
+// KLASA: POCISK BUMERANGU
 class BoomerangProjectile : public Game
 {
 private:
     sf::Sprite sprite;
-    sf::CircleShape fallbackShape; // Koło ratunkowe, gdyby nie było tekstury
+    sf::CircleShape fallbackShape; 
     bool hasTexture = false;
 
-    std::vector<Enemy*> targets;   // Kolejka przeciwników do trafienia
-    int currentTargetIndex = 0;    // Którego wroga teraz gonimy
-    bool returningToPlayer = false;// Czy bumerang wraca już do Linka
-    float speed = 280.0f;          // Prędkość lotu bumerangu
-    int damage = 3;                // Obrażenia bumerangu
+    std::vector<Enemy*> targets;   
+    int currentTargetIndex = 0;    
+    bool returningToPlayer = false;
+    float speed = 280.0f;        
+    int damage = 3;                
 
 public:
     BoomerangProjectile(sf::Texture* tex, sf::Vector2f startPos, const std::vector<Game*>& worldObjects)
@@ -557,7 +521,6 @@ public:
             fallbackShape.setPosition(startPos);
         }
 
-        // FAZA NAMIERZANIA: Skanujemy pokój i szukamy wrogów
         for (auto* obj : worldObjects) {
             Enemy* e = dynamic_cast<Enemy*>(obj);
             if (e != nullptr && !e->isDead()) {
@@ -565,7 +528,6 @@ public:
             }
         }
 
-        // Jeśli pokój jest pusty, od razu wraca do gracza
         if (targets.empty()) {
             returningToPlayer = true;
         }
@@ -573,7 +535,6 @@ public:
 
     void update(float deltaTime) override
     {
-        // Obracanie bumerangu w locie dla lepszego efektu wizualnego
         if (hasTexture) sprite.rotate(800.0f * deltaTime);
         else fallbackShape.rotate(800.0f * deltaTime);
 
@@ -581,7 +542,6 @@ public:
         sf::Vector2f targetPos;
 
         if (!returningToPlayer) {
-            // Sprawdzamy czy cel w międzyczasie nie zginął od czegoś innego
             if (currentTargetIndex >= targets.size()) {
                 returningToPlayer = true;
                 return;
@@ -589,7 +549,6 @@ public:
 
             Enemy* currentEnemy = targets[currentTargetIndex];
             
-            // Bezpiecznik: jeśli wróg został usunięty z pamięci (nullptr lub martwy), bierzemy następnego
             if (currentEnemy == nullptr || currentEnemy->isDead()) {
                 currentTargetIndex++;
                 if (currentTargetIndex >= targets.size()) {
@@ -600,7 +559,6 @@ public:
 
             targetPos = currentEnemy->getPosition();
 
-            // Przemieszczanie w stronę wroga
             sf::Vector2f dir = targetPos - currentPos;
             float dist = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 
@@ -608,7 +566,6 @@ public:
                 dir /= dist;
                 currentPos += dir * speed * deltaTime;
             } else {
-                // TRAFIENIE WROGA! Zadajemy obrażenia i odrzucamy go
                 currentEnemy->takeDamage(damage);
                 
                 if (player != nullptr) {
@@ -620,7 +577,6 @@ public:
 
                 std::cout << "[BUMERANG] Trafiono wroga! HP wroga: " << currentEnemy->getHP() << "\n";
 
-                // Przełączamy na kolejny cel
                 currentTargetIndex++;
                 if (currentTargetIndex >= targets.size()) {
                     returningToPlayer = true;
@@ -628,7 +584,6 @@ public:
             }
         }
         else {
-            // FAZA POWROTU: Gonimy pozycję Linka
             if (player == nullptr) return;
 
             sf::FloatRect pBounds = player->getBounds();
@@ -641,12 +596,10 @@ public:
                 dir /= dist;
                 currentPos += dir * speed * deltaTime;
             } else {
-                // Bumerang wrócił do rąk gracza – oznaczamy go jako "martwy" przez HP = 0, aby usunąć go w main.cpp
-                damage = -1; // Flaga sygnałowa do usunięcia
+                damage = -1; 
             }
         }
 
-        // Zapisujemy nową pozycję
         if (hasTexture) sprite.setPosition(currentPos);
         else fallbackShape.setPosition(currentPos);
     }

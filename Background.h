@@ -14,10 +14,7 @@ class Background : public Game
     
     Background(const sf::Texture& tex, float x, float y, bool wall) : isWall(wall)
     {
-        // if(!texture.loadFromFile(texturePath))
-        // {
-        //     std::cout<<"Blad w ladowaniu grafiki!!!"<<std::endl;
-        // }
+
         sprite.setTexture(tex);
         sprite.setPosition(x,y);
 

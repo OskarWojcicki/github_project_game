@@ -366,12 +366,12 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
         std::string key = std::to_string((int)x) + "_" + std::to_string((int)y);
         for(const auto& deadKey : defeatedEnemies[wy][wx]) {
             if(deadKey == key) {
-                return false; // Został zabity, czyli nie żyje
+                return false; 
             }
         }
-        return true; // Nie ma go na liście martwych, czyli żyje
+        return true; 
     };
-    // --- Reszta Twojego kodu z potworami (Slime, Chest, Moblin itd.) --
+
     if(selectedRoom==room2)
     {
         if(czyZyje(300.0f, 400.0f))wordlObjects.push_back(new Slime(t_slime, 300.0f, 400.0f));
@@ -396,6 +396,7 @@ void Rooms(int wx, int wy, std::vector<Game*>& wordlObjects, float startX, float
     }
     if(selectedRoom==room3)
     {
+
         if(czyZyje(600.0f, 400.0f)) wordlObjects.push_back(new Slime(t_slime,600.0f, 400.0f));
         if(czyZyje(600.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime,600.0f, 200.0f));
         if(czyZyje(300.0f, 200.0f))wordlObjects.push_back(new Slime(t_slime,300.0f, 200.0f));
@@ -607,7 +608,6 @@ int main()
     sf::Text wyjscie_tex("NACISNIJ ESC ABY WYJSC", font, 16);
     wyjscie_tex.setFillColor(sf::Color::Yellow);
 
-    // Środkowanie tekstów na ekranie
     gameOverText.setPosition((720.0f - gameOverText.getLocalBounds().width) / 2.0f, 150.0f);
     retryText.setPosition((720.0f - retryText.getLocalBounds().width) / 2.0f, 350.0f);
 
@@ -616,7 +616,6 @@ int main()
 
 
 
-    // Czarny prostokąt kurtyny – na początku ma wysokość 0, będzie "rosnąć" w dół
     sf::RectangleShape gameOverCurtain(sf::Vector2f(720.0f, 0.0f));
     gameOverCurtain.setFillColor(sf::Color::Black);
     float curtainHeight = 0.0f;
@@ -651,7 +650,6 @@ int main()
             }
 
 
-            //klikanie ESC zeby wyjsc   
                 if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {       
                 window.close();
@@ -678,7 +676,7 @@ int main()
                         backgroundMusic.play();
                     }
 
-                    playerInventory.clear(); // Czyszczenie starych śmieci (np. po wcześniejszej grze)
+                    playerInventory.clear(); 
                             
                             playerInventory.setItem(0, new Sword());
 
@@ -696,7 +694,7 @@ int main()
         
                     gameOverMusic.stop();  
                     backgroundMusic.play();
-                    // Resetujemy pozycję mapy do punktu startowego (tak jak przy nowej grze)
+
                     worldX = 1;
                     worldY = 4;
                     
@@ -710,34 +708,28 @@ int main()
                     playerInventory.clear();
                     playerInventory.setItem(0, new Bow());
                     
-                    // Ładujemy pokój startowy na nowo. Rooms automatycznie stworzy nowego Linka.
-                    // Podajemy domyślne współrzędne startowe (np. środek ekranu 340, 240)
+                    
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, font,defeatedEnemies);
         
-                    // Ponieważ Rooms tworzy nowego Linka z 10 HP, upewniamy się, że ma pełne zdrowie
                     if (player != nullptr) {
                         player->setHP(3); 
                     }
 
-                    // Wracamy do rozgrywki
                     currentState = GameState::Gameplay;
                 }
             }
 
-            // Wewnątrz pętli while (window.pollEvent(event))
             if (event.type == sf::Event::MouseWheelScrolled)
             {
-                // Upewniamy się, że gracz kręci rolką w pionie (góra/dół)
                 if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
                 {
-                   // delta > 0 oznacza ruch w górę, delta < 0 ruch w dół
                   if (event.mouseWheelScroll.delta > 0)
                  {
-                        playerInventory.prevSlot(); // Przewiń slot w lewo
+                        playerInventory.prevSlot(); 
                  }
                  else if (event.mouseWheelScroll.delta < 0)
                  {
-                     playerInventory.nextSlot(); // Przewiń slot w prawo
+                     playerInventory.nextSlot(); 
                  }
              }
 
@@ -779,7 +771,7 @@ int main()
                 }
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    canShootBow = true; // Pozwala na kolejny strzał po puszczeniu LPM
+                    canShootBow = true; 
                     canAttackSword = true;
                 
                     if (player != nullptr && !player->getIsSlashingSword()) {
@@ -854,7 +846,6 @@ int main()
         
 
 
-// --- NOWY, POPRAWIONY KOD AKTUALIZACJI W MAIN.CPP ---
 for (size_t i = 0; i < worldObjects.size(); ++i)
 {
     Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
@@ -996,12 +987,10 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-// 2. POPRAWIONE KOLIZJE DLA WROGÓW W MAIN.CPP
         if(currentState == GameState::Gameplay)
         {
             for (auto& obj : worldObjects)
             {
-                // ZABEZPIECZENIE GRACZA: Jeśli ten obiekt to gracz, ignorujemy go!
                 if (obj == player) continue;
 
                 Enemy* enemy = dynamic_cast<Enemy*>(obj);
@@ -1022,33 +1011,26 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                             {
                                 if (overlap.width < overlap.height)
                                 {
-                                    // KOLIZJA BOCZNA (Oś X)
                                     if (enemyBounds.left < wallBounds.left)
                                     {
-                                        // Odepchnięcie w lewo + margines 1.5f przeciw przyklejaniu
                                         enemy->setPosition(wallBounds.left - enemyBounds.width - 1.5f, enemy->getPosition().y);
                                     }
                                     else
                                     {
-                                        // Odepchnięcie w prawo + margines 1.5f przeciw przyklejaniu
                                         enemy->setPosition(wallBounds.left + wallBounds.width + 1.5f, enemy->getPosition().y);
                                     }
                                 }
                                 else
                                 {
-                                    // KOLIZJA PIONOWA (Oś Y)
                                     if (enemyBounds.top < wallBounds.top)
                                     {
-                                        // Odepchnięcie w górę
                                         enemy->setPosition(enemy->getPosition().x, wallBounds.top - enemyBounds.height - 1.5f);
                                     }
                                     else
                                     {
-                                        // Odepchnięcie w dół
                                         enemy->setPosition(enemy->getPosition().x, wallBounds.top + wallBounds.height + 1.5f);
                                     }
                                 }
-                                // Aktualizujemy granice do kolejnych sprawdzeń
                                 enemyBounds = enemy->getBounds();
                             }
                         }
@@ -1058,51 +1040,50 @@ for (size_t i = 0; i < worldObjects.size(); ++i)
                 }
             }
         }
-// ==================== NOWA LOGIKA WALKI (ZABIJANIE WROGÓW) ====================
+
+
+
+//  LOGIKA WALKI 
 if (currentState == GameState::Gameplay && player != nullptr)
 {
     sf::FloatRect playerBounds = player->getBounds();
 
     Item* activeItem = playerInventory.getActiveItem();
     
-    // 1. GLOBALNA OBSŁUGA STRZELANIA Z ŁUKU
+    // 1. Łuk
     if (activeItem != nullptr && activeItem->getName() == "Bow") {
         
-        // WYKRYCIE KLIKNIĘCIA: Gracz klika LPM i łuk nie jest na cooldownie ani w trakcie ładowania
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && canShootBow && !isChargingBowShot) {
             
             if (bowCooldownClock.getElapsedTime().asSeconds() >= 2.0f) {
                 
-                canShootBow = false;           // Blokujemy kolejne kliknięcia (aż puści LPM)
-                isChargingBowShot = true;     // Odpalamy stan ładowania strzału
-                bowShotDelayClock.restart();  // Resetujemy stoper opóźnienia
+                canShootBow = false;           
+                isChargingBowShot = true;     
+                bowShotDelayClock.restart();  
                 
-                player->setDrawingBow(true);   // Włączamy jednorazową animację łucznika i stopujemy ruch!
+                player->setDrawingBow(true);   
                 std::cout << "[ŁUK] Napinanie cięciwy... Wystrzał za 0.5s.\n";
             }
         }
 
-        // PROCES ODREAGOWANIA OPÓŹNIENIA: Jeśli łuk się ładuje, sprawdzamy czy minęło pół sekundy
         if (isChargingBowShot) {
             if (bowShotDelayClock.getElapsedTime().asSeconds() >= 0.5f) {
                 
-                // MINĘŁO 0.5 SEKUNDY -> POTWIERDZAMY WYSTRZAŁ STRZAŁY!
-                isChargingBowShot = false; // Kończymy ładowanie strzału
+                isChargingBowShot = false; 
 
                 sf::FloatRect pBounds = player->getBounds();
                 sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
                 sf::Vector2f shootDir = player->getFacingDirection();
 
-                // Tworzymy strzałę w świecie gry
                 worldObjects.push_back(new Projectile(tex_strzala, playerCenter.x, playerCenter.y, shootDir,sf::IntRect(0, 0, 16, 9), 2.0f, true));
                 
-                bowCooldownClock.restart(); // Uruchamiamy globalny 2-sekundowy cooldown broni
+                bowCooldownClock.restart(); 
                 std::cout << "[ŁUK] Puszczono cięciwę! Strzała wystrzelona.\n";
             }
         }
     }
 
-    // 1B. NOWOŚĆ: GLOBALNA OBSŁUGA RZUTU BUMERANGIEM
+    // 1B. RZUTU BUMERANGIEM
     if (activeItem != nullptr && activeItem->getName() == "Boomerang") {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             // Można rzucić jeśli bumerang nie jest w locie i minęły 1.5 sekundy
@@ -1111,7 +1092,6 @@ if (currentState == GameState::Gameplay && player != nullptr)
                 sf::FloatRect pBounds = player->getBounds();
                 sf::Vector2f playerCenter(pBounds.left + pBounds.width / 2.0f, pBounds.top + pBounds.height / 2.0f);
 
-                // Tworzymy bumerang i przekazujemy mu cały wektor worldObjects, aby sam wyłapał wrogów!
                 worldObjects.push_back(new BoomerangProjectile(&tex_bumerang, playerCenter, worldObjects));
                 
                 hasActiveBoomerang = true;
@@ -1121,26 +1101,23 @@ if (currentState == GameState::Gameplay && player != nullptr)
         }
     }
 
-    // 1C. NOWOŚĆ: GLOBALNA OBSŁUGA ATAKU MIECZEM (DZIAŁA ZAWSZE, NAWET BEZ POTWORÓW)
+    // 1C.  OBSŁUGA ATAKU MIECZEM 
     if (player->getIsAttacking() && activeItem != nullptr && activeItem->getName() == "Sword") {
         if (canAttackSword) {
-            player->setSlashingSword(true); // Odpala powiększoną klatkę 48x48 w Link.h
+            player->setSlashingSword(true); 
             canAttackSword = false;
             swordCooldownClock.restart();
             std::cout << "[MIECZ] Zamach mieczem na sucho!\n";
         }
     }
 
-    // ITERACJA OD TYŁU PO OBIEKTACH ŚWIATA
     for (int i = static_cast<int>(worldObjects.size()) - 1; i >= 0; --i)
     {
         if (worldObjects[i] == player) continue;
 
-        // NOWOŚĆ: Sprawdzanie czy obiekt to nasz powracający bumerang
         BoomerangProjectile* boom = dynamic_cast<BoomerangProjectile*>(worldObjects[i]);
         if (boom != nullptr) {
             if (boom->isFinished()) {
-                // Bumerang dotknął Linka na powrocie! Usuwamy go i odblokowujemy rzut
                 delete worldObjects[i];
                 worldObjects.erase(worldObjects.begin() + i);
                 hasActiveBoomerang = false;
@@ -1149,7 +1126,6 @@ if (currentState == GameState::Gameplay && player != nullptr)
             }
         }
 
-        // A. OBSŁUGA STRZAŁY GRACZA TRAFIAJĄCEJ WROGÓW
         Projectile* arrow = dynamic_cast<Projectile*>(worldObjects[i]);
         if (arrow != nullptr) {
             if (arrow->getIsPlayerOwned()) {
@@ -1194,11 +1170,12 @@ if (currentState == GameState::Gameplay && player != nullptr)
             }
         }
 
-        // --- ROZPOZNANIE PRZECIWNIKA ---
+
+
+
         Enemy* enemy = dynamic_cast<Enemy*>(worldObjects[i]);
         if (enemy != nullptr)
         {
-            // Jeśli przeciwnik zginął (np. bumerang go dobił przed chwilą)
             if (enemy->isDead())
             {
                 std::cout << "Przeciwnik zginal od obrazen!\n";
@@ -1214,7 +1191,6 @@ if (currentState == GameState::Gameplay && player != nullptr)
 
             if (player->getIsAttacking())
             {
-                // 2. LOGIKA ZADAWANIA OBRAŻEŃ MIECZEM (Wykonuje się tylko, gdy trzymamy miecz)
                 if (activeItem != nullptr && activeItem->getName() == "Sword")
                 {
                     sf::FloatRect pBounds = player->getBounds();
@@ -1290,7 +1266,7 @@ if (currentState == GameState::Gameplay && player != nullptr)
         }
     
         // B. OBSŁUGA POCISKU SZKIELETA
-        Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]); // Zmieniłem na Projectile*, bo wkradła się literówka s
+        Projectile* bullet = dynamic_cast<Projectile*>(worldObjects[i]); 
         if (bullet != nullptr)
         {
             if (!bullet->getIsPlayerOwned())
@@ -1415,17 +1391,14 @@ if (currentState == GameState::Gameplay && player != nullptr)
         else if(currentState == GameState::Win)
         {
             
-    // 1. Rysujemy świat gry
         for(auto& object : worldObjects)
         {
             object->draw(window); 
         }
     
-    // 2. Ustawiamy rozmiar (tylko jeśli kurtyna ma być widoczna)
-    gameOverCurtain.setSize(sf::Vector2f(720.0f, 528.0f)); // Ustaw pełny rozmiar
-    gameOverCurtain.setFillColor(sf::Color::Black); // Opcjonalnie: półprzezroczysta czerń
+    gameOverCurtain.setSize(sf::Vector2f(720.0f, 528.0f)); 
+    gameOverCurtain.setFillColor(sf::Color::Black); 
     
-    // 3. RYSOWANIE KURTYNY - TO JEST NAJWAŻNIEJSZE
     window.draw(gameOverCurtain); 
 
     
@@ -1445,13 +1418,13 @@ if (currentState == GameState::Gameplay && player != nullptr)
 }
     if (currentRoom != lastRoom) 
 {
-    if (currentRoom == 9) // Wchodzimy do bossa
+    if (currentRoom == 9) 
     {
         backgroundMusic.stop();
         if (BossMusic.getStatus() != sf::Music::Playing) 
             BossMusic.play();
     } 
-    else // Jesteśmy w dowolnym innym pokoju
+    else 
     {
         BossMusic.stop();
         if (backgroundMusic.getStatus() != sf::Music::Playing) 

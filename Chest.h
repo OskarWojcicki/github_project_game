@@ -77,7 +77,6 @@ public:
         
         sprite.setTextureRect(sf::IntRect(96,0,szerokosc_klatki,wysokosc_klatki));
         
-        // Tworzymy odpowiedni obiekt na podstawie reward_type
         if (reward_type == "Sword") {
             return new Sword();
         }
@@ -85,7 +84,6 @@ public:
             return new Bow();
         }
         else if (reward_type == "Boomerang") {
-            // Jeśli Boomerang wymaga argumentów, podaj je tutaj, np. new Boomerang()
             return new Boomerang(); 
         }
         

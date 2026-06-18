@@ -5,11 +5,7 @@
 #include <cmath> 
 #include "Enemies.h"
 
-        // frames[0] = sf::IntRect(0, 0, 16, 10);   // Np. Oko
-        // frames[1] = sf::IntRect(13, 0, 17, 16);  // Np. Oko z kulką
-        // frames[2] = sf::IntRect(30, 0, 15, 14);  // Np. Oko z małą kulką
-        // frames[3] = sf::IntRect(47, 0, 12, 94);  // Np. Laser ciemny
-        // frames[4] = sf::IntRect(60, 0, 14, 95);  // Np. Laser jasny
+
 enum class Boss_state
 {
     Transformacja,

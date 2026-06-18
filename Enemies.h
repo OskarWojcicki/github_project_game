@@ -138,7 +138,7 @@ protected:
 };
 
 
-// 1. Klasa Moblin (Brązowy kwadracik)
+
 class Moblin : public Enemy
 {
     private:

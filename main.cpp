@@ -680,7 +680,7 @@ int main()
 
                     playerInventory.clear(); // Czyszczenie starych śmieci (np. po wcześniejszej grze)
                             
-                            playerInventory.setItem(0, new Bow());
+                            playerInventory.setItem(0, new Sword());
 
 
                     Rooms(worldX, worldY, worldObjects, 340.0f, 240.0f, tex_drzewa, tex_floor1, tex_floor2, tex_cien, tex_slime,tex_moblin_up,tex_moblin_down,tex_moblin_left,tex_moblin_righ,tex_skieleton_down,tex_skieleton_up,tex_skieleton_sides,tex_strzala,tex_piasek,tex_wysoka_trawa,tex_stone,tex_kwiatek,tex_boss_przemiana1,tex_boss_przemiana2,tex_oczy,tex_ogien, font,defeatedEnemies);
@@ -815,7 +815,7 @@ int main()
                         {
                             chest -> interact(player);
                             playerInventory.setItem(3, new Potion());
-                            playerInventory.setItem(1, new Sword());
+                            playerInventory.setItem(1, new Bow());
                             playerInventory.setItem(2, new Boomerang());
                             break;
                         }
